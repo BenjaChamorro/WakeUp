@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: bfe52bb3a3cd4bd48a3dc6c31658f221
+guid: a65a01cba9401f44a88f51107309bde3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6682747168169823470
-    second: Prota_0
+      213: -4894148217896428281
+    second: Prota 1_0
   - first:
-      213: 3834358309287102106
-    second: Prota_1
+      213: -5978105854804464906
+    second: Prota 1_1
   - first:
-      213: -2569860296747118723
-    second: Prota_2
+      213: 6600558957029940635
+    second: Prota 1_2
   - first:
-      213: 6520544572475549893
-    second: Prota_3
+      213: -880226684591071591
+    second: Prota 1_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,50 +113,6 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 96
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: eec828a8423edbc50800000000000000
-      internalID: 6682747168169823470
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prota_1
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 64
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a9600a62190663530800000000000000
-      internalID: 3834358309287102106
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prota_2
-      rect:
-        serializedVersion: 2
-        x: 0
         y: 32
         width: 32
         height: 32
@@ -166,16 +122,38 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d7f02020da5065cd0800000000000000
-      internalID: -2569860296747118723
+      spriteID: 086e777a4bd904b4dba8124d89c7766f
+      internalID: -1593412259
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Prota_3
+      name: Prota_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 69ac42709cd23694194159aefad35360
+      internalID: 922096541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prota_2
       rect:
         serializedVersion: 2
         x: 0
@@ -188,10 +166,32 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5c8a188cdb0ad7a50800000000000000
-      internalID: 6520544572475549893
+      spriteID: 0d5f873ffd6a2a041b8aa2dec6d5e4f7
+      internalID: -786380314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Prota_3
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41b2cb6c29974e542a83cd1884cdcb44
+      internalID: 518860868
       vertices: []
       indices: 
       edges: []
@@ -200,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 90f12096ff578dd4d83a0ee18acb299a
+    spriteID: bee5c0d5bc455584db4fbd68364f3295
     internalID: 0
     vertices: []
     indices: 
@@ -212,10 +212,10 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Prota_0: 6682747168169823470
-      Prota_1: 3834358309287102106
-      Prota_2: -2569860296747118723
-      Prota_3: 6520544572475549893
+      Prota_0: -1593412259
+      Prota_1: 922096541
+      Prota_2: -786380314
+      Prota_3: 518860868
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
