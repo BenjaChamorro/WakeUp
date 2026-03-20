@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 73dfe83a8a35c0c4b8c399bfc96726b1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - BotonEscape: {fileID: 3937701422693542345, guid: d67d8b4dc7b2a234ebfb69b0c5a9c011, type: 3}
+  - BotonObjeto: {fileID: 6043538448803024631, guid: e9e021dca1256bf47ae289226f0ccc6a, type: 3}
+  - BotonScript: {fileID: 3930746968994982780, guid: 97517465240ebd047bcde7d4c5aa9f12, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
