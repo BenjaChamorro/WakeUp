@@ -4,57 +4,52 @@ using UnityEngine.InputSystem;
 public class MainMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    
+
     private Animator animator;
     private Rigidbody2D rb;
+
+    private Vector2 rawInput;
     private Vector2 moveInput;
-    
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
+    {
+        ReadInput();
+        UpdateAnimator();
+    }
+
+    void FixedUpdate()
     {
         Move();
     }
 
-    public void Move()
+    void ReadInput()
     {
-        // Calcular movimiento horizontal
-        if (Keyboard.current.aKey.isPressed)
-        {
-            moveInput.x = -1f;
-        }
-        else if (Keyboard.current.dKey.isPressed)
-        {
-            moveInput.x = 1f;
-        }
-        else
-        {
-            moveInput.x = 0f;
-        }
+        rawInput = Vector2.zero;
 
-        // Calcular movimiento vertical
-        if (Keyboard.current.wKey.isPressed)
-        {
-            moveInput.y = 1f;
-        }
-        else if (Keyboard.current.sKey.isPressed)
-        {
-            moveInput.y = -1f;
-        }
-        else
-        {
-            moveInput.y = 0f;
-        }
+        if (Keyboard.current.aKey.isPressed) rawInput.x = -1;
+        else if (Keyboard.current.dKey.isPressed) rawInput.x = 1;
 
-        // Actualizar parámetros del Animator
-        animator.SetFloat("Horizontal", moveInput.x);
-        animator.SetFloat("Vertical", moveInput.y);
+        if (Keyboard.current.wKey.isPressed) rawInput.y = 1;
+        else if (Keyboard.current.sKey.isPressed) rawInput.y = -1;
 
-        transform.Translate(moveInput * moveSpeed * Time.deltaTime);
+        // Solo el movimiento va normalizado para evitar que el personaje se mueva más rápido en diagonal
+        moveInput = rawInput.normalized;
+    }
+
+    void Move()
+    {
+        rb.MovePosition(rb.position + moveInput * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    void UpdateAnimator()
+    {
+        animator.SetFloat("Horizontal", rawInput.x);
+        animator.SetFloat("Vertical", rawInput.y);
     }
 }
