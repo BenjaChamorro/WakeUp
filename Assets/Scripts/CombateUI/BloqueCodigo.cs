@@ -106,7 +106,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     }
 
     void DropToConsole() {
-        bool draggedFromPalette = originalParent == contenedorBloques;
+        bool draggedFromPalette = IsFromPalette(originalParent);
 
         Transform lineasConsola = ResolveLineasConsola();
         if (lineasConsola == null) {
@@ -158,6 +158,16 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             nuevo.consolaDropZone = consolaDropZone;
             nuevo.lineasConsolaTarget = lineasConsolaTarget;
         }
+    }
+
+    private bool IsFromPalette(Transform sourceParent) {
+        if (sourceParent == null) return false;
+
+        if (contenedorBloques != null && sourceParent.IsChildOf(contenedorBloques)) {
+            return true;
+        }
+
+        return !consoleLines.Contains(this);
     }
 
     private Transform ResolveLineasConsola() {
