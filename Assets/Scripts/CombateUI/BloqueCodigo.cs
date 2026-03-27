@@ -22,6 +22,13 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private Transform originalParent;
     private int originalSiblingIndex;
     private Vector2 originalAnchoredPosition;
+    private Vector2 templateAnchorMin;
+    private Vector2 templateAnchorMax;
+    private Vector2 templatePivot;
+    private Vector2 templateSizeDelta;
+    private Vector2 templateOffsetMin;
+    private Vector2 templateOffsetMax;
+    private bool hasTemplateRect;
 
     public static List<BloqueCodigo> consoleLines = new List<BloqueCodigo>();
     [HideInInspector] public int lineNumber = -1;
@@ -30,6 +37,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         UpdateBlockText();
+        CaptureTemplateRect();
 
         canvas = GetComponentInParent<Canvas>();
         if (canvas == null) {
@@ -47,6 +55,10 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         originalParent = transform.parent;
         originalSiblingIndex = transform.GetSiblingIndex();
         originalAnchoredPosition = rectTransform.anchoredPosition;
+
+        if (IsFromPalette(originalParent)) {
+            CaptureTemplateRect();
+        }
 
         canvasGroup.blocksRaycasts = false;
         transform.SetParent(canvas.transform, true);
@@ -130,19 +142,11 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             nuevo.UpdateBlockText();
 
             RectTransform nrt = nuevo.GetComponent<RectTransform>();
-            RectTransform prefabRect = prefabOriginal.GetComponent<RectTransform>();
             if (nrt != null) {
-                if (prefabRect != null) {
-                    nrt.anchorMin = prefabRect.anchorMin;
-                    nrt.anchorMax = prefabRect.anchorMax;
-                    nrt.pivot = prefabRect.pivot;
-                    nrt.sizeDelta = prefabRect.sizeDelta;
-                    nrt.offsetMin = prefabRect.offsetMin;
-                    nrt.offsetMax = prefabRect.offsetMax;
-                }
+                ApplyTemplateToRect(nrt);
 
                 if (puntoSpawnBloques != null) {
-                    nrt.anchoredPosition = puntoSpawnBloques.anchoredPosition;
+                    nrt.anchoredPosition = GetSpawnAnchoredPosition();
                 } else {
                     nrt.anchoredPosition = originalAnchoredPosition;
                 }
@@ -157,7 +161,66 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             nuevo.puntoSpawnBloques = puntoSpawnBloques;
             nuevo.consolaDropZone = consolaDropZone;
             nuevo.lineasConsolaTarget = lineasConsolaTarget;
+            nuevo.CopyTemplateFrom(this);
         }
+    }
+
+    private void CaptureTemplateRect() {
+        templateAnchorMin = rectTransform.anchorMin;
+        templateAnchorMax = rectTransform.anchorMax;
+        templatePivot = rectTransform.pivot;
+        templateSizeDelta = rectTransform.sizeDelta;
+        templateOffsetMin = rectTransform.offsetMin;
+        templateOffsetMax = rectTransform.offsetMax;
+        hasTemplateRect = true;
+    }
+
+    private void CopyTemplateFrom(BloqueCodigo source) {
+        if (source == null || !source.hasTemplateRect) return;
+
+        templateAnchorMin = source.templateAnchorMin;
+        templateAnchorMax = source.templateAnchorMax;
+        templatePivot = source.templatePivot;
+        templateSizeDelta = source.templateSizeDelta;
+        templateOffsetMin = source.templateOffsetMin;
+        templateOffsetMax = source.templateOffsetMax;
+        hasTemplateRect = true;
+    }
+
+    private void ApplyTemplateToRect(RectTransform target) {
+        if (target == null) return;
+
+        if (!hasTemplateRect) {
+            CaptureTemplateRect();
+        }
+
+        target.anchorMin = templateAnchorMin;
+        target.anchorMax = templateAnchorMax;
+        target.pivot = templatePivot;
+        target.sizeDelta = templateSizeDelta;
+        target.offsetMin = templateOffsetMin;
+        target.offsetMax = templateOffsetMax;
+    }
+
+    private Vector2 GetSpawnAnchoredPosition() {
+        if (puntoSpawnBloques == null) {
+            return originalAnchoredPosition;
+        }
+
+        RectTransform paletteRect = contenedorBloques as RectTransform;
+        if (paletteRect == null) {
+            return puntoSpawnBloques.anchoredPosition;
+        }
+
+        Vector2 localPoint;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            paletteRect,
+            RectTransformUtility.WorldToScreenPoint(canvas != null ? canvas.worldCamera : null, puntoSpawnBloques.position),
+            canvas != null ? canvas.worldCamera : null,
+            out localPoint
+        );
+
+        return localPoint;
     }
 
     private bool IsFromPalette(Transform sourceParent) {
