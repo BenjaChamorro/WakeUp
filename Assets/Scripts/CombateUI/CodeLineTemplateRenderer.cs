@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CodeLineTemplateRenderer : MonoBehaviour {
     private const string ContainerName = "LineTemplateContainer";
-    private static readonly Regex TokenRegex = new Regex("(operador|_)");
+    private static readonly Regex TokenRegex = new Regex("(operador|operator|_)", RegexOptions.IgnoreCase);
 
     private RectTransform containerRect;
     private string currentTemplate;
@@ -13,7 +13,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     public void Initialize(string templateText, string commandType) {
         currentTemplate = templateText;
 
-        bool needsTemplate = templateText.Contains("_") || templateText.Contains("operador");
+        string normalized = templateText.ToLowerInvariant();
+        bool needsTemplate = templateText.Contains("_") || normalized.Contains("operador") || normalized.Contains("operator");
         TextMeshProUGUI mainText = transform.Find("TextoBloqueCodigo")?.GetComponent<TextMeshProUGUI>();
 
         if (!needsTemplate) {
@@ -37,28 +38,55 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         Transform existing = transform.Find(ContainerName);
         if (existing != null) {
             containerRect = existing as RectTransform;
+            ConfigureContainerRect(containerRect);
+            ConfigureContainerLayout(containerRect);
             return;
         }
 
         GameObject go = new GameObject(ContainerName, typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(ContentSizeFitter));
         containerRect = go.GetComponent<RectTransform>();
         containerRect.SetParent(transform, false);
-        containerRect.anchorMin = new Vector2(0f, 0f);
-        containerRect.anchorMax = new Vector2(1f, 1f);
-        containerRect.offsetMin = new Vector2(34f, 4f);
-        containerRect.offsetMax = new Vector2(-8f, -4f);
+        ConfigureContainerRect(containerRect);
+        ConfigureContainerLayout(containerRect);
 
         HorizontalLayoutGroup hlg = go.GetComponent<HorizontalLayoutGroup>();
+        ContentSizeFitter fitter = go.GetComponent<ContentSizeFitter>();
+        if (hlg == null || fitter == null) {
+            Debug.LogWarning("CodeLineTemplateRenderer: faltan componentes de layout en LineTemplateContainer.");
+        }
+    }
+
+    private void ConfigureContainerLayout(RectTransform rect) {
+        if (rect == null) return;
+
+        HorizontalLayoutGroup hlg = rect.GetComponent<HorizontalLayoutGroup>();
+        if (hlg == null) {
+            hlg = rect.gameObject.AddComponent<HorizontalLayoutGroup>();
+        }
         hlg.childAlignment = TextAnchor.MiddleLeft;
-        hlg.childControlWidth = false;
+        hlg.childControlWidth = true;
         hlg.childControlHeight = true;
         hlg.childForceExpandWidth = false;
         hlg.childForceExpandHeight = false;
         hlg.spacing = 4f;
 
-        ContentSizeFitter fitter = go.GetComponent<ContentSizeFitter>();
+        ContentSizeFitter fitter = rect.GetComponent<ContentSizeFitter>();
+        if (fitter == null) {
+            fitter = rect.gameObject.AddComponent<ContentSizeFitter>();
+        }
         fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
         fitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+    }
+
+    private void ConfigureContainerRect(RectTransform rect) {
+        if (rect == null) return;
+
+        // Mantener el contenedor compacto, anclado a la izquierda, sin estirarlo al ancho completo.
+        rect.anchorMin = new Vector2(0f, 0.5f);
+        rect.anchorMax = new Vector2(0f, 0.5f);
+        rect.pivot = new Vector2(0f, 0.5f);
+        rect.anchoredPosition = new Vector2(34f, 0f);
+        rect.sizeDelta = new Vector2(0f, 32f);
     }
 
     private void RebuildTemplate() {
@@ -90,6 +118,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
             string tail = currentTemplate.Substring(cursor);
             CreateStaticLabel(tail);
         }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
     }
 
     private void CreateStaticLabel(string text) {
@@ -101,6 +131,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         tmp.text = text;
         tmp.fontSize = 26;
         tmp.color = Color.white;
+        tmp.enableWordWrapping = false;
+        tmp.overflowMode = TextOverflowModes.Overflow;
         tmp.alignment = TextAlignmentOptions.MidlineLeft;
 
         LayoutElement le = go.AddComponent<LayoutElement>();
@@ -114,10 +146,16 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         rect.SetParent(containerRect, false);
 
         Image img = root.GetComponent<Image>();
-        img.color = new Color(0f, 0f, 0f, 0.15f);
+        img.color = new Color(1f, 1f, 1f, 0.03f);
+
+        Outline border = root.AddComponent<Outline>();
+        border.effectColor = new Color(1f, 1f, 1f, 0.35f);
+        border.effectDistance = new Vector2(1f, -1f);
+        border.useGraphicAlpha = true;
 
         LayoutElement le = root.GetComponent<LayoutElement>();
-        le.preferredWidth = 70f;
+        le.minWidth = 48f;
+        le.preferredWidth = 64f;
         le.preferredHeight = 30f;
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
@@ -145,7 +183,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         placeholderRect.offsetMax = new Vector2(-6f, -2f);
 
         TextMeshProUGUI placeholderComp = placeholderGO.GetComponent<TextMeshProUGUI>();
-        placeholderComp.text = "...";
+        placeholderComp.text = string.Empty;
         placeholderComp.fontSize = 24;
         placeholderComp.color = new Color(1f, 1f, 1f, 0.4f);
         placeholderComp.alignment = TextAlignmentOptions.MidlineLeft;
@@ -153,6 +191,19 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         input.textComponent = textComp;
         input.placeholder = placeholderComp;
         input.lineType = TMP_InputField.LineType.SingleLine;
+
+        UpdateInputSlotWidth(input, le, 48f, 180f);
+        input.onValueChanged.AddListener(_ => UpdateInputSlotWidth(input, le, 48f, 180f));
+    }
+
+    private void UpdateInputSlotWidth(TMP_InputField input, LayoutElement le, float minWidth, float maxWidth) {
+        if (input == null || le == null || input.textComponent == null) return;
+
+        string value = string.IsNullOrEmpty(input.text) ? "..." : input.text;
+        float textWidth = input.textComponent.GetPreferredValues(value).x;
+        float target = Mathf.Clamp(textWidth + 14f, minWidth, maxWidth);
+
+        le.preferredWidth = target;
     }
 
     private void CreateOperatorSlot() {

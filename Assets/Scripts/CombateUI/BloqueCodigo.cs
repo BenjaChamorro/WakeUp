@@ -16,6 +16,9 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public RectTransform consolaDropZone; // Zona valida para soltar
     public Transform lineasConsolaTarget; // Contenedor de lineas en consola
 
+    [Header("Ajuste visual paleta")]
+    [SerializeField] private float paletteTextHorizontalNudge = -20f;
+
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Canvas canvas;
@@ -29,6 +32,14 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private Vector2 templateOffsetMin;
     private Vector2 templateOffsetMax;
     private bool hasTemplateRect;
+    private LayoutElement lineNumberLayout;
+    private bool hasLineNumberLayoutTemplate;
+    private float lineNumberPreferredWidth;
+    private float lineNumberMinWidth;
+    private float lineNumberFlexibleWidth;
+    private RectTransform codeTextRect;
+    private bool hasCodeTextAnchoredTemplate;
+    private Vector2 codeTextAnchoredTemplate;
 
     public static List<BloqueCodigo> consoleLines = new List<BloqueCodigo>();
     [HideInInspector] public int lineNumber = -1;
@@ -38,6 +49,8 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         canvasGroup = GetComponent<CanvasGroup>();
         UpdateBlockText();
         CaptureTemplateRect();
+        CacheLineNumberLayoutTemplate();
+        CacheCodeTextTemplate();
 
         canvas = GetComponentInParent<Canvas>();
         if (canvas == null) {
@@ -49,6 +62,9 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         codeText = newText;
         commandType = newType;
         UpdateBlockText();
+
+        // En paleta no se muestra el numero de linea para evitar espacio vacio a la izquierda.
+        SetLineNumberVisible(false);
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
@@ -169,6 +185,9 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         rectTransform.SetAsLastSibling();
         rectTransform.localScale = Vector3.one;
 
+        // En consola si se muestra el numero de linea.
+        SetLineNumberVisible(true);
+
         CodeLineTemplateRenderer templateRenderer = GetComponent<CodeLineTemplateRenderer>();
         if (templateRenderer == null) {
             templateRenderer = gameObject.AddComponent<CodeLineTemplateRenderer>();
@@ -210,6 +229,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
             var lineNumTxt = nuevo.transform.Find("TextoNumeroLinea")?.GetComponent<TextMeshProUGUI>();
             if (lineNumTxt) lineNumTxt.text = string.Empty;
+            nuevo.SetLineNumberVisible(false);
 
             nuevo.contenedorBloques = contenedorBloques;
             nuevo.prefabOriginal = prefabOriginal;
@@ -320,6 +340,79 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private void UpdateBlockText() {
         TextMeshProUGUI txt = transform.Find("TextoBloqueCodigo")?.GetComponent<TextMeshProUGUI>();
         if (txt) txt.text = codeText;
+    }
+
+    private void CacheLineNumberLayoutTemplate() {
+        Transform lineNum = transform.Find("TextoNumeroLinea");
+        if (lineNum == null) return;
+
+        lineNumberLayout = lineNum.GetComponent<LayoutElement>();
+        if (lineNumberLayout == null) {
+            lineNumberLayout = lineNum.gameObject.AddComponent<LayoutElement>();
+        }
+
+        lineNumberPreferredWidth = lineNumberLayout.preferredWidth;
+        lineNumberMinWidth = lineNumberLayout.minWidth;
+        lineNumberFlexibleWidth = lineNumberLayout.flexibleWidth;
+        hasLineNumberLayoutTemplate = true;
+    }
+
+    private void CacheCodeTextTemplate() {
+        if (codeTextRect == null) {
+            codeTextRect = transform.Find("TextoBloqueCodigo") as RectTransform;
+        }
+
+        if (codeTextRect == null) return;
+
+        codeTextAnchoredTemplate = codeTextRect.anchoredPosition;
+        hasCodeTextAnchoredTemplate = true;
+    }
+
+    private void SetLineNumberVisible(bool visible) {
+        Transform lineNum = transform.Find("TextoNumeroLinea");
+        if (lineNum == null) return;
+
+        if (!hasLineNumberLayoutTemplate || lineNumberLayout == null) {
+            CacheLineNumberLayoutTemplate();
+        }
+
+        if (lineNum.gameObject.activeSelf != visible) {
+            lineNum.gameObject.SetActive(visible);
+        }
+
+        if (lineNumberLayout != null) {
+            if (visible) {
+                lineNumberLayout.preferredWidth = lineNumberPreferredWidth;
+                lineNumberLayout.minWidth = lineNumberMinWidth;
+                lineNumberLayout.flexibleWidth = lineNumberFlexibleWidth;
+            } else {
+                lineNumberLayout.preferredWidth = 0f;
+                lineNumberLayout.minWidth = 0f;
+                lineNumberLayout.flexibleWidth = 0f;
+            }
+        }
+
+        // En paleta desplazamos el texto del bloque hacia la izquierda.
+        if (!hasCodeTextAnchoredTemplate || codeTextRect == null) {
+            CacheCodeTextTemplate();
+        }
+
+        if (codeTextRect != null && hasCodeTextAnchoredTemplate) {
+            if (visible) {
+                codeTextRect.anchoredPosition = codeTextAnchoredTemplate;
+            } else {
+                Vector2 nudgePos = codeTextAnchoredTemplate;
+                nudgePos.x += paletteTextHorizontalNudge;
+                codeTextRect.anchoredPosition = nudgePos;
+            }
+        }
+
+        if (!visible) {
+            TextMeshProUGUI txt = lineNum.GetComponent<TextMeshProUGUI>();
+            if (txt != null) {
+                txt.text = string.Empty;
+            }
+        }
     }
 
 

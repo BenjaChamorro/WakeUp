@@ -69,6 +69,7 @@ public class CodePaletteBuilder : MonoBehaviour {
             var lineNumTxt = block.transform.Find("TextoNumeroLinea")?.GetComponent<TextMeshProUGUI>();
             if (lineNumTxt != null) {
                 lineNumTxt.text = string.Empty;
+                lineNumTxt.gameObject.SetActive(false);
             }
         }
 
