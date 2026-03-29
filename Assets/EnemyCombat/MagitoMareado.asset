@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
   m_Name: MagitoMareado
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
-  enemyId: enemy_default
-  enemyDisplayName: Enemigo
-  enemySprite: {fileID: 0}
-  introDialogues: []
-  defeatDialogues: []
+  enemyId: MagitoMareado
+  enemyDisplayName: Magito Mareado
+  enemySprite: {fileID: 5401187673579205893, guid: 2e2a159dac3b45c4f86917648498f596, type: 3}
+  introDialogues:
+  - "Me siento un poco mareado \xBA~\xBA"
+  defeatDialogues:
+  - "No aguanto otro giro, me siento mal x\xBAx"
   requiredBlockIds: []
   unlockBlocksOnDefeat: []

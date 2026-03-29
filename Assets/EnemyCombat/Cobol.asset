@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
   m_Name: Cobol
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
-  enemyId: enemy_default
-  enemyDisplayName: Enemigo
-  enemySprite: {fileID: 0}
-  introDialogues: []
-  defeatDialogues: []
+  enemyId: Cobol
+  enemyDisplayName: Cobol
+  enemySprite: {fileID: 4146359361008769857, guid: 9ea69988cdb2ce642be5b432e46643a4, type: 3}
+  introDialogues:
+  - "\xBFQue pasho?\xBFDudais?"
+  defeatDialogues:
+  - Callate!!!
   requiredBlockIds: []
   unlockBlocksOnDefeat: []

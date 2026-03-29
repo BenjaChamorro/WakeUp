@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: while
   m_EditorClassIdentifier: Assembly-CSharp::CodeBlockData
   blockId: while
-  displayText: 'while():'
+  displayText: 'while( _ operador _ ):'
   commandType: function
   unlockedAtStart: 1

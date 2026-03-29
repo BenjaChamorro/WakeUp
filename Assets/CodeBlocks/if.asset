@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: if
   m_EditorClassIdentifier: Assembly-CSharp::CodeBlockData
   blockId: if
-  displayText: 'if(): else:'
+  displayText: 'if( _ operador _ ):'
   commandType: function
   unlockedAtStart: 1

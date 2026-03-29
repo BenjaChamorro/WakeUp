@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: multiplied
   m_EditorClassIdentifier: Assembly-CSharp::CodeBlockData
   blockId: '*'
-  displayText: '*'
-  commandType: operator
+  displayText: _ * _
+  commandType: mathOperator
   unlockedAtStart: 1

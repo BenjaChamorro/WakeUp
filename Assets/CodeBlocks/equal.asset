@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98381524dcb27d74daa2ddf4db1cdb76, type: 3}
   m_Name: equal
   m_EditorClassIdentifier: Assembly-CSharp::CodeBlockData
-  blockId: print
-  displayText: print()
-  commandType: function
-  unlockedAtStart: 0
+  blockId: equal
+  displayText: _ = _
+  commandType: assignment
+  unlockedAtStart: 1

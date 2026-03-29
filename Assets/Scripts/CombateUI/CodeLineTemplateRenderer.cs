@@ -9,6 +9,10 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
     private RectTransform containerRect;
     private string currentTemplate;
+    private TMP_FontAsset referenceFont;
+    private Material referenceFontMaterial;
+    private float referenceFontSize = 20f;
+    private Color referenceColor = Color.white;
 
     public void Initialize(string templateText, string commandType) {
         currentTemplate = templateText;
@@ -16,6 +20,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         string normalized = templateText.ToLowerInvariant();
         bool needsTemplate = templateText.Contains("_") || normalized.Contains("operador") || normalized.Contains("operator");
         TextMeshProUGUI mainText = transform.Find("TextoBloqueCodigo")?.GetComponent<TextMeshProUGUI>();
+
+        CacheReferenceStyle(mainText);
 
         if (!needsTemplate) {
             if (mainText != null) {
@@ -32,6 +38,40 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         EnsureContainer();
         RebuildTemplate();
+    }
+
+    private void CacheReferenceStyle(TextMeshProUGUI source) {
+        if (source == null) return;
+
+        if (source.font != null) {
+            referenceFont = source.font;
+        }
+
+        if (source.fontSharedMaterial != null) {
+            referenceFontMaterial = source.fontSharedMaterial;
+        }
+
+        referenceFontSize = source.fontSize > 0f ? source.fontSize : 20f;
+        referenceColor = source.color;
+    }
+
+    private void ApplyReferenceStyle(TextMeshProUGUI target, float? fontSizeOverride = null, TextAlignmentOptions? alignOverride = null) {
+        if (target == null) return;
+
+        if (referenceFont != null) {
+            target.font = referenceFont;
+        }
+
+        if (referenceFontMaterial != null) {
+            target.fontSharedMaterial = referenceFontMaterial;
+        }
+
+        target.fontSize = fontSizeOverride ?? referenceFontSize;
+        target.color = referenceColor;
+
+        if (alignOverride.HasValue) {
+            target.alignment = alignOverride.Value;
+        }
     }
 
     private void EnsureContainer() {
@@ -129,11 +169,9 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
         tmp.text = text;
-        tmp.fontSize = 26;
-        tmp.color = Color.white;
+        ApplyReferenceStyle(tmp, referenceFontSize, TextAlignmentOptions.MidlineLeft);
         tmp.enableWordWrapping = false;
         tmp.overflowMode = TextOverflowModes.Overflow;
-        tmp.alignment = TextAlignmentOptions.MidlineLeft;
 
         LayoutElement le = go.AddComponent<LayoutElement>();
         le.preferredWidth = Mathf.Max(8f, tmp.preferredWidth + 2f);
@@ -170,9 +208,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         TextMeshProUGUI textComp = textGO.GetComponent<TextMeshProUGUI>();
         textComp.text = string.Empty;
-        textComp.fontSize = 24;
-        textComp.color = Color.white;
-        textComp.alignment = TextAlignmentOptions.MidlineLeft;
+        ApplyReferenceStyle(textComp, referenceFontSize, TextAlignmentOptions.MidlineLeft);
 
         GameObject placeholderGO = new GameObject("Placeholder", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform placeholderRect = placeholderGO.GetComponent<RectTransform>();
@@ -184,9 +220,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         TextMeshProUGUI placeholderComp = placeholderGO.GetComponent<TextMeshProUGUI>();
         placeholderComp.text = string.Empty;
-        placeholderComp.fontSize = 24;
-        placeholderComp.color = new Color(1f, 1f, 1f, 0.4f);
-        placeholderComp.alignment = TextAlignmentOptions.MidlineLeft;
+        ApplyReferenceStyle(placeholderComp, referenceFontSize, TextAlignmentOptions.MidlineLeft);
+        placeholderComp.color = new Color(referenceColor.r, referenceColor.g, referenceColor.b, 0.4f);
 
         input.textComponent = textComp;
         input.placeholder = placeholderComp;
@@ -228,9 +263,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         TextMeshProUGUI text = textGO.GetComponent<TextMeshProUGUI>();
         text.text = "op";
-        text.fontSize = 24;
-        text.color = Color.white;
-        text.alignment = TextAlignmentOptions.Center;
+        ApplyReferenceStyle(text, referenceFontSize, TextAlignmentOptions.Center);
 
     }
 

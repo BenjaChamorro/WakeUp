@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 
 public class OperatorDropSlot : MonoBehaviour, IDropHandler {
-    private static readonly Regex PlaceholderRegex = new Regex("(_)");
+    private static readonly Regex MultiSpaceRegex = new Regex("\\s+");
 
     [SerializeField] private TextMeshProUGUI slotText;
     [SerializeField] private RectTransform dynamicContentRoot;
@@ -25,25 +25,47 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
     public bool TrySetOperator(string operatorText) {
         if (string.IsNullOrWhiteSpace(operatorText)) return false;
 
-        CurrentOperator = operatorText;
-        EnsureContentRoot();
-        BuildOperatorContent(operatorText);
+        string cleaned = NormalizeOperatorText(operatorText);
+        if (string.IsNullOrWhiteSpace(cleaned) || cleaned == "op") return false;
 
-        if (slotText != null) {
-            slotText.gameObject.SetActive(false);
-        }
+        CurrentOperator = cleaned;
+        EnsureContentRoot();
+        BuildOperatorContent(cleaned);
+        HidePlaceholderLabel();
 
         LayoutElement le = GetComponent<LayoutElement>();
         if (le != null) {
-            // Dar espacio adicional cuando se inserta operador con placeholders.
-            if (operatorText.Contains("_")) {
-                le.preferredWidth = 188f;
-            } else {
-                le.preferredWidth = Mathf.Max(64f, 26f + (operatorText.Length * 14f));
-            }
+            le.preferredWidth = Mathf.Max(64f, 26f + (cleaned.Length * 14f));
         }
 
         return true;
+    }
+
+    private string NormalizeOperatorText(string source) {
+        if (string.IsNullOrWhiteSpace(source)) return "op";
+
+        string cleaned = source.Replace("_", string.Empty);
+        cleaned = MultiSpaceRegex.Replace(cleaned, " ").Trim();
+
+        return string.IsNullOrWhiteSpace(cleaned) ? "op" : cleaned;
+    }
+
+    private void HidePlaceholderLabel() {
+        if (slotText == null) {
+            Transform directText = transform.Find("Text");
+            if (directText != null) {
+                slotText = directText.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (slotText == null) {
+                slotText = GetComponentInChildren<TextMeshProUGUI>(true);
+            }
+        }
+
+        if (slotText != null) {
+            slotText.text = string.Empty;
+            slotText.gameObject.SetActive(false);
+        }
     }
 
     private void EnsureContentRoot() {
@@ -99,28 +121,7 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
             Destroy(dynamicContentRoot.GetChild(i).gameObject);
         }
 
-        int cursor = 0;
-        MatchCollection matches = PlaceholderRegex.Matches(operatorTemplate);
-        for (int i = 0; i < matches.Count; i++) {
-            Match match = matches[i];
-
-            if (match.Index > cursor) {
-                string staticPart = operatorTemplate.Substring(cursor, match.Index - cursor);
-                CreateStaticPart(staticPart);
-            }
-
-            CreateInlineInput();
-            cursor = match.Index + match.Length;
-        }
-
-        if (cursor < operatorTemplate.Length) {
-            string tail = operatorTemplate.Substring(cursor);
-            CreateStaticPart(tail);
-        }
-
-        if (matches.Count == 0) {
-            CreateStaticPart(operatorTemplate);
-        }
+        CreateStaticPart(operatorTemplate);
     }
 
     private void CreateStaticPart(string text) {
@@ -139,78 +140,19 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
         le.preferredHeight = 26f;
     }
 
-    private void CreateInlineInput() {
-        GameObject root = new GameObject("Input", typeof(RectTransform), typeof(Image), typeof(TMP_InputField), typeof(LayoutElement));
-        RectTransform rect = root.GetComponent<RectTransform>();
-        rect.SetParent(dynamicContentRoot, false);
-
-        Image bg = root.GetComponent<Image>();
-        bg.color = new Color(1f, 1f, 1f, 0.03f);
-
-        Outline border = root.AddComponent<Outline>();
-        border.effectColor = new Color(1f, 1f, 1f, 0.35f);
-        border.effectDistance = new Vector2(1f, -1f);
-        border.useGraphicAlpha = true;
-
-        LayoutElement le = root.GetComponent<LayoutElement>();
-        le.minWidth = 34f;
-        le.preferredWidth = 42f;
-        le.preferredHeight = 24f;
-
-        TMP_InputField input = root.GetComponent<TMP_InputField>();
-        input.lineType = TMP_InputField.LineType.SingleLine;
-
-        GameObject textGO = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
-        RectTransform textRect = textGO.GetComponent<RectTransform>();
-        textRect.SetParent(rect, false);
-        textRect.anchorMin = new Vector2(0f, 0f);
-        textRect.anchorMax = new Vector2(1f, 1f);
-        textRect.offsetMin = new Vector2(4f, 1f);
-        textRect.offsetMax = new Vector2(-4f, -1f);
-
-        TextMeshProUGUI textComp = textGO.GetComponent<TextMeshProUGUI>();
-        textComp.text = string.Empty;
-        textComp.fontSize = 19f;
-        textComp.color = Color.white;
-        textComp.alignment = TextAlignmentOptions.Center;
-
-        GameObject phGO = new GameObject("Placeholder", typeof(RectTransform), typeof(TextMeshProUGUI));
-        RectTransform phRect = phGO.GetComponent<RectTransform>();
-        phRect.SetParent(rect, false);
-        phRect.anchorMin = new Vector2(0f, 0f);
-        phRect.anchorMax = new Vector2(1f, 1f);
-        phRect.offsetMin = new Vector2(4f, 1f);
-        phRect.offsetMax = new Vector2(-4f, -1f);
-
-        TextMeshProUGUI phText = phGO.GetComponent<TextMeshProUGUI>();
-        phText.text = string.Empty;
-        phText.fontSize = 19f;
-        phText.color = new Color(1f, 1f, 1f, 0.4f);
-        phText.alignment = TextAlignmentOptions.Center;
-
-        input.textComponent = textComp;
-        input.placeholder = phText;
-
-        UpdateInputSlotWidth(input, le, 34f, 120f);
-        input.onValueChanged.AddListener(_ => UpdateInputSlotWidth(input, le, 34f, 120f));
-    }
-
-    private void UpdateInputSlotWidth(TMP_InputField input, LayoutElement le, float minWidth, float maxWidth) {
-        if (input == null || le == null || input.textComponent == null) return;
-
-        string value = string.IsNullOrEmpty(input.text) ? "..." : input.text;
-        float textWidth = input.textComponent.GetPreferredValues(value).x;
-        float target = Mathf.Clamp(textWidth + 12f, minWidth, maxWidth);
-
-        le.preferredWidth = target;
-    }
-
     public void OnDrop(PointerEventData eventData) {
         if (eventData.pointerDrag == null) return;
 
         BloqueCodigo dragged = eventData.pointerDrag.GetComponent<BloqueCodigo>();
-        if (dragged == null || dragged.commandType != "operator") return;
+        if (dragged == null || !IsOperatorType(dragged.commandType)) return;
 
         TrySetOperator(dragged.codeText);
+    }
+
+    private bool IsOperatorType(string type) {
+        if (string.IsNullOrWhiteSpace(type)) return false;
+
+        string lower = type.Trim().ToLowerInvariant();
+        return lower == "operator";
     }
 }
