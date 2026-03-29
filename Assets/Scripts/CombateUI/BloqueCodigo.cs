@@ -73,6 +73,12 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
 
+        OperatorDropSlot operatorSlot = FindParentWithComponent<OperatorDropSlot>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
+        if (operatorSlot != null && commandType == "operator") {
+            HandleOperatorSlotDrop(operatorSlot);
+            return;
+        }
+
         bool droppedInConsole = IsPointerInsideConsole(eventData);
 
         if (droppedInConsole) {
@@ -117,6 +123,39 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         rectTransform.localScale = Vector3.one;
     }
 
+    private void HandleOperatorSlotDrop(OperatorDropSlot slot) {
+        if (slot == null) {
+            ReturnToOriginalPosition();
+            return;
+        }
+
+        bool accepted = slot.TrySetOperator(codeText);
+        if (!accepted) {
+            ReturnToOriginalPosition();
+            return;
+        }
+
+        if (IsFromPalette(originalParent)) {
+            ReturnToOriginalPosition();
+            return;
+        }
+
+        consoleLines.Remove(this);
+        UpdateLineNumbers();
+        Destroy(gameObject);
+    }
+
+    private T FindParentWithComponent<T>(Transform start) where T : Component {
+        Transform current = start;
+        while (current != null) {
+            T component = current.GetComponent<T>();
+            if (component != null) return component;
+            current = current.parent;
+        }
+
+        return null;
+    }
+
     void DropToConsole() {
         bool draggedFromPalette = IsFromPalette(originalParent);
 
@@ -129,6 +168,12 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         transform.SetParent(lineasConsola, false);
         rectTransform.SetAsLastSibling();
         rectTransform.localScale = Vector3.one;
+
+        CodeLineTemplateRenderer templateRenderer = GetComponent<CodeLineTemplateRenderer>();
+        if (templateRenderer == null) {
+            templateRenderer = gameObject.AddComponent<CodeLineTemplateRenderer>();
+        }
+        templateRenderer.Initialize(codeText, commandType);
 
         if (!consoleLines.Contains(this)) {
             consoleLines.Add(this);
@@ -145,12 +190,22 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             if (nrt != null) {
                 ApplyTemplateToRect(nrt);
 
-                if (puntoSpawnBloques != null) {
-                    nrt.anchoredPosition = GetSpawnAnchoredPosition();
-                } else {
-                    nrt.anchoredPosition = originalAnchoredPosition;
-                }
+                // En paleta con VerticalLayoutGroup, el layout decide la posicion.
+                nrt.anchoredPosition = Vector2.zero;
                 nrt.localScale = Vector3.one;
+            }
+
+            LayoutGroup paletteLayout = contenedorBloques.GetComponent<LayoutGroup>();
+            if (paletteLayout != null) {
+                LayoutElement le = nuevo.GetComponent<LayoutElement>();
+                if (le != null) {
+                    le.ignoreLayout = false;
+                }
+
+                RectTransform paletteRect = contenedorBloques as RectTransform;
+                if (paletteRect != null) {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(paletteRect);
+                }
             }
 
             var lineNumTxt = nuevo.transform.Find("TextoNumeroLinea")?.GetComponent<TextMeshProUGUI>();

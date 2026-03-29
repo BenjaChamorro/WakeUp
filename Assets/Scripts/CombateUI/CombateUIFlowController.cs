@@ -61,6 +61,11 @@ public class CombateUIFlowController : MonoBehaviour {
     public void OpenScriptConsole() {
         if (combateUI != null) combateUI.SetActive(false);
         if (combateUIConsola != null) combateUIConsola.SetActive(true);
+
+        CodePaletteBuilder paletteBuilder = FindObjectOfType<CodePaletteBuilder>(true);
+        if (paletteBuilder != null) {
+            paletteBuilder.RefreshPalette();
+        }
     }
 
     public void BackToCombatUI() {
