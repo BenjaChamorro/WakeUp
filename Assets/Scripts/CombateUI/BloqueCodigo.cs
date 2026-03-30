@@ -90,7 +90,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         canvasGroup.alpha = 1f;
 
         OperatorDropSlot operatorSlot = FindParentWithComponent<OperatorDropSlot>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
-        if (operatorSlot != null && IsOperatorLikeCommandType(commandType)) {
+        if (operatorSlot != null && IsOperatorType(commandType)) {
             HandleOperatorSlotDrop(operatorSlot);
             return;
         }
@@ -161,11 +161,11 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         Destroy(gameObject);
     }
 
-    private bool IsOperatorLikeCommandType(string type) {
+    private bool IsOperatorType(string type) {
         if (string.IsNullOrWhiteSpace(type)) return false;
 
         string lower = type.Trim().ToLowerInvariant();
-        return lower == "operator" || lower == "mathoperator" || lower.EndsWith("operator");
+        return lower == "operator";
     }
 
     private T FindParentWithComponent<T>(Transform start) where T : Component {
