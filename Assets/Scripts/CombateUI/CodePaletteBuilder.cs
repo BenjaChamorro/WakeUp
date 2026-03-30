@@ -49,7 +49,7 @@ public class CodePaletteBuilder : MonoBehaviour {
 
             BloqueCodigo block = Instantiate(bloquePrefab, contenedorBloques, false);
             block.gameObject.SetActive(true);
-            block.Setup(data.displayText, data.commandType);
+            block.Setup(data.displayText, data.commandType, data.blockId);
             block.contenedorBloques = contenedorBloques;
             block.prefabOriginal = bloquePrefab;
             block.consolaDropZone = consolaDropZone;

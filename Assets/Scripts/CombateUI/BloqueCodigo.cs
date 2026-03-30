@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
     [Header("Datos")]
+    public string blockId = "";
     public string codeText = "Hola Mundo";
     public string commandType = "operador"; // "if", "+", "print"
 
@@ -58,7 +59,8 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         }
     }
 
-    public void Setup(string newText, string newType = "") {
+    public void Setup(string newText, string newType = "", string newBlockId = "") {
+        blockId = newBlockId;
         codeText = newText;
         commandType = newType;
         UpdateBlockText();
@@ -92,6 +94,12 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         OperatorDropSlot operatorSlot = FindParentWithComponent<OperatorDropSlot>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
         if (operatorSlot != null && IsOperatorType(commandType)) {
             HandleOperatorSlotDrop(operatorSlot);
+            return;
+        }
+
+        AssignmentValueSlot assignmentSlot = FindParentWithComponent<AssignmentValueSlot>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
+        if (assignmentSlot != null && (IsMathOperatorType(commandType) || IsDefinitionType(commandType))) {
+            HandleAssignmentValueSlotDrop(assignmentSlot);
             return;
         }
 
@@ -168,6 +176,48 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         return lower == "operator";
     }
 
+    private bool IsMathOperatorType(string type) {
+        if (string.IsNullOrWhiteSpace(type)) return false;
+
+        string lower = type.Trim().ToLowerInvariant();
+        return lower == "mathoperator";
+    }
+
+    private bool IsDefinitionType(string type) {
+        if (string.IsNullOrWhiteSpace(type)) return false;
+
+        string lower = type.Trim().ToLowerInvariant();
+        return lower == "definition";
+    }
+
+    private void HandleAssignmentValueSlotDrop(AssignmentValueSlot slot) {
+        if (slot == null) {
+            ReturnToOriginalPosition();
+            return;
+        }
+
+        bool accepted = false;
+        if (IsMathOperatorType(commandType)) {
+            accepted = slot.TrySetOperator(codeText);
+        } else if (IsDefinitionType(commandType)) {
+            accepted = slot.TrySetDefinition(blockId, codeText);
+        }
+
+        if (!accepted) {
+            ReturnToOriginalPosition();
+            return;
+        }
+
+        if (IsFromPalette(originalParent)) {
+            ReturnToOriginalPosition();
+            return;
+        }
+
+        consoleLines.Remove(this);
+        UpdateLineNumbers();
+        Destroy(gameObject);
+    }
+
     private T FindParentWithComponent<T>(Transform start) where T : Component {
         Transform current = start;
         while (current != null) {
@@ -209,6 +259,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (draggedFromPalette && contenedorBloques != null && prefabOriginal != null) {
             BloqueCodigo nuevo = Instantiate(prefabOriginal, contenedorBloques, false);
             nuevo.gameObject.SetActive(true);
+            nuevo.blockId = this.blockId;
             nuevo.codeText = this.codeText;
             nuevo.commandType = this.commandType;
             nuevo.UpdateBlockText();

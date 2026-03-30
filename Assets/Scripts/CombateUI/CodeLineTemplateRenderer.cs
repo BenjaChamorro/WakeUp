@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class CodeLineTemplateRenderer : MonoBehaviour {
     private const string ContainerName = "LineTemplateContainer";
     private static readonly Regex TokenRegex = new Regex("(operador|operator|_)", RegexOptions.IgnoreCase);
+    private static readonly Regex IdentifierInvalidCharsRegex = new Regex("[^a-zA-Z_]");
 
     private RectTransform containerRect;
     private string currentTemplate;
+    private string currentCommandType;
     private TMP_FontAsset referenceFont;
     private Material referenceFontMaterial;
     private float referenceFontSize = 20f;
@@ -16,6 +18,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
     public void Initialize(string templateText, string commandType) {
         currentTemplate = templateText;
+        currentCommandType = string.IsNullOrWhiteSpace(commandType) ? string.Empty : commandType.Trim().ToLowerInvariant();
 
         string normalized = templateText.ToLowerInvariant();
         bool needsTemplate = templateText.Contains("_") || normalized.Contains("operador") || normalized.Contains("operator");
@@ -137,6 +140,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         }
 
         int cursor = 0;
+        int placeholderIndex = 0;
         MatchCollection matches = TokenRegex.Matches(currentTemplate);
         for (int i = 0; i < matches.Count; i++) {
             Match match = matches[i];
@@ -146,7 +150,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
             }
 
             if (match.Value == "_") {
-                CreateInlineInput();
+                CreatePlaceholderForCurrentCommand(placeholderIndex);
+                placeholderIndex++;
             } else {
                 CreateOperatorSlot();
             }
@@ -160,6 +165,34 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+    }
+
+    private bool IsAssignmentMode() {
+        return currentCommandType == "assignment";
+    }
+
+    private void CreatePlaceholderForCurrentCommand(int placeholderIndex) {
+        if (IsAssignmentMode()) {
+            if (placeholderIndex == 0) {
+                CreateInlineInput(56f, 190f, true, false);
+                return;
+            }
+
+            if (placeholderIndex == 1) {
+                GameObject valueRoot;
+                TMP_InputField valueInput = CreateInlineInput(56f, 190f, false, true, out valueRoot);
+                if (valueRoot != null) {
+                    AssignmentValueSlot slot = valueRoot.GetComponent<AssignmentValueSlot>();
+                    if (slot == null) {
+                        slot = valueRoot.AddComponent<AssignmentValueSlot>();
+                    }
+                    slot.Initialize(valueInput);
+                }
+                return;
+            }
+        }
+
+        CreateInlineInput();
     }
 
     private void CreateStaticLabel(string text) {
@@ -179,7 +212,16 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     }
 
     private void CreateInlineInput() {
-        GameObject root = new GameObject("InputSlot", typeof(RectTransform), typeof(Image), typeof(TMP_InputField), typeof(LayoutElement));
+        CreateInlineInput(48f, 180f, false, false);
+    }
+
+    private TMP_InputField CreateInlineInput(float minWidth, float maxWidth, bool identifierOnly, bool numericOnly) {
+        GameObject root;
+        return CreateInlineInput(minWidth, maxWidth, identifierOnly, numericOnly, out root);
+    }
+
+    private TMP_InputField CreateInlineInput(float minWidth, float maxWidth, bool identifierOnly, bool numericOnly, out GameObject root) {
+        root = new GameObject("InputSlot", typeof(RectTransform), typeof(Image), typeof(TMP_InputField), typeof(LayoutElement));
         RectTransform rect = root.GetComponent<RectTransform>();
         rect.SetParent(containerRect, false);
 
@@ -192,8 +234,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         border.useGraphicAlpha = true;
 
         LayoutElement le = root.GetComponent<LayoutElement>();
-        le.minWidth = 48f;
-        le.preferredWidth = 64f;
+        le.minWidth = minWidth;
+        le.preferredWidth = Mathf.Max(minWidth, 64f);
         le.preferredHeight = 30f;
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
@@ -227,8 +269,24 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         input.placeholder = placeholderComp;
         input.lineType = TMP_InputField.LineType.SingleLine;
 
-        UpdateInputSlotWidth(input, le, 48f, 180f);
-        input.onValueChanged.AddListener(_ => UpdateInputSlotWidth(input, le, 48f, 180f));
+        if (numericOnly) {
+            input.contentType = TMP_InputField.ContentType.DecimalNumber;
+        }
+
+        if (identifierOnly) {
+            input.contentType = TMP_InputField.ContentType.Standard;
+            input.onValueChanged.AddListener(v => {
+                string sanitized = IdentifierInvalidCharsRegex.Replace(v, string.Empty);
+                if (!string.Equals(sanitized, v)) {
+                    input.SetTextWithoutNotify(sanitized);
+                }
+            });
+        }
+
+        UpdateInputSlotWidth(input, le, minWidth, maxWidth);
+        input.onValueChanged.AddListener(_ => UpdateInputSlotWidth(input, le, minWidth, maxWidth));
+
+        return input;
     }
 
     private void UpdateInputSlotWidth(TMP_InputField input, LayoutElement le, float minWidth, float maxWidth) {
