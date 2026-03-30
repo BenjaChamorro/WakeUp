@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
     private const float ConsoleLineSpacing = 3f;
     private const float ConsoleLineNumberWidth = 28f;
+    private const int ConsoleLeftPadding = 6;
 
     [Header("Datos")]
     public string blockId = "";
@@ -582,7 +583,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         vlg.childForceExpandWidth = false;
         vlg.childForceExpandHeight = false;
         vlg.spacing = ConsoleLineSpacing;
-        vlg.padding = new RectOffset(0, 0, 0, 0);
+        vlg.padding = new RectOffset(ConsoleLeftPadding, 0, 0, 0);
 
         ContentSizeFitter fitter = lineasConsola.GetComponent<ContentSizeFitter>();
         if (fitter == null) {
