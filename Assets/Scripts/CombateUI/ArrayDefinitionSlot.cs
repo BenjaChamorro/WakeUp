@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class ArrayDefinitionSlot : MonoBehaviour {
     [SerializeField] private RectTransform contentRoot;
     [SerializeField] private Button addButton;
+    [SerializeField] private RectTransform openingBracket;
+    [SerializeField] private RectTransform closingBracket;
 
     private readonly List<GameObject> itemSlots = new List<GameObject>();
     private const float ItemMinWidth = 50f;
@@ -15,13 +17,15 @@ public class ArrayDefinitionSlot : MonoBehaviour {
         EnsureMainLayout();
         EnsureContentRoot();
 
-        CreateStaticText("[", transform);
+        openingBracket = CreateStaticText("[", transform);
 
         AddItemSlot();
         AddItemSlot();
         AddAddButton();
 
-        CreateStaticText("]", transform);
+        closingBracket = CreateStaticText("]", transform);
+        
+        RebuildCommas();
         EnsureTrailingOrder();
     }
 
@@ -93,14 +97,9 @@ public class ArrayDefinitionSlot : MonoBehaviour {
     }
 
     private void AddItemSlot() {
-        if (itemSlots.Count > 0) {
-            CreateStaticText(",", contentRoot);
-        }
-
         GameObject root = new GameObject("ItemSlot", typeof(RectTransform), typeof(Image), typeof(TMP_InputField), typeof(LayoutElement));
         RectTransform rect = root.GetComponent<RectTransform>();
         rect.SetParent(contentRoot, false);
-        SetBeforeAddButton(rect);
 
         Image bg = root.GetComponent<Image>();
         bg.color = new Color(1f, 1f, 1f, 0.03f);
@@ -188,7 +187,51 @@ public class ArrayDefinitionSlot : MonoBehaviour {
 
     private void OnAddClicked() {
         AddItemSlot();
+        RebuildCommas();
+        
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot as RectTransform);
         EnsureTrailingOrder();
+    }
+
+    private void RebuildCommas() {
+        if (addButton == null) return;
+
+        // Paso 1: Elimina todas las comas PRIMERO
+        for (int i = contentRoot.childCount - 1; i >= 0; i--) {
+            Transform child = contentRoot.GetChild(i);
+            if (child.name == "Txt") {
+                TextMeshProUGUI tmp = child.GetComponent<TextMeshProUGUI>();
+                if (tmp != null && tmp.text == ",") {
+                    DestroyImmediate(child.gameObject);
+                }
+            }
+        }
+
+        // Paso 2: Recolecta todos los items en orden
+        List<Transform> items = new List<Transform>();
+        for (int i = 0; i < contentRoot.childCount; i++) {
+            Transform child = contentRoot.GetChild(i);
+            if (child.GetComponent<TMP_InputField>() != null) {
+                items.Add(child);
+            }
+        }
+
+        // Paso 3: Re-ordena items e inserta comas
+        int currentIndex = 0;
+        for (int i = 0; i < items.Count; i++) {
+            items[i].SetSiblingIndex(currentIndex);
+            currentIndex++;
+
+            // Inserta coma después de cada item EXCEPTO el último
+            if (i < items.Count - 1) {
+                RectTransform comma = CreateStaticText(",", contentRoot);
+                comma.SetSiblingIndex(currentIndex);
+                currentIndex++;
+            }
+        }
+
+        // Paso 4: El botón va al final
+        addButton.transform.SetAsLastSibling();
     }
 
     private void SetBeforeAddButton(Transform element) {
@@ -197,8 +240,17 @@ public class ArrayDefinitionSlot : MonoBehaviour {
     }
 
     private void EnsureTrailingOrder() {
+        if (openingBracket != null) {
+            openingBracket.SetSiblingIndex(0);
+        }
+
         if (contentRoot != null) {
-            contentRoot.SetAsLastSibling();
+            int contentIndex = openingBracket != null ? 1 : 0;
+            contentRoot.SetSiblingIndex(contentIndex);
+        }
+
+        if (closingBracket != null) {
+            closingBracket.SetAsLastSibling();
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
@@ -212,7 +264,7 @@ public class ArrayDefinitionSlot : MonoBehaviour {
         le.preferredWidth = Mathf.Clamp(w + 12f, ItemMinWidth, ItemMaxWidth);
     }
 
-    private void CreateStaticText(string text, Transform parent) {
+    private RectTransform CreateStaticText(string text, Transform parent) {
         GameObject go = new GameObject("Txt", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
         RectTransform rect = go.GetComponent<RectTransform>();
         rect.SetParent(parent, false);
@@ -226,5 +278,7 @@ public class ArrayDefinitionSlot : MonoBehaviour {
         LayoutElement le = go.GetComponent<LayoutElement>();
         le.preferredWidth = Mathf.Max(12f, tmp.preferredWidth + 1f);
         le.preferredHeight = 24f;
+
+        return rect;
     }
 }

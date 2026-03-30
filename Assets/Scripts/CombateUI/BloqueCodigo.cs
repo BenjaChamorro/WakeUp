@@ -249,7 +249,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (templateRenderer == null) {
             templateRenderer = gameObject.AddComponent<CodeLineTemplateRenderer>();
         }
-        templateRenderer.Initialize(codeText, commandType);
+        templateRenderer.Initialize(codeText, commandType, blockId);
 
         if (!consoleLines.Contains(this)) {
             consoleLines.Add(this);

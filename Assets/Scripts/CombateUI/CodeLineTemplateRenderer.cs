@@ -11,14 +11,16 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     private RectTransform containerRect;
     private string currentTemplate;
     private string currentCommandType;
+    private string currentBlockId;
     private TMP_FontAsset referenceFont;
     private Material referenceFontMaterial;
     private float referenceFontSize = 20f;
     private Color referenceColor = Color.white;
 
-    public void Initialize(string templateText, string commandType) {
+    public void Initialize(string templateText, string commandType, string blockId = "") {
         currentTemplate = templateText;
         currentCommandType = string.IsNullOrWhiteSpace(commandType) ? string.Empty : commandType.Trim().ToLowerInvariant();
+        currentBlockId = string.IsNullOrWhiteSpace(blockId) ? string.Empty : blockId.Trim().ToLowerInvariant();
 
         string normalized = templateText.ToLowerInvariant();
         bool needsTemplate = templateText.Contains("_") || normalized.Contains("operador") || normalized.Contains("operator");
@@ -40,7 +42,38 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         }
 
         EnsureContainer();
+        if (IsArrayDefinitionMode()) {
+            BuildArrayDefinitionTemplate();
+            return;
+        }
+
         RebuildTemplate();
+    }
+
+    private bool IsArrayDefinitionMode() {
+        return currentCommandType == "definition" && currentBlockId == "array";
+    }
+
+    private void BuildArrayDefinitionTemplate() {
+        if (containerRect == null) return;
+
+        for (int i = containerRect.childCount - 1; i >= 0; i--) {
+            Destroy(containerRect.GetChild(i).gameObject);
+        }
+
+        GameObject arrayRoot = new GameObject("ArrayDefinition", typeof(RectTransform), typeof(ArrayDefinitionSlot), typeof(LayoutElement));
+        RectTransform arrayRect = arrayRoot.GetComponent<RectTransform>();
+        arrayRect.SetParent(containerRect, false);
+
+        LayoutElement le = arrayRoot.GetComponent<LayoutElement>();
+        le.minWidth = 160f;
+        le.preferredWidth = 210f;
+        le.preferredHeight = 30f;
+
+        ArrayDefinitionSlot slot = arrayRoot.GetComponent<ArrayDefinitionSlot>();
+        slot.Initialize();
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
     }
 
     private void CacheReferenceStyle(TextMeshProUGUI source) {
