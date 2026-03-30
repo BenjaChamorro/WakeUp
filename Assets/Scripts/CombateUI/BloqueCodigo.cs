@@ -90,7 +90,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         canvasGroup.alpha = 1f;
 
         OperatorDropSlot operatorSlot = FindParentWithComponent<OperatorDropSlot>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
-        if (operatorSlot != null && commandType == "operator") {
+        if (operatorSlot != null && IsOperatorLikeCommandType(commandType)) {
             HandleOperatorSlotDrop(operatorSlot);
             return;
         }
@@ -161,6 +161,13 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         Destroy(gameObject);
     }
 
+    private bool IsOperatorLikeCommandType(string type) {
+        if (string.IsNullOrWhiteSpace(type)) return false;
+
+        string lower = type.Trim().ToLowerInvariant();
+        return lower == "operator" || lower == "mathoperator" || lower.EndsWith("operator");
+    }
+
     private T FindParentWithComponent<T>(Transform start) where T : Component {
         Transform current = start;
         while (current != null) {
@@ -201,9 +208,13 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         if (draggedFromPalette && contenedorBloques != null && prefabOriginal != null) {
             BloqueCodigo nuevo = Instantiate(prefabOriginal, contenedorBloques, false);
+            nuevo.gameObject.SetActive(true);
             nuevo.codeText = this.codeText;
             nuevo.commandType = this.commandType;
             nuevo.UpdateBlockText();
+
+            int targetIndex = Mathf.Clamp(originalSiblingIndex, 0, Mathf.Max(0, contenedorBloques.childCount - 1));
+            nuevo.transform.SetSiblingIndex(targetIndex);
 
             RectTransform nrt = nuevo.GetComponent<RectTransform>();
             if (nrt != null) {
