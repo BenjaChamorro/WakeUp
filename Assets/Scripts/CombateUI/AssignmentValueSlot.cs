@@ -309,6 +309,7 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
 
         input.textComponent = textComp;
         input.placeholder = phText;
+        input.textViewport = rect;
 
         input.onValueChanged.AddListener(_ => UpdateInputSlotWidth(input, le, minWidth, maxWidth));
         UpdateInputSlotWidth(input, le, minWidth, maxWidth);

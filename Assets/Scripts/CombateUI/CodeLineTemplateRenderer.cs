@@ -66,14 +66,17 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         arrayRect.SetParent(containerRect, false);
 
         LayoutElement le = arrayRoot.GetComponent<LayoutElement>();
-        le.minWidth = 160f;
-        le.preferredWidth = 210f;
+        le.minWidth = 120f;
+        le.preferredWidth = -1f;
         le.preferredHeight = 30f;
+        le.flexibleWidth = 0f;
+        le.flexibleHeight = 0f;
 
         ArrayDefinitionSlot slot = arrayRoot.GetComponent<ArrayDefinitionSlot>();
         slot.Initialize();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+        RefreshOwnerLineHeight();
     }
 
     private void CacheReferenceStyle(TextMeshProUGUI source) {
@@ -114,7 +117,6 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         Transform existing = transform.Find(ContainerName);
         if (existing != null) {
             containerRect = existing as RectTransform;
-            ConfigureContainerRect(containerRect);
             ConfigureContainerLayout(containerRect);
             return;
         }
@@ -151,17 +153,17 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
             fitter = rect.gameObject.AddComponent<ContentSizeFitter>();
         }
         fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-        fitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
     }
 
     private void ConfigureContainerRect(RectTransform rect) {
         if (rect == null) return;
 
-        // Mantener el contenedor compacto, anclado a la izquierda, sin estirarlo al ancho completo.
+        // Valores iniciales solo para contenedores creados por codigo.
         rect.anchorMin = new Vector2(0f, 0.5f);
         rect.anchorMax = new Vector2(0f, 0.5f);
         rect.pivot = new Vector2(0f, 0.5f);
-        rect.anchoredPosition = new Vector2(34f, 0f);
+        rect.anchoredPosition = new Vector2(0f, 0f);
         rect.sizeDelta = new Vector2(0f, 32f);
     }
 
@@ -198,6 +200,29 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+        RefreshOwnerLineHeight();
+    }
+
+    public void RefreshOwnerLineHeight() {
+        if (containerRect == null) return;
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+
+        RectTransform ownerRect = transform as RectTransform;
+        if (ownerRect == null) return;
+
+        LayoutElement ownerLayout = GetComponent<LayoutElement>();
+        if (ownerLayout == null) {
+            ownerLayout = gameObject.AddComponent<LayoutElement>();
+        }
+
+        float templateHeight = Mathf.Max(32f, containerRect.rect.height + 4f);
+        ownerLayout.minHeight = templateHeight;
+        ownerLayout.preferredHeight = templateHeight;
+        ownerLayout.flexibleHeight = 0f;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(ownerRect);
     }
 
     private bool IsAssignmentMode() {
@@ -300,6 +325,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         input.textComponent = textComp;
         input.placeholder = placeholderComp;
+        input.textViewport = rect;
         input.lineType = TMP_InputField.LineType.SingleLine;
 
         if (numericOnly) {

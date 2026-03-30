@@ -10,6 +10,7 @@ public class ArrayDefinitionSlot : MonoBehaviour {
     [SerializeField] private RectTransform closingBracket;
 
     private readonly List<GameObject> itemSlots = new List<GameObject>();
+    private readonly List<RectTransform> commaTokens = new List<RectTransform>();
     private const float ItemMinWidth = 50f;
     private const float ItemMaxWidth = 120f;
 
@@ -17,15 +18,14 @@ public class ArrayDefinitionSlot : MonoBehaviour {
         EnsureMainLayout();
         EnsureContentRoot();
 
-        openingBracket = CreateStaticText("[", transform);
+        openingBracket = CreateStaticText("[", contentRoot);
 
         AddItemSlot();
         AddItemSlot();
         AddAddButton();
 
-        closingBracket = CreateStaticText("]", transform);
-        
-        RebuildCommas();
+        closingBracket = CreateStaticText("]", contentRoot);
+        RebuildInlineFlow();
         EnsureTrailingOrder();
     }
 
@@ -148,11 +148,18 @@ public class ArrayDefinitionSlot : MonoBehaviour {
 
         input.textComponent = text;
         input.placeholder = ph;
+        input.textViewport = rect;
 
         input.onValueChanged.AddListener(_ => UpdateInputSlotWidth(input, le));
         UpdateInputSlotWidth(input, le);
 
         itemSlots.Add(root);
+
+        // Mantener orden de comas/boton/corchete al editar anchos.
+        input.onValueChanged.AddListener(_ => {
+            RebuildInlineFlow();
+            EnsureTrailingOrder();
+        });
     }
 
     private void AddAddButton() {
@@ -187,73 +194,61 @@ public class ArrayDefinitionSlot : MonoBehaviour {
 
     private void OnAddClicked() {
         AddItemSlot();
-        RebuildCommas();
+        RebuildInlineFlow();
         
         LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot as RectTransform);
         EnsureTrailingOrder();
+        NotifyParentLineHeightChanged();
     }
 
-    private void RebuildCommas() {
-        if (addButton == null) return;
+    private void RebuildInlineFlow() {
+        if (contentRoot == null || addButton == null) return;
 
-        // Paso 1: Elimina todas las comas PRIMERO
-        for (int i = contentRoot.childCount - 1; i >= 0; i--) {
-            Transform child = contentRoot.GetChild(i);
-            if (child.name == "Txt") {
-                TextMeshProUGUI tmp = child.GetComponent<TextMeshProUGUI>();
-                if (tmp != null && tmp.text == ",") {
-                    DestroyImmediate(child.gameObject);
-                }
+        for (int i = 0; i < commaTokens.Count; i++) {
+            if (commaTokens[i] != null) {
+                Destroy(commaTokens[i].gameObject);
             }
         }
+        commaTokens.Clear();
 
-        // Paso 2: Recolecta todos los items en orden
-        List<Transform> items = new List<Transform>();
-        for (int i = 0; i < contentRoot.childCount; i++) {
-            Transform child = contentRoot.GetChild(i);
-            if (child.GetComponent<TMP_InputField>() != null) {
-                items.Add(child);
-            }
-        }
-
-        // Paso 3: Re-ordena items e inserta comas
-        int currentIndex = 0;
-        for (int i = 0; i < items.Count; i++) {
-            items[i].SetSiblingIndex(currentIndex);
-            currentIndex++;
-
-            // Inserta coma después de cada item EXCEPTO el último
-            if (i < items.Count - 1) {
-                RectTransform comma = CreateStaticText(",", contentRoot);
-                comma.SetSiblingIndex(currentIndex);
-                currentIndex++;
-            }
-        }
-
-        // Paso 4: El botón va al final
-        addButton.transform.SetAsLastSibling();
-    }
-
-    private void SetBeforeAddButton(Transform element) {
-        if (element == null || addButton == null) return;
-        element.SetSiblingIndex(addButton.transform.GetSiblingIndex());
-    }
-
-    private void EnsureTrailingOrder() {
+        int index = 0;
         if (openingBracket != null) {
-            openingBracket.SetSiblingIndex(0);
+            openingBracket.SetSiblingIndex(index++);
         }
 
-        if (contentRoot != null) {
-            int contentIndex = openingBracket != null ? 1 : 0;
-            contentRoot.SetSiblingIndex(contentIndex);
+        for (int i = 0; i < itemSlots.Count; i++) {
+            if (itemSlots[i] == null) continue;
+
+            itemSlots[i].transform.SetSiblingIndex(index++);
+            if (i < itemSlots.Count - 1) {
+                RectTransform comma = CreateStaticText(",", contentRoot);
+                comma.SetSiblingIndex(index++);
+                commaTokens.Add(comma);
+            }
+        }
+
+        if (addButton != null) {
+            addButton.transform.SetSiblingIndex(index++);
         }
 
         if (closingBracket != null) {
-            closingBracket.SetAsLastSibling();
+            closingBracket.SetSiblingIndex(index);
         }
 
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
+        NotifyParentLineHeightChanged();
+    }
+
+    private void EnsureTrailingOrder() {
         LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
+    }
+
+    private void NotifyParentLineHeightChanged() {
+        CodeLineTemplateRenderer renderer = GetComponentInParent<CodeLineTemplateRenderer>();
+        if (renderer != null) {
+            renderer.RefreshOwnerLineHeight();
+        }
     }
 
     private void UpdateInputSlotWidth(TMP_InputField input, LayoutElement le) {

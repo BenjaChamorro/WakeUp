@@ -5,6 +5,9 @@ using TMPro;
 using System.Collections.Generic;
 
 public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+    private const float ConsoleLineSpacing = 3f;
+    private const float ConsoleLineNumberWidth = 28f;
+
     [Header("Datos")]
     public string blockId = "";
     public string codeText = "Hola Mundo";
@@ -238,12 +241,55 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             return;
         }
 
+        EnsureConsoleLinesLayout(lineasConsola);
+
         transform.SetParent(lineasConsola, false);
         rectTransform.SetAsLastSibling();
         rectTransform.localScale = Vector3.one;
 
+        // Debe participar siempre en el VerticalLayoutGroup de la consola.
+        LayoutElement selfLayout = GetComponent<LayoutElement>();
+        if (selfLayout == null) {
+            selfLayout = gameObject.AddComponent<LayoutElement>();
+        }
+        selfLayout.ignoreLayout = false;
+
+        ContentSizeFitter rowFitter = GetComponent<ContentSizeFitter>();
+        if (rowFitter == null) {
+            rowFitter = gameObject.AddComponent<ContentSizeFitter>();
+        }
+        rowFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        rowFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+        HorizontalLayoutGroup rowLayout = GetComponent<HorizontalLayoutGroup>();
+        if (rowLayout == null) {
+            rowLayout = gameObject.AddComponent<HorizontalLayoutGroup>();
+        }
+        rowLayout.childAlignment = TextAnchor.MiddleLeft;
+        rowLayout.childControlWidth = true;
+        rowLayout.childControlHeight = true;
+        rowLayout.childForceExpandWidth = false;
+        rowLayout.childForceExpandHeight = false;
+        rowLayout.spacing = 4f;
+        rowLayout.padding = new RectOffset(0, 0, 0, 0);
+
+        rectTransform.anchorMin = new Vector2(0f, 1f);
+        rectTransform.anchorMax = new Vector2(0f, 1f);
+        rectTransform.pivot = new Vector2(0f, 1f);
+        rectTransform.anchoredPosition = Vector2.zero;
+
         // En consola si se muestra el numero de linea.
         SetLineNumberVisible(true);
+
+        LayoutElement ownerLayout = GetComponent<LayoutElement>();
+        if (ownerLayout == null) {
+            ownerLayout = gameObject.AddComponent<LayoutElement>();
+        }
+        if (ownerLayout.preferredHeight <= 0f) {
+            ownerLayout.minHeight = 32f;
+            ownerLayout.preferredHeight = 32f;
+            ownerLayout.flexibleHeight = 0f;
+        }
 
         CodeLineTemplateRenderer templateRenderer = GetComponent<CodeLineTemplateRenderer>();
         if (templateRenderer == null) {
@@ -255,6 +301,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             consoleLines.Add(this);
         }
         UpdateLineNumbers();
+        RefreshConsoleLayout(lineasConsola);
 
         if (draggedFromPalette && contenedorBloques != null && prefabOriginal != null) {
             BloqueCodigo nuevo = Instantiate(prefabOriginal, contenedorBloques, false);
@@ -444,13 +491,24 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         if (lineNumberLayout != null) {
             if (visible) {
-                lineNumberLayout.preferredWidth = lineNumberPreferredWidth;
-                lineNumberLayout.minWidth = lineNumberMinWidth;
-                lineNumberLayout.flexibleWidth = lineNumberFlexibleWidth;
+                // En consola usar ancho compacto fijo para no empujar el contenido hacia el centro.
+                lineNumberLayout.preferredWidth = ConsoleLineNumberWidth;
+                lineNumberLayout.minWidth = ConsoleLineNumberWidth;
+                lineNumberLayout.flexibleWidth = 0f;
             } else {
                 lineNumberLayout.preferredWidth = 0f;
                 lineNumberLayout.minWidth = 0f;
                 lineNumberLayout.flexibleWidth = 0f;
+            }
+        }
+
+        if (visible) {
+            RectTransform lineNumRect = lineNum as RectTransform;
+            if (lineNumRect != null) {
+                lineNumRect.anchorMin = new Vector2(0f, 0.5f);
+                lineNumRect.anchorMax = new Vector2(0f, 0.5f);
+                lineNumRect.pivot = new Vector2(0f, 0.5f);
+                lineNumRect.anchoredPosition = new Vector2(3f, 0f);
             }
         }
 
@@ -487,10 +545,87 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         for (int i = 0; i < consoleLines.Count; i++) {
             consoleLines[i].lineNumber = i + 1;
+            consoleLines[i].SetLineNumberVisible(true);
             Transform lineNum = consoleLines[i].transform.Find("TextoNumeroLinea");
             if (lineNum) {
-                lineNum.GetComponent<TextMeshProUGUI>().text = (i + 1) + ": ";
+                TextMeshProUGUI numTxt = lineNum.GetComponent<TextMeshProUGUI>();
+                if (numTxt != null) {
+                    numTxt.text = (i + 1) + ": ";
+                }
             }
         }
+
+        if (consoleLines.Count > 0 && consoleLines[0] != null && consoleLines[0].transform.parent != null) {
+            consoleLines[0].RefreshConsoleLayout(consoleLines[0].transform.parent);
+        }
+    }
+
+    private static void EnsureConsoleLinesLayout(Transform lineasConsola) {
+        if (lineasConsola == null) return;
+
+        RectTransform contentRect = lineasConsola as RectTransform;
+        if (contentRect != null) {
+            contentRect.anchorMin = new Vector2(0f, 1f);
+            contentRect.anchorMax = new Vector2(0f, 1f);
+            contentRect.pivot = new Vector2(0f, 1f);
+            contentRect.anchoredPosition = Vector2.zero;
+        }
+
+        VerticalLayoutGroup vlg = lineasConsola.GetComponent<VerticalLayoutGroup>();
+        if (vlg == null) {
+            vlg = lineasConsola.gameObject.AddComponent<VerticalLayoutGroup>();
+        }
+
+        vlg.childAlignment = TextAnchor.UpperLeft;
+        vlg.childControlWidth = true;
+        vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = false;
+        vlg.childForceExpandHeight = false;
+        vlg.spacing = ConsoleLineSpacing;
+        vlg.padding = new RectOffset(0, 0, 0, 0);
+
+        ContentSizeFitter fitter = lineasConsola.GetComponent<ContentSizeFitter>();
+        if (fitter == null) {
+            fitter = lineasConsola.gameObject.AddComponent<ContentSizeFitter>();
+        }
+        fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        ScrollRect scroll = lineasConsola.GetComponentInParent<ScrollRect>();
+        if (scroll != null) {
+            scroll.horizontal = true;
+            scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+
+            RectTransform linesRect = lineasConsola as RectTransform;
+            if (linesRect != null) {
+                scroll.content = linesRect;
+            }
+
+            if (scroll.viewport == null) {
+                Transform vp = lineasConsola.parent;
+                if (vp != null && vp.name == "Viewport") {
+                    scroll.viewport = vp as RectTransform;
+                }
+            }
+        }
+    }
+
+    private void RefreshConsoleLayout(Transform lineasConsola) {
+        if (lineasConsola == null) return;
+
+        EnsureConsoleLinesLayout(lineasConsola);
+
+        RectTransform linesRect = lineasConsola as RectTransform;
+        if (linesRect != null) {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(linesRect);
+        }
+
+        RectTransform parentRect = lineasConsola.parent as RectTransform;
+        if (parentRect != null) {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+        }
+
+        Canvas.ForceUpdateCanvases();
     }
 }
