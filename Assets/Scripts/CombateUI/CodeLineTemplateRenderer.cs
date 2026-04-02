@@ -7,6 +7,12 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     private const string ContainerName = "LineTemplateContainer";
     private static readonly Regex TokenRegex = new Regex("(operador|operator|_)", RegexOptions.IgnoreCase);
     private static readonly Regex IdentifierInvalidCharsRegex = new Regex("[^a-zA-Z_]");
+    private const float InlineInputMinWidth = 48f;
+    private const float InlineInputMaxWidth = 640f;
+    private const float AssignmentKeyMinWidth = 56f;
+    private const float AssignmentKeyMaxWidth = 320f;
+    private const float AssignmentValueMinWidth = 56f;
+    private const float AssignmentValueMaxWidth = 640f;
 
     private RectTransform containerRect;
     private string currentTemplate;
@@ -232,13 +238,13 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     private void CreatePlaceholderForCurrentCommand(int placeholderIndex) {
         if (IsAssignmentMode()) {
             if (placeholderIndex == 0) {
-                CreateInlineInput(56f, 190f, true, false);
+                CreateInlineInput(AssignmentKeyMinWidth, AssignmentKeyMaxWidth, true, false);
                 return;
             }
 
             if (placeholderIndex == 1) {
                 GameObject valueRoot;
-                TMP_InputField valueInput = CreateInlineInput(56f, 190f, false, true, out valueRoot);
+                TMP_InputField valueInput = CreateInlineInput(AssignmentValueMinWidth, AssignmentValueMaxWidth, false, true, out valueRoot);
                 if (valueRoot != null) {
                     AssignmentValueSlot slot = valueRoot.GetComponent<AssignmentValueSlot>();
                     if (slot == null) {
@@ -270,7 +276,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     }
 
     private void CreateInlineInput() {
-        CreateInlineInput(48f, 180f, false, false);
+        CreateInlineInput(InlineInputMinWidth, InlineInputMaxWidth, false, false);
     }
 
     private TMP_InputField CreateInlineInput(float minWidth, float maxWidth, bool identifierOnly, bool numericOnly) {

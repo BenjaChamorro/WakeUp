@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CodeBlockData
   blockId: print
   displayText: print( _ )
-  commandType: function
+  commandType: noBlockFunction
   unlockedAtStart: 1

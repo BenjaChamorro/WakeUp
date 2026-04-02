@@ -12,7 +12,7 @@ public class ArrayDefinitionSlot : MonoBehaviour {
     private readonly List<GameObject> itemSlots = new List<GameObject>();
     private readonly List<RectTransform> commaTokens = new List<RectTransform>();
     private const float ItemMinWidth = 50f;
-    private const float ItemMaxWidth = 120f;
+    private const float ItemMaxWidth = 480f;
 
     public void Initialize() {
         EnsureMainLayout();

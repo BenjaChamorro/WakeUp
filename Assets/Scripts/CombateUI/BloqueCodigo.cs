@@ -496,7 +496,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (string.IsNullOrWhiteSpace(blockId)) return false;
 
         string id = blockId.Trim().ToLowerInvariant();
-        return id == "for" || id == "if" || id == "while" || id == "print";
+        return id == "for" || id == "if" || id == "while";
     }
 
     private void EnsureIndentPlaceholderExists(Transform lineasConsola) {

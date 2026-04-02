@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
     private static readonly Regex MultiSpaceRegex = new Regex("\\s+");
+    private const float OperatorMinWidth = 150f;
+    private const float OperatorMaxWidth = 640f;
+    private const float StringInputMinWidth = 56f;
+    private const float StringInputMaxWidth = 640f;
+    private const float MathInputMinWidth = 38f;
+    private const float MathInputMaxWidth = 320f;
 
     [SerializeField] private TMP_InputField baseInput;
     [SerializeField] private RectTransform dynamicContentRoot;
@@ -33,7 +39,7 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
 
         LayoutElement le = GetComponent<LayoutElement>();
         if (le != null) {
-            le.preferredWidth = Mathf.Clamp(150f + (cleaned.Length * 8f), 150f, 320f);
+            le.preferredWidth = Mathf.Clamp(OperatorMinWidth + (cleaned.Length * 8f), OperatorMinWidth, OperatorMaxWidth);
             le.minWidth = 120f;
         }
 
@@ -78,12 +84,12 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
         ClearContentRoot();
 
         CreateStaticText("\"");
-        CreateTextInput(56f, 220f, 20f, false);
+        CreateTextInput(StringInputMinWidth, StringInputMaxWidth, 20f, false);
         CreateStaticText("\"");
 
         LayoutElement le = GetComponent<LayoutElement>();
         if (le != null) {
-            le.preferredWidth = 180f;
+            le.preferredWidth = 320f;
             le.minWidth = 120f;
         }
 
@@ -222,9 +228,9 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
         if (dynamicContentRoot == null) return;
 
         ClearContentRoot();
-        CreateNumericInput(38f, 100f, 20f);
+        CreateNumericInput(MathInputMinWidth, MathInputMaxWidth, 20f);
         CreateStaticText(opText);
-        CreateNumericInput(38f, 100f, 20f);
+        CreateNumericInput(MathInputMinWidth, MathInputMaxWidth, 20f);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dynamicContentRoot);
     }
