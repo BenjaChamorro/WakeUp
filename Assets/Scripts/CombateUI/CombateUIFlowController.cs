@@ -12,6 +12,9 @@ public class CombateUIFlowController : MonoBehaviour {
     public Button botonBorrar;
     public Button botonEjecutar;
 
+    [Header("Referencias de Consola")]
+    [SerializeField] private Transform lineasConsola;
+
     void Awake() {
         AutoAssignReferences();
         SetInitialState();
@@ -74,7 +77,17 @@ public class CombateUIFlowController : MonoBehaviour {
     }
 
     public void OnBorrar() {
-        Debug.Log("Borrar presionado");
+        Transform consolaLineas = ResolveLineasConsola();
+        if (consolaLineas == null) {
+            Debug.LogWarning("No se encontró LineasConsola para limpiar");
+            return;
+        }
+
+        // Destruir todos los bloques de código
+        int childCount = consolaLineas.childCount;
+        for (int i = childCount - 1; i >= 0; i--) {
+            Destroy(consolaLineas.GetChild(i).gameObject);
+        }
     }
 
     public void OnEjecutar() {
@@ -96,6 +109,10 @@ public class CombateUIFlowController : MonoBehaviour {
         if (botonVolver == null) botonVolver = FindButtonByName("BotonVolver");
         if (botonBorrar == null) botonBorrar = FindButtonByName("BotonBorrar");
         if (botonEjecutar == null) botonEjecutar = FindButtonByName("BotonEjecutar");
+
+        if (lineasConsola == null) {
+            lineasConsola = FindLineasConsola();
+        }
     }
 
     Button FindButtonByName(string buttonName) {
@@ -103,6 +120,46 @@ public class CombateUIFlowController : MonoBehaviour {
         foreach (Button b in buttons) {
             if (b.name == buttonName) {
                 return b;
+            }
+        }
+
+        return null;
+    }
+
+    Transform ResolveLineasConsola() {
+        if (lineasConsola != null) {
+            return lineasConsola;
+        }
+
+        Transform foundLineas = FindLineasConsola();
+        if (foundLineas != null) {
+            lineasConsola = foundLineas;
+        }
+        return foundLineas;
+    }
+
+    Transform FindLineasConsola() {
+        // Buscar bajo CombateUI-Consola
+        GameObject consoleGO = combateUIConsola ?? GameObject.Find("CombateUI-Consola");
+        if (consoleGO == null) return null;
+
+        Transform consola = consoleGO.transform;
+
+        // Buscar directamente como hijo
+        Transform direct = consola.Find("LineasConsola");
+        if (direct != null) return direct;
+
+        // Buscar bajo viewport (ScrollRect)
+        Transform viewport = consola.Find("viewport");
+        if (viewport != null) {
+            Transform underViewport = viewport.Find("LineasConsola");
+            if (underViewport != null) return underViewport;
+        }
+
+        // Búsqueda recursiva por nombre
+        foreach (Transform child in consola.GetComponentsInChildren<Transform>()) {
+            if (child.name == "LineasConsola") {
+                return child;
             }
         }
 
