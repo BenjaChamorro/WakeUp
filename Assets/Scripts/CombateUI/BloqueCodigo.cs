@@ -301,7 +301,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (!consoleLines.Contains(this)) {
             consoleLines.Add(this);
         }
-        UpdateLineNumbers();
+        RefreshLineNumbersFromHierarchy(lineasConsola);
         RefreshConsoleLayout(lineasConsola);
 
         if (draggedFromPalette && contenedorBloques != null && prefabOriginal != null) {
@@ -559,6 +559,57 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (consoleLines.Count > 0 && consoleLines[0] != null && consoleLines[0].transform.parent != null) {
             consoleLines[0].RefreshConsoleLayout(consoleLines[0].transform.parent);
         }
+    }
+
+    public static void RefreshLineNumbersFromHierarchy(Transform lineasConsola) {
+        // Reconstruir consoleLines basándose en el orden actual en la jerarquía del UI
+        if (lineasConsola == null) return;
+
+        // Limpiar referencias nulas
+        for (int i = consoleLines.Count - 1; i >= 0; i--) {
+            if (consoleLines[i] == null) {
+                consoleLines.RemoveAt(i);
+            }
+        }
+
+        // Obtener la lista de bloques que están actualmente bajo LineasConsola, en orden
+        List<BloqueCodigo> orderedLines = new List<BloqueCodigo>();
+        for (int i = 0; i < lineasConsola.childCount; i++) {
+            BloqueCodigo codigo = lineasConsola.GetChild(i).GetComponent<BloqueCodigo>();
+            if (codigo != null) {
+                orderedLines.Add(codigo);
+            }
+        }
+
+        // Actualizar consoleLines solo si el contenido realmente cambió
+        if (!ListsAreEqual(consoleLines, orderedLines)) {
+            consoleLines = orderedLines;
+        }
+
+        // Actualizar números de línea
+        for (int i = 0; i < consoleLines.Count; i++) {
+            consoleLines[i].lineNumber = i + 1;
+            consoleLines[i].SetLineNumberVisible(true);
+            Transform lineNum = consoleLines[i].transform.Find("TextoNumeroLinea");
+            if (lineNum) {
+                TextMeshProUGUI numTxt = lineNum.GetComponent<TextMeshProUGUI>();
+                if (numTxt != null) {
+                    numTxt.text = (i + 1) + ": ";
+                }
+            }
+        }
+
+        if (consoleLines.Count > 0 && consoleLines[0] != null && consoleLines[0].transform.parent != null) {
+            consoleLines[0].RefreshConsoleLayout(consoleLines[0].transform.parent);
+        }
+    }
+
+    private static bool ListsAreEqual(List<BloqueCodigo> list1, List<BloqueCodigo> list2) {
+        if (list1.Count != list2.Count) return false;
+        for (int i = 0; i < list1.Count; i++) {
+            if (list1[i] != list2[i]) return false;
+        }
+        return true;
     }
 
     private static void EnsureConsoleLinesLayout(Transform lineasConsola) {
