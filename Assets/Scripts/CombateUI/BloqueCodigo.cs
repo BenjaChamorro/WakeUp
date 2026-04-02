@@ -112,7 +112,8 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (droppedInConsole) {
             DropToConsole();
         } else {
-            ReturnToOriginalPosition();
+            // Si estaba en la consola y se arrastra fuera, destruirlo; si no, devolverlo
+            HandleOutOfConsoleRelease();
         }
     }
 
@@ -149,6 +150,21 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         transform.SetSiblingIndex(originalSiblingIndex);
         rectTransform.anchoredPosition = originalAnchoredPosition;
         rectTransform.localScale = Vector3.one;
+    }
+
+    private void HandleOutOfConsoleRelease() {
+        Transform lineasConsola = ResolveLineasConsola();
+        
+        // Si el bloque estaba en la consola, destruirlo
+        if (originalParent != null && lineasConsola != null && originalParent == lineasConsola) {
+            consoleLines.Remove(this);
+            RefreshLineNumbersFromHierarchy(lineasConsola);
+            Destroy(gameObject);
+            return;
+        }
+
+        // Si no estaba en la consola, devolverlo a su posición original (paleta)
+        ReturnToOriginalPosition();
     }
 
     private void HandleOperatorSlotDrop(OperatorDropSlot slot) {
