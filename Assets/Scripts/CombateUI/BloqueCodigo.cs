@@ -8,6 +8,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private const float ConsoleLineSpacing = 3f;
     private const float ConsoleLineNumberWidth = 28f;
     private const int ConsoleLeftPadding = 6;
+    private const int IndentSizePixels = 24;
 
     [Header("Datos")]
     public string blockId = "";
@@ -45,6 +46,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private RectTransform codeTextRect;
     private bool hasCodeTextAnchoredTemplate;
     private Vector2 codeTextAnchoredTemplate;
+    private int indentLevel;
 
     public static List<BloqueCodigo> consoleLines = new List<BloqueCodigo>();
     [HideInInspector] public int lineNumber = -1;
@@ -110,7 +112,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         bool droppedInConsole = IsPointerInsideConsole(eventData);
 
         if (droppedInConsole) {
-            DropToConsole();
+            DropToConsole(eventData);
         } else {
             // Si estaba en la consola y se arrastra fuera, destruirlo; si no, devolverlo
             HandleOutOfConsoleRelease();
@@ -157,6 +159,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         
         // Si el bloque estaba en la consola, destruirlo
         if (originalParent != null && lineasConsola != null && originalParent == lineasConsola) {
+            RemoveOwnedIndentPlaceholder(lineasConsola);
             consoleLines.Remove(this);
             RefreshLineNumbersFromHierarchy(lineasConsola);
             Destroy(gameObject);
@@ -184,6 +187,10 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             return;
         }
 
+        Transform lineasConsola = ResolveLineasConsola();
+        if (lineasConsola != null) {
+            RemoveOwnedIndentPlaceholder(lineasConsola);
+        }
         consoleLines.Remove(this);
         UpdateLineNumbers();
         Destroy(gameObject);
@@ -233,6 +240,10 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             return;
         }
 
+        Transform lineasConsola = ResolveLineasConsola();
+        if (lineasConsola != null) {
+            RemoveOwnedIndentPlaceholder(lineasConsola);
+        }
         consoleLines.Remove(this);
         UpdateLineNumbers();
         Destroy(gameObject);
@@ -249,7 +260,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         return null;
     }
 
-    void DropToConsole() {
+    void DropToConsole(PointerEventData eventData) {
         bool draggedFromPalette = IsFromPalette(originalParent);
 
         Transform lineasConsola = ResolveLineasConsola();
@@ -261,7 +272,15 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         EnsureConsoleLinesLayout(lineasConsola);
 
         transform.SetParent(lineasConsola, false);
-        rectTransform.SetAsLastSibling();
+        IndentDropLineMarker dropMarker = FindParentWithComponent<IndentDropLineMarker>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
+        if (dropMarker != null && dropMarker.transform.parent == lineasConsola) {
+            int markerIndex = dropMarker.transform.GetSiblingIndex();
+            transform.SetSiblingIndex(markerIndex);
+            indentLevel = Mathf.Max(1, dropMarker.indentLevel);
+        } else {
+            rectTransform.SetAsLastSibling();
+            indentLevel = 0;
+        }
         rectTransform.localScale = Vector3.one;
 
         // Debe participar siempre en el VerticalLayoutGroup de la consola.
@@ -288,7 +307,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         rowLayout.childForceExpandWidth = false;
         rowLayout.childForceExpandHeight = false;
         rowLayout.spacing = 4f;
-        rowLayout.padding = new RectOffset(0, 0, 0, 0);
+        rowLayout.padding = new RectOffset(indentLevel * IndentSizePixels, 0, 0, 0);
 
         rectTransform.anchorMin = new Vector2(0f, 1f);
         rectTransform.anchorMax = new Vector2(0f, 1f);
@@ -317,6 +336,11 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (!consoleLines.Contains(this)) {
             consoleLines.Add(this);
         }
+
+        if (RequiresIndentedBody()) {
+            EnsureIndentPlaceholderExists(lineasConsola);
+        }
+
         RefreshLineNumbersFromHierarchy(lineasConsola);
         RefreshConsoleLayout(lineasConsola);
 
@@ -468,6 +492,91 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (txt) txt.text = codeText;
     }
 
+    private bool RequiresIndentedBody() {
+        if (string.IsNullOrWhiteSpace(blockId)) return false;
+
+        string id = blockId.Trim().ToLowerInvariant();
+        return id == "for" || id == "if" || id == "while" || id == "print";
+    }
+
+    private void EnsureIndentPlaceholderExists(Transform lineasConsola) {
+        if (lineasConsola == null) return;
+
+        foreach (Transform child in lineasConsola) {
+            IndentDropLineMarker marker = child.GetComponent<IndentDropLineMarker>();
+            if (marker != null && marker.owner == this) {
+                marker.indentLevel = indentLevel + 1;
+                int ownIndex = transform.GetSiblingIndex();
+                marker.transform.SetSiblingIndex(Mathf.Min(ownIndex + 1, lineasConsola.childCount - 1));
+                marker.RefreshVisual();
+                return;
+            }
+        }
+
+        GameObject placeholder = new GameObject("IndentDropLine", typeof(RectTransform), typeof(LayoutElement), typeof(HorizontalLayoutGroup), typeof(Image), typeof(IndentDropLineMarker));
+        RectTransform rect = placeholder.GetComponent<RectTransform>();
+        rect.SetParent(lineasConsola, false);
+        rect.localScale = Vector3.one;
+
+        int ownerSiblingIndex = transform.GetSiblingIndex();
+        rect.SetSiblingIndex(Mathf.Min(ownerSiblingIndex + 1, lineasConsola.childCount - 1));
+
+        LayoutElement le = placeholder.GetComponent<LayoutElement>();
+        le.minHeight = 30f;
+        le.preferredHeight = 30f;
+        le.flexibleHeight = 0f;
+        le.minWidth = 200f;
+
+        HorizontalLayoutGroup hlg = placeholder.GetComponent<HorizontalLayoutGroup>();
+        hlg.childAlignment = TextAnchor.MiddleLeft;
+        hlg.childControlWidth = true;
+        hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
+        hlg.padding = new RectOffset((indentLevel + 1) * IndentSizePixels, 0, 0, 0);
+
+        Image bg = placeholder.GetComponent<Image>();
+        bg.color = new Color(1f, 1f, 1f, 0.04f);
+
+        GameObject textObj = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+        RectTransform textRect = textObj.GetComponent<RectTransform>();
+        textRect.SetParent(rect, false);
+
+        TextMeshProUGUI text = textObj.GetComponent<TextMeshProUGUI>();
+        text.text = "[arrastra bloque aqui]";
+        text.fontSize = 18f;
+        text.color = new Color(1f, 1f, 1f, 0.45f);
+        text.alignment = TextAlignmentOptions.MidlineLeft;
+        text.enableWordWrapping = false;
+
+        LayoutElement textLE = textObj.AddComponent<LayoutElement>();
+        textLE.preferredHeight = 26f;
+
+        IndentDropLineMarker dropMarker = placeholder.GetComponent<IndentDropLineMarker>();
+        dropMarker.owner = this;
+        dropMarker.indentLevel = indentLevel + 1;
+        dropMarker.RefreshVisual();
+    }
+
+    private void RemoveOwnedIndentPlaceholder(Transform lineasConsola) {
+        if (lineasConsola == null) return;
+
+        for (int i = lineasConsola.childCount - 1; i >= 0; i--) {
+            Transform child = lineasConsola.GetChild(i);
+            IndentDropLineMarker marker = child.GetComponent<IndentDropLineMarker>();
+            if (marker != null && marker.owner == this) {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+
+    public void ApplyIndentVisual() {
+        HorizontalLayoutGroup rowLayout = GetComponent<HorizontalLayoutGroup>();
+        if (rowLayout != null) {
+            rowLayout.padding = new RectOffset(indentLevel * IndentSizePixels, 0, 0, 0);
+        }
+    }
+
     private void CacheLineNumberLayoutTemplate() {
         Transform lineNum = transform.Find("TextoNumeroLinea");
         if (lineNum == null) return;
@@ -563,6 +672,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         for (int i = 0; i < consoleLines.Count; i++) {
             consoleLines[i].lineNumber = i + 1;
             consoleLines[i].SetLineNumberVisible(true);
+            consoleLines[i].ApplyIndentVisual();
             Transform lineNum = consoleLines[i].transform.Find("TextoNumeroLinea");
             if (lineNum) {
                 TextMeshProUGUI numTxt = lineNum.GetComponent<TextMeshProUGUI>();
