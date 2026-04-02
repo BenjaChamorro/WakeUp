@@ -9,6 +9,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private const float ConsoleLineNumberWidth = 28f;
     private const int ConsoleLeftPadding = 6;
     private const int IndentSizePixels = 24;
+    private const float ConsoleMinHorizontalScrollWidth = 3000f;
 
     [Header("Datos")]
     public string blockId = "";
@@ -768,6 +769,14 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         }
         fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
         fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        LayoutElement contentLayout = lineasConsola.GetComponent<LayoutElement>();
+        if (contentLayout == null) {
+            contentLayout = lineasConsola.gameObject.AddComponent<LayoutElement>();
+        }
+        // Forzar un ancho mínimo grande para que el scroll horizontal siempre esté disponible.
+        contentLayout.minWidth = ConsoleMinHorizontalScrollWidth;
+        contentLayout.preferredWidth = Mathf.Max(contentLayout.preferredWidth, ConsoleMinHorizontalScrollWidth);
 
         ScrollRect scroll = lineasConsola.GetComponentInParent<ScrollRect>();
         if (scroll != null) {
