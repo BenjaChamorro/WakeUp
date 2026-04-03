@@ -783,6 +783,8 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             scroll.horizontal = true;
             scroll.vertical = true;
             scroll.movementType = ScrollRect.MovementType.Clamped;
+            scroll.inertia = false;
+            scroll.decelerationRate = 0f;
 
             RectTransform linesRect = lineasConsola as RectTransform;
             if (linesRect != null) {
