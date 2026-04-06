@@ -56,14 +56,24 @@ public class GameManagerStage1 : MonoBehaviour
 
     public void ActivateStage11()
     {
+        ActivateStage11(null);
+    }
+
+    public void ActivateStage11(Transform customSpawnPoint)
+    {
         SetActiveStage(stage11Object);
-        MovePlayerToSpawn(stage11SpawnPoint);
+        MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage11SpawnPoint);
     }
 
     public void ActivateStage12()
     {
+        ActivateStage12(null);
+    }
+
+    public void ActivateStage12(Transform customSpawnPoint)
+    {
         SetActiveStage(stage12Object);
-        MovePlayerToSpawn(stage12SpawnPoint);
+        MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage12SpawnPoint);
     }
 
     public void RestartCurrentScene()

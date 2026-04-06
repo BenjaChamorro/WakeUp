@@ -3,13 +3,13 @@ using UnityEngine.InputSystem;
 
 public class MainMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float velocidadMovimiento = 5f;
 
     private Animator animator;
     private Rigidbody2D rb;
 
-    private Vector2 rawInput;
-    private Vector2 moveInput;
+    private Vector2 direccion;
+    private Vector2 velocidadActual;
 
     void Start()
     {
@@ -30,26 +30,26 @@ public class MainMovement : MonoBehaviour
 
     void ReadInput()
     {
-        rawInput = Vector2.zero;
+        direccion = Vector2.zero;
 
-        if (Keyboard.current.aKey.isPressed) rawInput.x = -1;
-        else if (Keyboard.current.dKey.isPressed) rawInput.x = 1;
+        if (Keyboard.current.aKey.isPressed) direccion.x = -1;
+        else if (Keyboard.current.dKey.isPressed) direccion.x = 1;
 
-        if (Keyboard.current.wKey.isPressed) rawInput.y = 1;
-        else if (Keyboard.current.sKey.isPressed) rawInput.y = -1;
+        if (Keyboard.current.wKey.isPressed) direccion.y = 1;
+        else if (Keyboard.current.sKey.isPressed) direccion.y = -1;
 
-        // Solo el movimiento va normalizado para evitar que el personaje se mueva más rápido en diagonal
-        moveInput = rawInput.normalized;
+        // Convertimos direccion en velocidad para mantener una rapidez constante en diagonal.
+        velocidadActual = direccion.normalized * velocidadMovimiento;
     }
 
     void Move()
     {
-        rb.MovePosition(rb.position + moveInput * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + velocidadActual * Time.fixedDeltaTime);
     }
 
     void UpdateAnimator()
     {
-        animator.SetFloat("Horizontal", rawInput.x);
-        animator.SetFloat("Vertical", rawInput.y);
+        animator.SetFloat("Horizontal", direccion.x);
+        animator.SetFloat("Vertical", direccion.y);
     }
 }

@@ -22,6 +22,14 @@ public class FollowCamera : MonoBehaviour
     [SerializeField] private float minY = -5f;
     [SerializeField] private float maxY = 5f;
 
+    public void SetCameraBounds(float newMinX, float newMaxX, float newMinY, float newMaxY)
+    {
+        minX = newMinX;
+        maxX = newMaxX;
+        minY = newMinY;
+        maxY = newMaxY;
+    }
+
     void LateUpdate()
     {
         if (objetoSeguir == null)

@@ -24,6 +24,13 @@ public class DialogBoxController : MonoBehaviour
     [Header("Gameplay Lock")]
     [SerializeField] private MonoBehaviour[] componentsToDisableWhileOpen;
 
+    [Header("Position")]
+    [SerializeField] private bool followPlayer = true;
+    [SerializeField] private string playerTag = "Player";
+    [SerializeField] private Vector3 offset = Vector3.zero;
+
+    private Transform playerTransform;
+
     private Coroutine dialogRoutine;
     private bool isShowing;
     private bool advanceRequested;
@@ -35,10 +42,24 @@ public class DialogBoxController : MonoBehaviour
     {
         SetDialogVisible(false);
         ClearText();
+
+        if (followPlayer && playerTransform == null)
+        {
+            GameObject playerObject = GameObject.FindWithTag(playerTag);
+            if (playerObject != null)
+            {
+                playerTransform = playerObject.transform;
+            }
+        }
     }
 
     private void Update()
     {
+        if (followPlayer && playerTransform != null && isShowing)
+        {
+            dialogRoot.transform.position = playerTransform.position + offset;
+        }
+
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null || !isShowing)
         {
