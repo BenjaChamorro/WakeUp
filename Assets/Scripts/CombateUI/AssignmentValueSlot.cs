@@ -228,9 +228,9 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
         if (dynamicContentRoot == null) return;
 
         ClearContentRoot();
-        CreateNumericInput(MathInputMinWidth, MathInputMaxWidth, 20f);
+        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, 20f, false);
         CreateStaticText(opText);
-        CreateNumericInput(MathInputMinWidth, MathInputMaxWidth, 20f);
+        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, 20f, false);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dynamicContentRoot);
     }
