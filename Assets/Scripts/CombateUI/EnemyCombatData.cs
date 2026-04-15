@@ -14,8 +14,8 @@ public class EnemyCombatData : ScriptableObject {
     [TextArea(2, 5)] public List<string> introDialogues = new List<string>();
     [TextArea(2, 5)] public List<string> defeatDialogues = new List<string>();
 
-    [Header("Reglas de victoria (simple)")]
-    public List<string> requiredBlockIds = new List<string>();
+    [Header("Reglas de victoria")]
+    [TextArea(4, 10)] public string victoryCode = string.Empty;
 
     [Header("Bloques temporales del combate")]
     public List<CodeBlockData> combatOnlyBlocks = new List<CodeBlockData>();

@@ -98,6 +98,18 @@ public class CombateUIFlowController : MonoBehaviour {
     public void OnEjecutar() {
         string code = ReadConsoleCode();
         Debug.Log("[CodeRunner] Código leído:\n" + code);
+
+        EnemyCombatRuntime enemyRuntime = FindObjectOfType<EnemyCombatRuntime>(true);
+        if (enemyRuntime == null) {
+            Debug.LogWarning("[CodeRunner] No se encontró EnemyCombatRuntime para evaluar la victoria.");
+            return;
+        }
+
+        if (enemyRuntime.TryEvaluateVictory(code, out string victoryReason)) {
+            Debug.Log("[CodeRunner] Victoria lograda: " + victoryReason);
+        } else {
+            Debug.Log("[CodeRunner] Aún no cumple la condición de victoria: " + victoryReason);
+        }
     }
 
     string ReadConsoleCode() {

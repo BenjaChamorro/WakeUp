@@ -19,6 +19,8 @@ MonoBehaviour:
   - "Me siento un poco mareado \xBA~\xBA"
   defeatDialogues:
   - "No aguanto otro giro, me siento mal x\xBAx"
-  requiredBlockIds: []
+  victoryCode: "variable1 = numero1\r\nwhile (variable1 {< | <=} numero2):\r\n   
+    MagitoMareado\r\n    { variable1 = variable1 + 1 | variable1 = 1 + variable1
+    }\r\n# numero2 > numero1\r\n# {LINEA3 | LINEA4}"
   combatOnlyBlocks: []
   unlockBlocksOnDefeat: []
