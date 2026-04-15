@@ -85,6 +85,32 @@ public class EnemyCombatRuntime : MonoBehaviour {
         }
     }
 
+    public void ShowDefeatDialogue() {
+        if (currentEnemy == null || dialogueText == null) {
+            return;
+        }
+
+        if (currentEnemy.defeatDialogues != null && currentEnemy.defeatDialogues.Count > 0) {
+            for (int i = 0; i < currentEnemy.defeatDialogues.Count; i++) {
+                string line = currentEnemy.defeatDialogues[i];
+                if (!string.IsNullOrWhiteSpace(line)) {
+                    dialogueText.text = line;
+                    return;
+                }
+            }
+        }
+
+        dialogueText.text = currentEnemy.enemyDisplayName;
+    }
+
+    public void ShowEnemyDefeatedMessage() {
+        if (dialogueText == null) {
+            return;
+        }
+
+        dialogueText.text = "¡Has derrotado al enemigo!";
+    }
+
     public bool TryEvaluateVictory(string playerCode, out string reason) {
         reason = string.Empty;
 

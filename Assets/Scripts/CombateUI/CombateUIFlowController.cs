@@ -2,10 +2,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Text;
+using System.Collections;
 
 public class CombateUIFlowController : MonoBehaviour {
     private const int IndentSizePixels = 24;
     private const int SpacesPerIndent = 4;
+    private const float VictoryMessageDelaySeconds = 3f;
 
     [Header("Paneles")]
     public GameObject combateUI;
@@ -19,6 +21,8 @@ public class CombateUIFlowController : MonoBehaviour {
 
     [Header("Referencias de Consola")]
     [SerializeField] private Transform lineasConsola;
+
+    private bool victorySequenceStarted;
 
     void Awake() {
         AutoAssignReferences();
@@ -96,6 +100,10 @@ public class CombateUIFlowController : MonoBehaviour {
     }
 
     public void OnEjecutar() {
+        if (victorySequenceStarted) {
+            return;
+        }
+
         string code = ReadConsoleCode();
         Debug.Log("[CodeRunner] Código leído:\n" + code);
 
@@ -107,8 +115,36 @@ public class CombateUIFlowController : MonoBehaviour {
 
         if (enemyRuntime.TryEvaluateVictory(code, out string victoryReason)) {
             Debug.Log("[CodeRunner] Victoria lograda: " + victoryReason);
+            StartCoroutine(HandleVictorySequence(enemyRuntime));
         } else {
             Debug.Log("[CodeRunner] Aún no cumple la condición de victoria: " + victoryReason);
+        }
+    }
+
+    IEnumerator HandleVictorySequence(EnemyCombatRuntime enemyRuntime) {
+        victorySequenceStarted = true;
+
+        // Mantener misma navegación que el botón Volver y luego bloquear interacción.
+        BackToCombatUI();
+        SetAllButtonsInteractable(false);
+
+        if (enemyRuntime != null) {
+            enemyRuntime.ShowDefeatDialogue();
+        }
+
+        yield return new WaitForSeconds(VictoryMessageDelaySeconds);
+
+        if (enemyRuntime != null) {
+            enemyRuntime.ShowEnemyDefeatedMessage();
+        }
+    }
+
+    void SetAllButtonsInteractable(bool interactable) {
+        Button[] allButtons = FindObjectsOfType<Button>(true);
+        for (int i = 0; i < allButtons.Length; i++) {
+            if (allButtons[i] != null) {
+                allButtons[i].interactable = interactable;
+            }
         }
     }
 
