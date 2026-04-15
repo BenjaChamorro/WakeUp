@@ -266,6 +266,42 @@ public class EnemyCombatRuntime : MonoBehaviour {
             return false;
         }
 
+        int templateLineCount = 0;
+        for (int i = 0; i < segments.Count; i++) {
+            templateLineCount += segments[i].LineTexts.Count;
+        }
+
+        if (playerLines.Count < templateLineCount) {
+            reason = "Faltan líneas en el código del jugador.";
+            return false;
+        }
+
+        string bestReason = string.Empty;
+        for (int startIndex = 0; startIndex <= playerLines.Count - templateLineCount; startIndex++) {
+            List<string> playerSlice = playerLines.GetRange(startIndex, templateLineCount);
+            if (TryMatchSegmentsToPlayerSlice(segments, playerSlice, bindings, out Dictionary<string, string> matchedBindings, out reason)) {
+                bindings = matchedBindings;
+                return true;
+            }
+
+            if (string.IsNullOrWhiteSpace(bestReason) && !string.IsNullOrWhiteSpace(reason)) {
+                bestReason = reason;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(bestReason)) {
+            reason = bestReason;
+        } else {
+            reason = "El código del jugador no contiene la secuencia necesaria para la condición de victoria.";
+        }
+
+        return false;
+    }
+
+    private bool TryMatchSegmentsToPlayerSlice(List<LineSegment> segments, List<string> playerLines, Dictionary<string, string> inputBindings, out Dictionary<string, string> outputBindings, out string reason) {
+        outputBindings = inputBindings;
+        reason = string.Empty;
+
         int playerIndex = 0;
         for (int i = 0; i < segments.Count; i++) {
             LineSegment segment = segments[i];
@@ -276,7 +312,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
                     return false;
                 }
 
-                if (!TryMatchLineWithAlternatives(segment.LineTexts[0], playerLines[playerIndex], bindings, out bindings, out reason)) {
+                if (!TryMatchLineWithAlternatives(segment.LineTexts[0], playerLines[playerIndex], outputBindings, out outputBindings, out reason)) {
                     return false;
                 }
 
@@ -290,7 +326,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
             }
 
             List<string> playerSlice = playerLines.GetRange(playerIndex, segment.LineTexts.Count);
-            if (!TryMatchReorderableGroup(segment.LineTexts, playerSlice, bindings, out bindings, out reason)) {
+            if (!TryMatchReorderableGroup(segment.LineTexts, playerSlice, outputBindings, out outputBindings, out reason)) {
                 return false;
             }
 
@@ -298,7 +334,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
         }
 
         if (playerIndex != playerLines.Count) {
-            reason = "Sobran líneas en el código del jugador.";
+            reason = "Sobran líneas dentro de la zona que coincide con la condición de victoria.";
             return false;
         }
 
