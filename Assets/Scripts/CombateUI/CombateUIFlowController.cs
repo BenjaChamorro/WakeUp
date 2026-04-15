@@ -1,7 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Text;
 
 public class CombateUIFlowController : MonoBehaviour {
+    private const int IndentSizePixels = 24;
+    private const int SpacesPerIndent = 4;
+
     [Header("Paneles")]
     public GameObject combateUI;
     public GameObject combateUIConsola;
@@ -91,7 +96,119 @@ public class CombateUIFlowController : MonoBehaviour {
     }
 
     public void OnEjecutar() {
-        Debug.Log("Ejecutar presionado");
+        string code = ReadConsoleCode();
+        Debug.Log("[CodeRunner] Código leído:\n" + code);
+    }
+
+    string ReadConsoleCode() {
+        Transform consolaLineas = ResolveLineasConsola();
+        if (consolaLineas == null) {
+            return string.Empty;
+        }
+
+        StringBuilder code = new StringBuilder();
+        bool firstLine = true;
+
+        for (int i = 0; i < consolaLineas.childCount; i++) {
+            Transform child = consolaLineas.GetChild(i);
+            BloqueCodigo bloque = child.GetComponent<BloqueCodigo>();
+            if (bloque == null) {
+                continue;
+            }
+
+            string lineText = ReadLineText(bloque.transform).TrimEnd();
+            int indentLevel = GetLineIndentLevel(bloque.transform);
+            string indent = new string(' ', indentLevel * SpacesPerIndent);
+            if (!firstLine) {
+                code.Append('\n');
+            }
+            code.Append(indent);
+            code.Append(lineText);
+            firstLine = false;
+        }
+
+        return code.ToString();
+    }
+
+    string ReadLineText(Transform bloqueRoot) {
+        if (bloqueRoot == null) return string.Empty;
+
+        StringBuilder line = new StringBuilder();
+
+        // Si hay template inline, se reconstruye desde su contenedor; si no, se usa el texto principal.
+        Transform template = bloqueRoot.Find("LineTemplateContainer");
+        if (template != null && template.gameObject.activeInHierarchy) {
+            for (int i = 0; i < template.childCount; i++) {
+                AppendNodeText(template.GetChild(i), line);
+            }
+        } else {
+            TextMeshProUGUI mainText = bloqueRoot.Find("TextoBloqueCodigo")?.GetComponent<TextMeshProUGUI>();
+            if (mainText != null) {
+                line.Append(mainText.text);
+            }
+        }
+
+        return line.ToString();
+    }
+
+    void AppendNodeText(Transform node, StringBuilder output) {
+        if (node == null || output == null) return;
+
+        // El botón '+' de arrays es solo UI para agregar elementos, no parte del código.
+        if (node.GetComponent<Button>() != null || node.name == "AddButton") {
+            return;
+        }
+
+        AssignmentValueSlot assignmentSlot = node.GetComponent<AssignmentValueSlot>();
+        if (assignmentSlot != null) {
+            AppendAssignmentValueSlot(node, output);
+            return;
+        }
+
+        TMP_InputField input = node.GetComponent<TMP_InputField>();
+        if (input != null) {
+            output.Append(string.IsNullOrEmpty(input.text) ? "_" : input.text);
+            return;
+        }
+
+        TextMeshProUGUI text = node.GetComponent<TextMeshProUGUI>();
+        if (text != null && node.name != "TextoNumeroLinea" && node.name != "Placeholder" && text.gameObject.activeInHierarchy) {
+            output.Append(text.text);
+            return;
+        }
+
+        for (int i = 0; i < node.childCount; i++) {
+            AppendNodeText(node.GetChild(i), output);
+        }
+    }
+
+    void AppendAssignmentValueSlot(Transform slotNode, StringBuilder output) {
+        if (slotNode == null || output == null) return;
+
+        Transform dynamicContent = slotNode.Find("AssignmentContent");
+        if (dynamicContent != null && dynamicContent.gameObject.activeInHierarchy) {
+            for (int i = 0; i < dynamicContent.childCount; i++) {
+                AppendNodeText(dynamicContent.GetChild(i), output);
+            }
+            return;
+        }
+
+        TMP_InputField baseInput = slotNode.GetComponent<TMP_InputField>();
+        if (baseInput != null) {
+            output.Append(string.IsNullOrEmpty(baseInput.text) ? "_" : baseInput.text);
+        }
+    }
+
+    int GetLineIndentLevel(Transform lineRoot) {
+        if (lineRoot == null) return 0;
+
+        HorizontalLayoutGroup rowLayout = lineRoot.GetComponent<HorizontalLayoutGroup>();
+        if (rowLayout == null || rowLayout.padding == null) return 0;
+
+        int paddingLeft = Mathf.Max(0, rowLayout.padding.left);
+        if (paddingLeft <= 0) return 0;
+
+        return Mathf.Max(0, Mathf.RoundToInt((float)paddingLeft / IndentSizePixels));
     }
 
     void AutoAssignReferences() {
