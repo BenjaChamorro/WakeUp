@@ -20,4 +20,5 @@ MonoBehaviour:
   defeatDialogues:
   - "No aguanto otro giro, me siento mal x\xBAx"
   requiredBlockIds: []
+  combatOnlyBlocks: []
   unlockBlocksOnDefeat: []

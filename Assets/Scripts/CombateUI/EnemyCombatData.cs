@@ -17,6 +17,9 @@ public class EnemyCombatData : ScriptableObject {
     [Header("Reglas de victoria (simple)")]
     public List<string> requiredBlockIds = new List<string>();
 
+    [Header("Bloques temporales del combate")]
+    public List<CodeBlockData> combatOnlyBlocks = new List<CodeBlockData>();
+
     [Header("Recompensas")]
     public List<CodeBlockData> unlockBlocksOnDefeat = new List<CodeBlockData>();
 }

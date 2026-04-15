@@ -1,4 +1,5 @@
 using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ public class CodePaletteBuilder : MonoBehaviour {
 
     [Header("Comportamiento")]
     [SerializeField] private bool refreshOnEnable = true;
+
+    private readonly List<CodeBlockData> combatExclusiveBlocks = new List<CodeBlockData>();
 
     void Awake() {
         AutoAssignReferences();
@@ -42,9 +45,9 @@ public class CodePaletteBuilder : MonoBehaviour {
 
         ClearPalette();
 
-        var unlocked = inventory.GetUnlockedBlocks();
-        for (int i = 0; i < unlocked.Count; i++) {
-            CodeBlockData data = unlocked[i];
+        List<CodeBlockData> paletteBlocks = BuildPaletteBlockList();
+        for (int i = 0; i < paletteBlocks.Count; i++) {
+            CodeBlockData data = paletteBlocks[i];
             if (data == null) continue;
 
             BloqueCodigo block = Instantiate(bloquePrefab, contenedorBloques, false);
@@ -77,6 +80,20 @@ public class CodePaletteBuilder : MonoBehaviour {
         if (contentRect != null) {
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
         }
+    }
+
+    public void SetCombatExclusiveBlocks(IReadOnlyList<CodeBlockData> temporaryBlocks) {
+        combatExclusiveBlocks.Clear();
+
+        if (temporaryBlocks != null) {
+            for (int i = 0; i < temporaryBlocks.Count; i++) {
+                CodeBlockData block = temporaryBlocks[i];
+                if (block == null || string.IsNullOrWhiteSpace(block.blockId)) continue;
+                combatExclusiveBlocks.Add(block);
+            }
+        }
+
+        RefreshPalette();
     }
 
     public void UnlockAndRefresh(CodeBlockData block) {
@@ -263,5 +280,33 @@ public class CodePaletteBuilder : MonoBehaviour {
         contentRect.anchoredPosition = Vector2.zero;
 
         return true;
+    }
+
+    private List<CodeBlockData> BuildPaletteBlockList() {
+        List<CodeBlockData> merged = new List<CodeBlockData>();
+        HashSet<string> usedIds = new HashSet<string>();
+
+        for (int i = 0; i < combatExclusiveBlocks.Count; i++) {
+            CodeBlockData data = combatExclusiveBlocks[i];
+            if (data == null || string.IsNullOrWhiteSpace(data.blockId)) continue;
+
+            if (usedIds.Add(data.blockId)) {
+                merged.Add(data);
+            }
+        }
+
+        if (inventory != null) {
+            var unlocked = inventory.GetUnlockedBlocks();
+            for (int i = 0; i < unlocked.Count; i++) {
+                CodeBlockData data = unlocked[i];
+                if (data == null || string.IsNullOrWhiteSpace(data.blockId)) continue;
+
+                if (usedIds.Add(data.blockId)) {
+                    merged.Add(data);
+                }
+            }
+        }
+
+        return merged;
     }
 }

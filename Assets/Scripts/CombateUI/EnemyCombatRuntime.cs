@@ -1,7 +1,11 @@
 using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyCombatRuntime : MonoBehaviour {
+    private const string EnemyIdRuntimeBlockId = "enemy_id";
+    private const string EnemyIdFallbackText = "enemy_id";
+
     [Header("Datos del combate")]
     [SerializeField] private EnemyCombatData currentEnemy;
 
@@ -11,6 +15,8 @@ public class EnemyCombatRuntime : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI enemyNameText;
     [SerializeField] private PlayerCodeInventory playerInventory;
     [SerializeField] private CodePaletteBuilder paletteBuilder;
+
+    private CodeBlockData enemyIdRuntimeBlock;
 
     void Awake() {
         AutoAssignReferences();
@@ -25,6 +31,9 @@ public class EnemyCombatRuntime : MonoBehaviour {
             Debug.LogWarning("EnemyCombatRuntime: no hay EnemyCombatData asignado.");
             if (dialogueText != null) {
                 dialogueText.text = "[DEBUG] Asigna un EnemyCombatData para mostrar dialogo de enemigo.";
+            }
+            if (paletteBuilder != null) {
+                paletteBuilder.SetCombatExclusiveBlocks(null);
             }
             return;
         }
@@ -48,7 +57,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
         }
 
         if (paletteBuilder != null) {
-            paletteBuilder.RefreshPalette();
+            paletteBuilder.SetCombatExclusiveBlocks(BuildCombatPaletteBlocks());
         }
     }
 
@@ -128,5 +137,41 @@ public class EnemyCombatRuntime : MonoBehaviour {
         if (paletteBuilder == null) {
             paletteBuilder = FindObjectOfType<CodePaletteBuilder>(true);
         }
+    }
+
+    private List<CodeBlockData> BuildCombatPaletteBlocks() {
+        List<CodeBlockData> blocks = new List<CodeBlockData>();
+
+        CodeBlockData enemyIdBlock = GetOrCreateEnemyIdRuntimeBlock();
+        if (enemyIdBlock != null) {
+            blocks.Add(enemyIdBlock);
+        }
+
+        if (currentEnemy != null && currentEnemy.combatOnlyBlocks != null) {
+            for (int i = 0; i < currentEnemy.combatOnlyBlocks.Count; i++) {
+                CodeBlockData block = currentEnemy.combatOnlyBlocks[i];
+                if (block == null) continue;
+                blocks.Add(block);
+            }
+        }
+
+        return blocks;
+    }
+
+    private CodeBlockData GetOrCreateEnemyIdRuntimeBlock() {
+        if (enemyIdRuntimeBlock == null) {
+            enemyIdRuntimeBlock = ScriptableObject.CreateInstance<CodeBlockData>();
+            enemyIdRuntimeBlock.hideFlags = HideFlags.HideAndDontSave;
+            enemyIdRuntimeBlock.blockId = EnemyIdRuntimeBlockId;
+            enemyIdRuntimeBlock.commandType = "definition";
+        }
+
+        string enemyIdText = EnemyIdFallbackText;
+        if (currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.enemyId)) {
+            enemyIdText = currentEnemy.enemyId.Trim();
+        }
+
+        enemyIdRuntimeBlock.displayText = enemyIdText;
+        return enemyIdRuntimeBlock;
     }
 }
