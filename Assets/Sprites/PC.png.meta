@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9f1ac72eb62022a458b55264cb244bc1
+guid: 65da36a5280585c4293786784561ff66
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8800421628026860988
-    second: PressE 1_0
+      213: -5778590093982927133
+    second: PC_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,89 +100,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PressE_0
+      name: PC_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cb5b43418d0612a70800000000000000
-      internalID: 8800421628026860988
+      spriteID: 3e67e810de25ecfa0800000000000000
+      internalID: -5778590093982927133
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PressE_1
+      name: PC_1
       rect:
         serializedVersion: 2
         x: 16
         y: 0
         width: 16
         height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dbb9f153ed78eb442b1692ccea747933
-      internalID: 1601304123
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PressE_2
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b745e706461530a4aba3002e105f0bc0
-      internalID: 1508793440
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PressE_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f2601544b2ada8d43a517e2bddd28887
-      internalID: 80191314
+      spriteID: dd5a376bc8ad66d439c2c41ac8e0b5f0
+      internalID: 559810742
       vertices: []
       indices: 
       edges: []
@@ -191,7 +147,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2891929c840c84b458b52d1a88f1f23e
+    spriteID: 6c90e406cf465ea4cbdad7e62558556c
     internalID: 0
     vertices: []
     indices: 
@@ -203,10 +159,8 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":16.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      PressE_0: 8800421628026860988
-      PressE_1: 1601304123
-      PressE_2: 1508793440
-      PressE_3: 80191314
+      PC_0: -5778590093982927133
+      PC_1: 559810742
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

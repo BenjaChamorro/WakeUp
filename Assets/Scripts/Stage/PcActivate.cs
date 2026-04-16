@@ -1,12 +1,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PcActivate : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject AcertijoMecanismo;
     [SerializeField] private GameObject PressE;
-    [SerializeField] private Animator pressEAnimator;
+    [SerializeField] private TMP_InputField linkedInputField;
+    private Animator pcAnimator;
+    private Animator pressEAnimator;
+    private AudioSource pressESound;
+    private AudioSource activationSound;
 
     [Header("Filter")]
     [SerializeField] private bool requireTag = true;
@@ -16,15 +21,36 @@ public class PcActivate : MonoBehaviour
     [SerializeField] private Key interactionKey = Key.E;
     [SerializeField] private float pressedAnimationTime = 0.12f;
 
+    private static readonly int IsOnHash = Animator.StringToHash("IsOn");
     private static readonly int IsPressedHash = Animator.StringToHash("IsPressed");
+    private static readonly int InputHash = Animator.StringToHash("Input");
     private bool targetInside;
     private Coroutine pressAnimationRoutine;
+    private int cachedInputValue;
 
     private void Awake()
     {
-        if (pressEAnimator == null && PressE != null)
+        pcAnimator = GetComponent<Animator>();
+        if (PressE != null)
         {
             pressEAnimator = PressE.GetComponent<Animator>();
+            pressESound = PressE.GetComponent<AudioSource>();
+        }
+
+        activationSound = GetComponent<AudioSource>();
+
+        if (linkedInputField != null)
+        {
+            linkedInputField.onValueChanged.AddListener(OnInputFieldValueChanged);
+            OnInputFieldValueChanged(linkedInputField.text);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (linkedInputField != null)
+        {
+            linkedInputField.onValueChanged.RemoveListener(OnInputFieldValueChanged);
         }
     }
 
@@ -44,6 +70,11 @@ public class PcActivate : MonoBehaviour
         if (keyboard[interactionKey].wasPressedThisFrame)
         {
             ReproducirAnimacionPresionado();
+
+            if (cachedInputValue != 0)
+            {
+                ReproducirSonidoPressE();
+            }
         }
     }
 
@@ -52,8 +83,11 @@ public class PcActivate : MonoBehaviour
         if (EsObjetivoValido(other.gameObject))
         {
             targetInside = true;
+            SetOnParameter(true);
             MostrarMecanismo(true);
             MostrarPressE(true);
+            activationSound.Play();
+            ApplyCachedInputToAnimator();
         }
     }
 
@@ -62,6 +96,7 @@ public class PcActivate : MonoBehaviour
         if (EsObjetivoValido(other.gameObject))
         {
             targetInside = false;
+            SetOnParameter(false);
             MostrarMecanismo(false);
             MostrarPressE(false);
             SetPressedParameter(false);
@@ -124,5 +159,57 @@ public class PcActivate : MonoBehaviour
         }
 
         pressEAnimator.SetBool(IsPressedHash, value);
+    }
+
+    private void OnInputFieldValueChanged(string value)
+    {
+        int parsedValue;
+        if (!int.TryParse(value, out parsedValue))
+        {
+            parsedValue = 0;
+        }
+
+        cachedInputValue = parsedValue;
+        ApplyCachedInputToAnimator();
+    }
+
+    private void ApplyCachedInputToAnimator()
+    {
+        if (pressEAnimator == null)
+        {
+            return;
+        }
+
+        if (pressEAnimator.runtimeAnimatorController == null)
+        {
+            return;
+        }
+
+        if (!pressEAnimator.isActiveAndEnabled)
+        {
+            return;
+        }
+
+        pressEAnimator.SetInteger(InputHash, cachedInputValue);
+    }
+
+    private void ReproducirSonidoPressE()
+    {
+        if (pressESound == null)
+        {
+            return;
+        }
+
+        pressESound.Play();
+    }
+
+    private void SetOnParameter(bool value)
+    {
+        if (pcAnimator == null)
+        {
+            return;
+        }
+
+        pcAnimator.SetBool(IsOnHash, value);
     }
 }

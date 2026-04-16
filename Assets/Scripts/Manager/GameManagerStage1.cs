@@ -7,16 +7,19 @@ public class GameManagerStage1 : MonoBehaviour
     [Header("Stage GameObjects")]
     [SerializeField] private GameObject stage11Object;
     [SerializeField] private GameObject stage12Object;
+    [SerializeField] private GameObject stage13Object;
     [SerializeField] private bool startOnStage11 = true;
 
     [Header("Scene Names (Optional)")]
     [SerializeField] private string stage11SceneName = "Stage1.1";
     [SerializeField] private string stage12SceneName = "Stage1.2";
+    [SerializeField] private string stage13SceneName = "Stage1.3";
 
     [Header("Player Respawn")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform stage11SpawnPoint;
     [SerializeField] private Transform stage12SpawnPoint;
+    [SerializeField] private Transform stage13SpawnPoint;
     [SerializeField] private bool resetPlayerPositionOnStageChange = true;
 
     [Header("Debug")]
@@ -52,6 +55,11 @@ public class GameManagerStage1 : MonoBehaviour
         {
             ActivateStage12();
         }
+
+        if (keyboard.digit3Key.wasPressedThisFrame)
+        {
+            ActivateStage13();
+        }
     }
 
     public void ActivateStage11()
@@ -76,6 +84,17 @@ public class GameManagerStage1 : MonoBehaviour
         MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage12SpawnPoint);
     }
 
+    public void ActivateStage13()
+    {
+        ActivateStage13(null);
+    }
+
+    public void ActivateStage13(Transform customSpawnPoint)
+    {
+        SetActiveStage(stage13Object);
+        MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage13SpawnPoint);
+    }
+
     public void RestartCurrentScene()
     {
         if (isLoading)
@@ -97,6 +116,11 @@ public class GameManagerStage1 : MonoBehaviour
         LoadSceneByName(stage12SceneName);
     }
 
+    public void LoadStage13Scene()
+    {
+        LoadSceneByName(stage13SceneName);
+    }
+
     private void SetInitialStage()
     {
         if (startOnStage11)
@@ -111,14 +135,15 @@ public class GameManagerStage1 : MonoBehaviour
 
     private void SetActiveStage(GameObject stageToActivate)
     {
-        if (stage11Object == null || stage12Object == null)
+        if (stage11Object == null || stage12Object == null || stage13Object == null)
         {
-            Debug.LogWarning("Asigna stage11Object y stage12Object en el Inspector.");
+            Debug.LogWarning("Asigna stage11Object, stage12Object y stage13Object en el Inspector.");
             return;
         }
 
         stage11Object.SetActive(stageToActivate == stage11Object);
         stage12Object.SetActive(stageToActivate == stage12Object);
+        stage13Object.SetActive(stageToActivate == stage13Object);
     }
 
     private void MovePlayerToSpawn(Transform spawnPoint)

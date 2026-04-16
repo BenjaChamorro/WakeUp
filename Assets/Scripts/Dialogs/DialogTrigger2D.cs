@@ -9,6 +9,7 @@ public class DialogTrigger2D : MonoBehaviour
     [Header("Lines")]
     [TextArea(2, 6)]
     [SerializeField] private string[] lines;
+    [SerializeField] private string dialogueId;
 
     [Header("Filter")]
     [SerializeField] private bool requireTag = true;
@@ -17,7 +18,7 @@ public class DialogTrigger2D : MonoBehaviour
     [Header("Behavior")]
     [SerializeField] private bool triggerOnEnter = true;
     [SerializeField] private bool requireInteractionKey = false;
-    [SerializeField] private Key interactionKey = Key.E;
+    [SerializeField] private Key interactionKey = Key.Enter;
     [SerializeField] private bool triggerOnlyOnce = true;
 
     private bool hasTriggered;
@@ -119,7 +120,12 @@ public class DialogTrigger2D : MonoBehaviour
             return;
         }
 
-        dialogController.ShowDialogue(lines);
+        dialogController.ShowDialogue(dialogueId, lines);
         hasTriggered = true;
+    }
+
+    public void TriggerDialogueFromChain()
+    {
+        TryStartDialogue();
     }
 }

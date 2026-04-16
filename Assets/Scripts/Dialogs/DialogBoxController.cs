@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,6 +27,7 @@ public class DialogBoxController : MonoBehaviour
 
     [Header("Position")]
     [SerializeField] private bool followPlayer = true;
+    [SerializeField] private Transform followTarget;
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private Vector3 offset = Vector3.zero;
 
@@ -35,8 +37,11 @@ public class DialogBoxController : MonoBehaviour
     private bool isShowing;
     private bool advanceRequested;
     private bool skipTypingRequested;
+    private string currentDialogueId = string.Empty;
 
     public bool IsShowing => isShowing;
+    public string CurrentDialogueId => currentDialogueId;
+    public event Action<string> DialogueFinished;
 
     private void Awake()
     {
@@ -45,10 +50,17 @@ public class DialogBoxController : MonoBehaviour
 
         if (followPlayer && playerTransform == null)
         {
-            GameObject playerObject = GameObject.FindWithTag(playerTag);
-            if (playerObject != null)
+            if (followTarget != null)
             {
-                playerTransform = playerObject.transform;
+                playerTransform = followTarget;
+            }
+            else
+            {
+                GameObject playerObject = GameObject.FindWithTag(playerTag);
+                if (playerObject != null)
+                {
+                    playerTransform = playerObject.transform;
+                }
             }
         }
     }
@@ -80,10 +92,17 @@ public class DialogBoxController : MonoBehaviour
 
     public void ShowDialogue(string[] lines)
     {
+        ShowDialogue(string.Empty, lines);
+    }
+
+    public void ShowDialogue(string dialogueId, string[] lines)
+    {
         if (lines == null || lines.Length == 0)
         {
             return;
         }
+
+        currentDialogueId = dialogueId ?? string.Empty;
 
         if (dialogRoutine != null)
         {
@@ -101,13 +120,21 @@ public class DialogBoxController : MonoBehaviour
             dialogRoutine = null;
         }
 
+        string finishedDialogueId = currentDialogueId;
+
         isShowing = false;
         advanceRequested = false;
         skipTypingRequested = false;
+        currentDialogueId = string.Empty;
 
         ClearText();
         SetDialogVisible(false);
         SetGameplayEnabled(true);
+
+        if (!string.IsNullOrEmpty(finishedDialogueId))
+        {
+            DialogueFinished?.Invoke(finishedDialogueId);
+        }
     }
 
     private IEnumerator RunDialogue(string[] lines)
