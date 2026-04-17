@@ -31,6 +31,9 @@ public class DialogBoxController : MonoBehaviour
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private Vector3 offset = Vector3.zero;
 
+    [Header("Appearance")]
+    [SerializeField] private Camera referenceCamera;
+
     private Transform playerTransform;
 
     private Coroutine dialogRoutine;
@@ -69,7 +72,7 @@ public class DialogBoxController : MonoBehaviour
     {
         if (followPlayer && playerTransform != null && isShowing)
         {
-            dialogRoot.transform.position = playerTransform.position + offset;
+            UpdateFollowPosition();
         }
 
         Keyboard keyboard = Keyboard.current;
@@ -145,6 +148,7 @@ public class DialogBoxController : MonoBehaviour
 
         SetGameplayEnabled(false);
         SetDialogVisible(true);
+        UpdateFollowPosition();
 
         for (int i = 0; i < lines.Length; i++)
         {
@@ -233,6 +237,32 @@ public class DialogBoxController : MonoBehaviour
         {
             dialogRoot.SetActive(visible);
         }
+    }
+
+    private void UpdateFollowPosition()
+    {
+        if (dialogRoot == null || playerTransform == null)
+        {
+            return;
+        }
+
+        bool mirrorToLeft = ShouldMirrorToLeftSide();
+        Vector3 appliedOffset = offset;
+        appliedOffset.x = mirrorToLeft ? Mathf.Abs(offset.x) : -Mathf.Abs(offset.x);
+
+        dialogRoot.transform.position = playerTransform.position + appliedOffset;
+    }
+
+    private bool ShouldMirrorToLeftSide()
+    {
+        Camera cameraToUse = referenceCamera != null ? referenceCamera : Camera.main;
+        if (cameraToUse == null)
+        {
+            return false;
+        }
+
+        Vector3 viewportPosition = cameraToUse.WorldToViewportPoint(playerTransform.position);
+        return viewportPosition.x < 0.5f;
     }
 
     private void ClearText()
