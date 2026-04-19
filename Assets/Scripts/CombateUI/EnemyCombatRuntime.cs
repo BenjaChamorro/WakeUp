@@ -111,6 +111,15 @@ public class EnemyCombatRuntime : MonoBehaviour {
         dialogueText.text = "¡Has derrotado al enemigo!";
     }
 
+    public void PlayDefeatAnimation() {
+        if (currentEnemy == null || currentEnemy.defeatAnimationProfile == null) {
+            return;
+        }
+
+        Transform targetTransform = enemySpriteRenderer != null ? enemySpriteRenderer.transform : transform;
+        currentEnemy.defeatAnimationProfile.PlayAnimation(targetTransform);
+    }
+
     public bool TryEvaluateVictory(string playerCode, out string reason) {
         reason = string.Empty;
 

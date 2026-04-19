@@ -14,6 +14,9 @@ public class EnemyCombatData : ScriptableObject {
     [TextArea(2, 5)] public List<string> introDialogues = new List<string>();
     [TextArea(2, 5)] public List<string> defeatDialogues = new List<string>();
 
+    [Header("Animacion de derrota")]
+    public EnemyDefeatAnimationProfile defeatAnimationProfile;
+
     [Header("Reglas de victoria")]
     [TextArea(4, 10)] public string victoryCode = string.Empty;
 

@@ -130,6 +130,7 @@ public class CombateUIFlowController : MonoBehaviour {
 
         if (enemyRuntime != null) {
             enemyRuntime.ShowDefeatDialogue();
+            enemyRuntime.PlayDefeatAnimation();
         }
 
         yield return new WaitForSeconds(VictoryMessageDelaySeconds);
