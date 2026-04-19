@@ -2,6 +2,7 @@ using System.Collections;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 public class DialogBoxController : MonoBehaviour
@@ -33,8 +34,17 @@ public class DialogBoxController : MonoBehaviour
 
     [Header("Appearance")]
     [SerializeField] private Camera referenceCamera;
+    [SerializeField] private bool flipBubbleWhenOffsetIsInverted = true;
+    [SerializeField] private Image bubbleImageToFlip;
 
     private Transform playerTransform;
+    private RectTransform bubbleRectTransform;
+    private Vector3 bubbleBaseScale = Vector3.one;
+    private bool bubbleBaseScaleCached;
+
+    private RectTransform dialogTextRectTransform;
+    private Vector3 dialogTextBaseScale = Vector3.one;
+    private bool dialogTextBaseScaleCached;
 
     private Coroutine dialogRoutine;
     private bool isShowing;
@@ -50,6 +60,8 @@ public class DialogBoxController : MonoBehaviour
     {
         SetDialogVisible(false);
         ClearText();
+        CacheFlipReferences();
+        ApplyBubbleFlip(false);
 
         if (followPlayer && playerTransform == null)
         {
@@ -251,6 +263,7 @@ public class DialogBoxController : MonoBehaviour
         appliedOffset.x = mirrorToLeft ? Mathf.Abs(offset.x) : -Mathf.Abs(offset.x);
 
         dialogRoot.transform.position = playerTransform.position + appliedOffset;
+        ApplyBubbleFlip(mirrorToLeft);
     }
 
     private bool ShouldMirrorToLeftSide()
@@ -263,6 +276,71 @@ public class DialogBoxController : MonoBehaviour
 
         Vector3 viewportPosition = cameraToUse.WorldToViewportPoint(playerTransform.position);
         return viewportPosition.x < 0.5f;
+    }
+
+    private void CacheFlipReferences()
+    {
+        bubbleRectTransform = null;
+        bubbleBaseScaleCached = false;
+        dialogTextRectTransform = null;
+        dialogTextBaseScaleCached = false;
+
+        if (bubbleImageToFlip == null && dialogRoot != null)
+        {
+            bubbleImageToFlip = dialogRoot.GetComponentInChildren<Image>(true);
+        }
+
+        if (bubbleImageToFlip != null)
+        {
+            bubbleRectTransform = bubbleImageToFlip.rectTransform;
+            bubbleBaseScale = bubbleRectTransform.localScale;
+            bubbleBaseScaleCached = true;
+        }
+
+        if (dialogText != null)
+        {
+            dialogTextRectTransform = dialogText.rectTransform;
+            dialogTextBaseScale = dialogTextRectTransform.localScale;
+            dialogTextBaseScaleCached = true;
+        }
+    }
+
+    private void ApplyBubbleFlip(bool mirrored)
+    {
+        if (!flipBubbleWhenOffsetIsInverted)
+        {
+            mirrored = false;
+        }
+
+        if (bubbleRectTransform == null)
+        {
+            return;
+        }
+
+        if (!bubbleBaseScaleCached)
+        {
+            bubbleBaseScale = bubbleRectTransform.localScale;
+            bubbleBaseScaleCached = true;
+        }
+
+        Vector3 bubbleScale = bubbleBaseScale;
+        bubbleScale.x = mirrored ? -Mathf.Abs(bubbleScale.x) : Mathf.Abs(bubbleScale.x);
+        bubbleRectTransform.localScale = bubbleScale;
+
+        if (dialogTextRectTransform == null || !dialogTextRectTransform.IsChildOf(bubbleRectTransform))
+        {
+            return;
+        }
+
+        if (!dialogTextBaseScaleCached)
+        {
+            dialogTextBaseScale = dialogTextRectTransform.localScale;
+            dialogTextBaseScaleCached = true;
+        }
+
+        Vector3 textScale = dialogTextBaseScale;
+        textScale.x = mirrored ? -Mathf.Abs(textScale.x) : Mathf.Abs(textScale.x);
+        dialogTextRectTransform.localScale = textScale;
     }
 
     private void ClearText()
