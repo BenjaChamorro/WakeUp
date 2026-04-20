@@ -3,7 +3,11 @@ using UnityEngine;
 public class TriggerActivateObject : MonoBehaviour
 {
     [SerializeField] private GameObject targetObject;
+    [SerializeField] private bool activateOnce = false;
+    [SerializeField] private bool stayActive = false;
     [SerializeField] private string playerTag = "Player";
+
+    private bool hasBeenActivated = false;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -17,18 +21,37 @@ public class TriggerActivateObject : MonoBehaviour
 
     private void HandleEnter(GameObject otherObject)
     {
-        if (IsPlayer(otherObject))
+        if (!IsPlayer(otherObject))
         {
-            SetTargetActive(true);
+            return;
+        }
+
+        if (activateOnce && hasBeenActivated)
+        {
+            return;
+        }
+
+        SetTargetActive(true);
+
+        if (activateOnce)
+        {
+            hasBeenActivated = true;
         }
     }
 
     private void HandleExit(GameObject otherObject)
     {
-        if (IsPlayer(otherObject))
+        if (!IsPlayer(otherObject))
         {
-            SetTargetActive(false);
+            return;
         }
+
+        if (stayActive)
+        {
+            return;
+        }
+
+        SetTargetActive(false);
     }
 
     private bool IsPlayer(GameObject otherObject)

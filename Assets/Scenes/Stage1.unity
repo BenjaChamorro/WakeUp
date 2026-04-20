@@ -99115,9 +99115,9 @@ GameObject:
   - component: {fileID: 1962742669}
   - component: {fileID: 1962742668}
   - component: {fileID: 1962742667}
+  - component: {fileID: 1962742671}
   - component: {fileID: 1962742666}
   - component: {fileID: 1962742670}
-  - component: {fileID: 1962742671}
   m_Layer: 0
   m_Name: ClippyDialog
   m_TagString: Untagged
@@ -99181,7 +99181,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0044202805, y: -1.0205084}
+  m_Offset: {x: 0.0044202805, y: -1.1979661}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -99191,7 +99191,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3.8812504, y: 1.0637808}
+  m_Size: {x: 3.8812504, y: 1.4186964}
   m_EdgeRadius: 0
 --- !u!212 &1962742668
 SpriteRenderer:
@@ -99280,6 +99280,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerActivateObject
   targetObject: {fileID: 1442930740}
+  activateOnce: 0
+  stayActive: 0
   playerTag: Player
 --- !u!114 &1962742671
 MonoBehaviour:
@@ -99290,9 +99292,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1962742665}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f8680dd13698542991d40deb5da992, type: 3}
+  m_Script: {fileID: 11500000, guid: 5450a15a5d986884a9b05d3af1976777, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PressDeactivate
+  m_EditorClassIdentifier: Assembly-CSharp::OnPressDeactivate
+  activationKey: 19
+  requireTag: 1
+  requiredTag: Player
+  componentsToDisable:
+  - {fileID: 1962742667}
+  objectsToDeactivate: []
+  oneShot: 1
 --- !u!1 &1964874301
 GameObject:
   m_ObjectHideFlags: 0
