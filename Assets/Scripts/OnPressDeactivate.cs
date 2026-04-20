@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class OnPressDeactivate : MonoBehaviour
 {
     [Header("Input")]
     [SerializeField] private Key activationKey = Key.E;
+
+    [Header("Events")]
+    [SerializeField] private UnityEvent onPressed;
 
     [Header("Trigger Filter")]
     [SerializeField] private bool requireTag = true;
@@ -70,6 +74,8 @@ public class OnPressDeactivate : MonoBehaviour
 
     private void ExecuteDeactivation()
     {
+        onPressed?.Invoke();
+
         if (componentsToDisable != null)
         {
             foreach (Behaviour component in componentsToDisable)
