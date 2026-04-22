@@ -44,7 +44,7 @@ TagManager:
   - name: Piso
     uniqueID: 1312795927
     locked: 0
-  - name: Personajes
+  - name: Personajes/Objetos
     uniqueID: 860565527
     locked: 0
   - name: CanvasObjects
