@@ -19,7 +19,7 @@ MonoBehaviour:
   - "Me siento un poco mareado \xBA~\xBA"
   defeatDialogues:
   - "No aguanto otro giro, me siento mal x\xBAx"
-  defeatAnimationProfile: {fileID: 11400000, guid: e29102366b39731418f236eaa71bab77, type: 2}
+  defeatAnimationProfile: {fileID: 11400000, guid: e57ca5b11f33118439275e595f861bc5, type: 2}
   victoryCode: "variable1 = numero1\r\nwhile (variable1 {< | <=} numero2):\r\n   
     MagitoMareado\r\n    { variable1 = variable1 + 1 | variable1 = 1 + variable1
     }\r\n# numero2 > numero1\r\n# {LINEA3 | LINEA4}"
