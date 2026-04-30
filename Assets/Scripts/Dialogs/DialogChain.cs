@@ -1,5 +1,21 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.Events;
+
+[Serializable]
+public class DialogLineAction
+{
+    [Tooltip("0-based line index in the dialogue to trigger this action.")]
+    public int lineIndex = 0;
+    [Tooltip("ParameterChanges components to call when this line is reached.")]
+    public ParameterChanges[] parameterTargets;
+    [Tooltip("UnityEvent to invoke when this line is reached. Useful for calling arbitrary methods.")]
+    public UnityEvent onLine;
+    [Tooltip("If true the action will be fired only once per dialogue show.")]
+    public bool onlyOnce = true;
+    [NonSerialized] public bool fired;
+}
 
 public class DialogChain : MonoBehaviour
 {
@@ -27,6 +43,9 @@ public class DialogChain : MonoBehaviour
     [Header("Behavior")]
     [SerializeField] private bool triggerOnlyOnce = true;
 
+    [Header("Per-line Actions")]
+    [SerializeField] private List<DialogLineAction> lineActions = new List<DialogLineAction>();
+
     private bool hasTriggered;
 
     private void Awake()
@@ -48,6 +67,10 @@ public class DialogChain : MonoBehaviour
         {
             previousDialogController.DialogueFinished += OnDialogueFinished;
         }
+        if (selfDialogController != null)
+        {
+            selfDialogController.LineShown += OnLineShown;
+        }
     }
 
     private void OnDisable()
@@ -55,6 +78,10 @@ public class DialogChain : MonoBehaviour
         if (previousDialogController != null)
         {
             previousDialogController.DialogueFinished -= OnDialogueFinished;
+        }
+        if (selfDialogController != null)
+        {
+            selfDialogController.LineShown -= OnLineShown;
         }
     }
 
@@ -98,7 +125,48 @@ public class DialogChain : MonoBehaviour
             return;
         }
 
+        // reset per-line fired flags
+        if (lineActions != null)
+        {
+            for (int i = 0; i < lineActions.Count; i++)
+            {
+                lineActions[i].fired = false;
+            }
+        }
+
         selfDialogController.ShowDialogue(selfDialogueId, lines);
+    }
+
+    private void OnLineShown(int lineIndex)
+    {
+        if (lineActions == null || lineActions.Count == 0) return;
+
+        for (int i = 0; i < lineActions.Count; i++)
+        {
+            DialogLineAction action = lineActions[i];
+            if (action == null) continue;
+            if (action.lineIndex != lineIndex) continue;
+            if (action.onlyOnce && action.fired) continue;
+
+            if (action.parameterTargets != null)
+            {
+                for (int j = 0; j < action.parameterTargets.Length; j++)
+                {
+                    ParameterChanges pc = action.parameterTargets[j];
+                    if (pc != null)
+                    {
+                        pc.ApplyChanges();
+                    }
+                }
+            }
+
+            if (action.onLine != null)
+            {
+                action.onLine.Invoke();
+            }
+
+            action.fired = true;
+        }
     }
 
     private bool IsDialogueMatch(string finishedDialogueId)
