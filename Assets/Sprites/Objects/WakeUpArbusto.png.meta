@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: a65a01cba9401f44a88f51107309bde3
+guid: b60bed6f795077041af9591a89c65ff8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4894148217896428281
-    second: Prota 1_0
-  - first:
-      213: -5978105854804464906
-    second: Prota 1_1
-  - first:
-      213: 6600558957029940635
-    second: Prota 1_2
-  - first:
-      213: -880226684591071591
-    second: Prota 1_3
+      213: 7159930720860115510
+    second: WakeUpArbusto_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,89 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Prota_0
+      name: WakeUpArbusto_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 32
-        width: 32
-        height: 32
-      alignment: 9
-      pivot: {x: 0.5, y: 0.1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 086e777a4bd904b4dba8124d89c7766f
-      internalID: -1593412259
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prota_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 32
-        width: 32
-        height: 32
-      alignment: 9
-      pivot: {x: 0.5, y: 0.1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 69ac42709cd23694194159aefad35360
-      internalID: 922096541
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prota_2
-      rect:
-        serializedVersion: 2
-        x: 0
+        x: 3
         y: 0
-        width: 32
-        height: 32
-      alignment: 9
-      pivot: {x: 0.5, y: 0.1}
+        width: 26
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 0d5f873ffd6a2a041b8aa2dec6d5e4f7
-      internalID: -786380314
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Prota_3
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 32
-      alignment: 9
-      pivot: {x: 0.5, y: 0.1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 41b2cb6c29974e542a83cd1884cdcb44
-      internalID: 518860868
+      spriteID: 63216414e0f2d5360800000000000000
+      internalID: 7159930720860115510
       vertices: []
       indices: 
       edges: []
@@ -200,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: bee5c0d5bc455584db4fbd68364f3295
+    spriteID: 8b6c9d30d4fb72949830348b61125569
     internalID: 0
     vertices: []
     indices: 
@@ -208,14 +133,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Prota_0: -1593412259
-      Prota_1: 922096541
-      Prota_2: -786380314
-      Prota_3: 518860868
+      WakeUpArbusto_0: 7159930720860115510
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
