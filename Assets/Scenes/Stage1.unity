@@ -2365,107 +2365,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
---- !u!1 &51432748
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 51432749}
-  - component: {fileID: 51432752}
-  - component: {fileID: 51432751}
-  m_Layer: 0
-  m_Name: ClippyEvent (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &51432749
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51432748}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 24.97, y: 2.880001, z: 0}
-  m_LocalScale: {x: 4, y: 1.5, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1791804796}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &51432751
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51432748}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: -0.54849505, y: -0.25019014}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 2.3279345, y: 3.886812}
-  m_EdgeRadius: 0
---- !u!114 &51432752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51432748}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fc7b82a6e30c1747ad98b5b65a426d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ParameterChanges
-  targetAnimator: {fileID: 1718233840}
-  targetObject: {fileID: 1718233833}
-  playerTag: Player
-  triggerOnlyOnce: 1
-  parameterChanges:
-  - parameterName: Vertical
-    parameterType: 0
-    floatValue: -1
-    intValue: -1
-    boolValue: 0
 --- !u!1 &53035781
 GameObject:
   m_ObjectHideFlags: 0
@@ -21839,6 +21738,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   setActiveState: 0
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &279962820
 SpriteRenderer:
   serializedVersion: 2
@@ -33276,6 +33176,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   setActiveState: 0
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &558410296
 SpriteRenderer:
   serializedVersion: 2
@@ -35914,9 +35815,28 @@ MonoBehaviour:
   lines:
   - '!!!!!!!!!!!!!!!!!'
   - "\xA1Oh! \xBFQui\xE9n eres t\xFA? \xBFQue est\xE1s haciendo ac\xE1?"
-  targetObject: {fileID: 51432748}
+  targetObject: {fileID: 0}
   setActiveState: 1
   triggerOnlyOnce: 1
+  lineActions:
+  - lineIndex: 0
+    parameterTargets: []
+    onLine:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1718233841}
+          m_TargetAssemblyTypeName: ParameterChanges, Assembly-CSharp
+          m_MethodName: ApplyChanges
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    onlyOnce: 1
 --- !u!1 &651642346
 GameObject:
   m_ObjectHideFlags: 0
@@ -42515,6 +42435,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   setActiveState: 0
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &825515413
 SpriteRenderer:
   serializedVersion: 2
@@ -43504,6 +43425,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   setActiveState: 0
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &851471606
 SpriteRenderer:
   serializedVersion: 2
@@ -54949,6 +54871,7 @@ MonoBehaviour:
   targetObject: {fileID: 1669604417}
   setActiveState: 1
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &1147529235
 SpriteRenderer:
   serializedVersion: 2
@@ -57048,7 +56971,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TriggerScriptActivate
   playerTag: Player
   triggerOnlyOnce: 1
-  npcMovement: {fileID: 0}
+  npcMovement: {fileID: 497192056}
   playerScriptsToBlockWhileNpcMoves:
   - {fileID: 1561055462}
   scriptsToEnable: []
@@ -94991,6 +94914,7 @@ GameObject:
   - component: {fileID: 1718233838}
   - component: {fileID: 1718233840}
   - component: {fileID: 1718233839}
+  - component: {fileID: 1718233841}
   m_Layer: 0
   m_Name: Clippy
   m_TagString: Untagged
@@ -95192,6 +95116,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1718233841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718233833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fc7b82a6e30c1747ad98b5b65a426d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParameterChanges
+  targetAnimator: {fileID: 1718233840}
+  targetObject: {fileID: 1718233833}
+  playerTag: Player
+  triggerOnlyOnce: 1
+  parameterChanges:
+  - parameterName: Vertical
+    parameterType: 0
+    floatValue: -1
+    intValue: 0
+    boolValue: 0
 --- !u!1 &1719913946
 GameObject:
   m_ObjectHideFlags: 0
@@ -96519,6 +96465,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   setActiveState: 0
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &1756012962
 SpriteRenderer:
   serializedVersion: 2
@@ -97811,7 +97758,6 @@ Transform:
   - {fileID: 1442930743}
   - {fileID: 1787365075}
   - {fileID: 82456792}
-  - {fileID: 51432749}
   - {fileID: 1443038109}
   m_Father: {fileID: 2119207037}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -107589,6 +107535,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   setActiveState: 0
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &2069998511
 SpriteRenderer:
   serializedVersion: 2
@@ -107705,6 +107652,7 @@ MonoBehaviour:
   targetObject: {fileID: 0}
   setActiveState: 0
   triggerOnlyOnce: 1
+  lineActions: []
 --- !u!212 &2071210140
 SpriteRenderer:
   serializedVersion: 2
