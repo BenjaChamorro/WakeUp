@@ -131,9 +131,8 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
 
         TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
         tmp.text = text;
-        tmp.fontSize = 22f;
+        CodeConsoleTypography.Apply(tmp, 35f, TextAlignmentOptions.Center);
         tmp.color = Color.white;
-        tmp.alignment = TextAlignmentOptions.Center;
 
         LayoutElement le = go.GetComponent<LayoutElement>();
         le.preferredWidth = Mathf.Max(16f, tmp.preferredWidth + 2f);

@@ -20,7 +20,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     private string currentBlockId;
     private TMP_FontAsset referenceFont;
     private Material referenceFontMaterial;
-    private float referenceFontSize = 20f;
+    private float referenceFontSize = 32f;
     private Color referenceColor = Color.white;
 
     public void Initialize(string templateText, string commandType, string blockId = "") {
@@ -90,13 +90,14 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         if (source.font != null) {
             referenceFont = source.font;
+            CodeConsoleTypography.CaptureDefaultFont(referenceFont);
         }
 
         if (source.fontSharedMaterial != null) {
             referenceFontMaterial = source.fontSharedMaterial;
         }
 
-        referenceFontSize = source.fontSize > 0f ? source.fontSize : 20f;
+        referenceFontSize = source.fontSize > 0f ? source.fontSize : 32f;
         referenceColor = source.color;
     }
 
@@ -111,12 +112,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
             target.fontSharedMaterial = referenceFontMaterial;
         }
 
-        target.fontSize = fontSizeOverride ?? referenceFontSize;
+        CodeConsoleTypography.Apply(target, fontSizeOverride ?? referenceFontSize, alignOverride);
         target.color = referenceColor;
-
-        if (alignOverride.HasValue) {
-            target.alignment = alignOverride.Value;
-        }
     }
 
     private void EnsureContainer() {

@@ -545,9 +545,8 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         TextMeshProUGUI text = textObj.GetComponent<TextMeshProUGUI>();
         text.text = "[arrastra bloque aqui]";
-        text.fontSize = 18f;
+        CodeConsoleTypography.Apply(text, 29f, TextAlignmentOptions.MidlineLeft);
         text.color = new Color(1f, 1f, 1f, 0.45f);
-        text.alignment = TextAlignmentOptions.MidlineLeft;
         text.enableWordWrapping = false;
 
         LayoutElement textLE = textObj.AddComponent<LayoutElement>();
