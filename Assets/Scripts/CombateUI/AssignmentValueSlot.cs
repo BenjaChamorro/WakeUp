@@ -12,6 +12,7 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
     private const float StringInputMaxWidth = 640f;
     private const float MathInputMinWidth = 38f;
     private const float MathInputMaxWidth = 320f;
+    private const float MathInputFontSize = 32f;
 
     [SerializeField] private TMP_InputField baseInput;
     [SerializeField] private RectTransform dynamicContentRoot;
@@ -228,9 +229,9 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
         if (dynamicContentRoot == null) return;
 
         ClearContentRoot();
-        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, 20f, false);
+        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, MathInputFontSize, false);
         CreateStaticText(opText);
-        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, 20f, false);
+        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, MathInputFontSize, false);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dynamicContentRoot);
     }
