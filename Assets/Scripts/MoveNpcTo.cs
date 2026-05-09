@@ -6,6 +6,9 @@ public class MoveNpcTo : MonoBehaviour
     [SerializeField] private float velocidad = 2f;
     [SerializeField] private Transform[] destinos;
     [SerializeField] private float tiempoEsperaEntreDestinos = 1f;
+    [Header("Optional Animation")]
+    [Tooltip("If assigned, this NPCSpriteController will be updated with movement direction. Optional: leave null to ignore.")]
+    [SerializeField] private NPCSpriteController spriteController;
 
     private bool moviendo;
     private int indiceDestinoActual;
@@ -36,6 +39,9 @@ public class MoveNpcTo : MonoBehaviour
     {
         if (!moviendo || destinos == null || destinos.Length == 0)
         {
+            // ensure sprite stops facing movement when not moving
+            if (spriteController != null)
+                spriteController.SetDirection(Vector2.zero);
             return;
         }
 
@@ -56,6 +62,14 @@ public class MoveNpcTo : MonoBehaviour
             transform.position,
             destinoActual.position,
             velocidad * Time.deltaTime);
+
+        // Update sprite controller direction optionally
+        if (spriteController != null)
+        {
+            Vector3 delta = destinoActual.position - transform.position;
+            Vector2 dir = new Vector2(delta.x, delta.y);
+            spriteController.SetDirectionFromVelocity(dir * velocidad);
+        }
 
         if (Vector3.Distance(transform.position, destinoActual.position) <= 0.001f)
         {
