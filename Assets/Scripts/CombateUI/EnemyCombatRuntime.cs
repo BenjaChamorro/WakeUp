@@ -29,6 +29,16 @@ public class EnemyCombatRuntime : MonoBehaviour {
     }
 
     void Start() {
+        // Cargar enemigo desde GameManager
+        if (GameManager.Instance != null && GameManager.Instance.CurrentEnemyAsset != null)
+        {
+            currentEnemy = GameManager.Instance.CurrentEnemyAsset as EnemyCombatData;
+            if (currentEnemy != null)
+            {
+                // Debug.Log($"EnemyCombatRuntime: cargando enemigo desde GameManager: {currentEnemy.enemyDisplayName}");
+            }
+        }
+
         ApplyEnemyData();
     }
 
