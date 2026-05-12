@@ -30,6 +30,24 @@ public class FollowCamera : MonoBehaviour
         maxY = newMaxY;
     }
 
+    public void GetCameraState(out bool limitsEnabled, out float boundsMinX, out float boundsMaxX, out float boundsMinY, out float boundsMaxY)
+    {
+        limitsEnabled = usarLimites;
+        boundsMinX = minX;
+        boundsMaxX = maxX;
+        boundsMinY = minY;
+        boundsMaxY = maxY;
+    }
+
+    public void RestoreCameraState(bool limitsEnabled, float boundsMinX, float boundsMaxX, float boundsMinY, float boundsMaxY)
+    {
+        usarLimites = limitsEnabled;
+        minX = boundsMinX;
+        maxX = boundsMaxX;
+        minY = boundsMinY;
+        maxY = boundsMaxY;
+    }
+
     void LateUpdate()
     {
         if (objetoSeguir == null)

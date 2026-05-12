@@ -138,6 +138,12 @@ public class CombateUIFlowController : MonoBehaviour {
         if (enemyRuntime != null) {
             enemyRuntime.ShowEnemyDefeatedMessage();
         }
+
+        yield return new WaitForSeconds(3f);
+
+        if (GameManager.Instance != null) {
+            GameManager.Instance.ExitCombatAndReturn();
+        }
     }
 
     void SetAllButtonsInteractable(bool interactable) {

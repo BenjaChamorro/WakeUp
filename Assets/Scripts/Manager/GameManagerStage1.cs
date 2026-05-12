@@ -29,6 +29,11 @@ public class GameManagerStage1 : MonoBehaviour
 
     void Start()
     {
+        if (TryRestoreAfterCombat())
+        {
+            return;
+        }
+
         SetInitialStage();
     }
 
@@ -131,6 +136,83 @@ public class GameManagerStage1 : MonoBehaviour
         {
             SetActiveStage(stage12Object);
         }
+    }
+
+    private bool TryRestoreAfterCombat()
+    {
+        if (GameManager.Instance == null)
+        {
+            return false;
+        }
+
+        if (!GameManager.Instance.ConsumePendingStageRestore())
+        {
+            return false;
+        }
+
+        GameObject playerObject = playerTransform != null ? playerTransform.gameObject : GameObject.FindGameObjectWithTag("Player");
+        if (playerObject == null)
+        {
+            return false;
+        }
+
+        RestoreStageForPlayerPosition(playerObject.transform.position);
+        return true;
+    }
+
+    public void RestoreStageForPlayerPosition(Vector3 playerPosition)
+    {
+        GameObject stageToActivate = ResolveStageByPosition(playerPosition);
+        if (stageToActivate == null)
+        {
+            stageToActivate = startOnStage11 ? stage11Object : stage12Object;
+        }
+
+        SetActiveStage(stageToActivate);
+    }
+
+    private GameObject ResolveStageByPosition(Vector3 playerPosition)
+    {
+        if (IsPositionInsideStage(stage11Object, playerPosition)) return stage11Object;
+        if (IsPositionInsideStage(stage12Object, playerPosition)) return stage12Object;
+        if (IsPositionInsideStage(stage13Object, playerPosition)) return stage13Object;
+
+        return null;
+    }
+
+    private bool IsPositionInsideStage(GameObject stageObject, Vector3 worldPosition)
+    {
+        if (stageObject == null)
+        {
+            return false;
+        }
+
+        Collider stageCollider3D = stageObject.GetComponentInChildren<Collider>(true);
+        if (stageCollider3D != null)
+        {
+            return stageCollider3D.bounds.Contains(worldPosition);
+        }
+
+        Collider2D stageCollider2D = stageObject.GetComponentInChildren<Collider2D>(true);
+        if (stageCollider2D != null)
+        {
+            Vector2 point2D = new Vector2(worldPosition.x, worldPosition.y);
+            return stageCollider2D.bounds.Contains(point2D);
+        }
+
+        Renderer[] renderers = stageObject.GetComponentsInChildren<Renderer>(true);
+        if (renderers == null || renderers.Length == 0)
+        {
+            return false;
+        }
+
+        Bounds combined = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            combined.Encapsulate(renderers[i].bounds);
+        }
+
+        return combined.Contains(worldPosition);
     }
 
     private void SetActiveStage(GameObject stageToActivate)
