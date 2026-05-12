@@ -98,6 +98,19 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
 
+        // Los bloques flatText solo se devuelven si fueron procesados en un input
+        string commandTypeLower = commandType != null ? commandType.Trim().ToLowerInvariant() : string.Empty;
+        if (commandTypeLower == "flattext") {
+            FlatTextInputHandler flatTextHandler = FindParentWithComponent<FlatTextInputHandler>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
+            if (flatTextHandler != null) {
+                // Se soltó sobre un input, FlatTextInputHandler ya lo procesó, devolver a paleta
+                ReturnToOriginalPosition();
+                return;
+            }
+            // No se soltó sobre un input, procesar como línea normal en consola
+            // Continuar con el flujo normal
+        }
+
         OperatorDropSlot operatorSlot = FindParentWithComponent<OperatorDropSlot>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
         if (operatorSlot != null && IsOperatorType(commandType)) {
             HandleOperatorSlotDrop(operatorSlot);

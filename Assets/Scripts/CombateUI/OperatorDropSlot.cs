@@ -143,9 +143,13 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
         if (eventData.pointerDrag == null) return;
 
         BloqueCodigo dragged = eventData.pointerDrag.GetComponent<BloqueCodigo>();
-        if (dragged == null || !IsOperatorType(dragged.commandType)) return;
+        if (dragged == null) return;
 
-        TrySetOperator(dragged.codeText);
+        string draggedType = dragged.commandType != null ? dragged.commandType.Trim().ToLowerInvariant() : string.Empty;
+        
+        if (IsOperatorType(draggedType)) {
+            TrySetOperator(dragged.codeText);
+        }
     }
 
     private bool IsOperatorType(string type) {

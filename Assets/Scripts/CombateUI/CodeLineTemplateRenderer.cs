@@ -301,6 +301,9 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
 
+        // Agregar handler para bloques flatText
+        FlatTextInputHandler flatTextHandler = root.AddComponent<FlatTextInputHandler>();
+
         GameObject textGO = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform textRect = textGO.GetComponent<RectTransform>();
         textRect.SetParent(rect, false);

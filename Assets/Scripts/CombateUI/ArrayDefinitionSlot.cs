@@ -115,6 +115,10 @@ public class ArrayDefinitionSlot : MonoBehaviour {
         le.preferredHeight = 24f;
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
+
+        // Agregar handler para bloques flatText
+        FlatTextInputHandler flatTextHandler = root.AddComponent<FlatTextInputHandler>();
+
         input.lineType = TMP_InputField.LineType.SingleLine;
         input.contentType = TMP_InputField.ContentType.Standard;
 

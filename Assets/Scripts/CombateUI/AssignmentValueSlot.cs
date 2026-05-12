@@ -76,6 +76,13 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
 
         if (draggedType == "definition") {
             TrySetDefinition(dragged.blockId, dragged.codeText);
+            return;
+        }
+
+        // Los bloques flatText se insertan en el input base
+        if (draggedType == "flattext" && baseInput != null) {
+            baseInput.text = dragged.codeText;
+            baseInput.caretPosition = baseInput.text.Length;
         }
     }
 
@@ -282,6 +289,10 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
         le.preferredHeight = 24f;
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
+
+        // Agregar handler para bloques flatText
+        FlatTextInputHandler flatTextHandler = root.AddComponent<FlatTextInputHandler>();
+
         input.lineType = TMP_InputField.LineType.SingleLine;
         input.contentType = numericOnly ? TMP_InputField.ContentType.DecimalNumber : TMP_InputField.ContentType.Standard;
 
