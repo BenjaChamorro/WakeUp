@@ -1,4 +1,5 @@
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,10 +34,10 @@ public class EnemyCombatRuntime : MonoBehaviour {
         if (GameManager.Instance != null && GameManager.Instance.CurrentEnemyAsset != null)
         {
             currentEnemy = GameManager.Instance.CurrentEnemyAsset as EnemyCombatData;
-            if (currentEnemy != null)
-            {
-                // Debug.Log($"EnemyCombatRuntime: cargando enemigo desde GameManager: {currentEnemy.enemyDisplayName}");
-            }
+            // if (currentEnemy != null)
+            // {
+            //     Debug.Log($"EnemyCombatRuntime: cargando enemigo desde GameManager: {currentEnemy.enemyDisplayName}");
+            // }
         }
 
         ApplyEnemyData();
@@ -143,7 +144,35 @@ public class EnemyCombatRuntime : MonoBehaviour {
             return false;
         }
 
-        return TryEvaluateVictoryCode(currentEnemy.victoryCode, playerCode, out reason);
+        bool success = TryEvaluateVictoryCode(currentEnemy.victoryCode, playerCode, out reason);
+        if (success)
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.MarkCurrentEncounterSucceeded();
+            }
+            HandleVictory();
+        }
+        return success;
+    }
+
+    public void HandleVictory()
+    {
+        StartCoroutine(VictorySequence());
+    }
+
+    private IEnumerator VictorySequence()
+    {
+        ShowDefeatDialogue();
+        yield return new WaitForSeconds(1.5f);
+
+        ShowEnemyDefeatedMessage();
+        yield return new WaitForSeconds(2f);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ExitCombatAndReturn();
+        }
     }
 
     private void AutoAssignReferences() {

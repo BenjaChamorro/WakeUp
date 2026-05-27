@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class GameManagerStage1 : MonoBehaviour
 {
+    
+
     [Header("Stage GameObjects")]
     [SerializeField] private GameObject stage11Object;
     [SerializeField] private GameObject stage12Object;
@@ -29,7 +31,10 @@ public class GameManagerStage1 : MonoBehaviour
 
     void Start()
     {
-        SetInitialStage();
+        if (!TryRestoreSavedStage())
+        {
+            SetInitialStage();
+        }
     }
 
     void Update()
@@ -144,6 +149,63 @@ public class GameManagerStage1 : MonoBehaviour
         stage11Object.SetActive(stageToActivate == stage11Object);
         stage12Object.SetActive(stageToActivate == stage12Object);
         stage13Object.SetActive(stageToActivate == stage13Object);
+
+        SaveActiveStage(stageToActivate);
+    }
+
+    private bool TryRestoreSavedStage()
+    {
+        if (SaveManager.Instance == null) return false;
+
+        if (!SaveManager.Instance.GetSavedActiveStage(out string savedStageName))
+        {
+            return false;
+        }
+
+        if (savedStageName == "Stage1.1")
+        {
+            SetActiveStage(stage11Object);
+            return true;
+        }
+
+        if (savedStageName == "Stage1.2")
+        {
+            SetActiveStage(stage12Object);
+            return true;
+        }
+
+        if (savedStageName == "Stage1.3")
+        {
+            SetActiveStage(stage13Object);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void SaveActiveStage(GameObject activeStage)
+    {
+        if (activeStage == null || SaveManager.Instance == null)
+        {
+            return;
+        }
+
+        if (activeStage == stage11Object)
+        {
+            SaveManager.Instance.SaveActiveStage("Stage1.1");
+            return;
+        }
+
+        if (activeStage == stage12Object)
+        {
+            SaveManager.Instance.SaveActiveStage("Stage1.2");
+            return;
+        }
+
+        if (activeStage == stage13Object)
+        {
+            SaveManager.Instance.SaveActiveStage("Stage1.3");
+        }
     }
 
     private void MovePlayerToSpawn(Transform spawnPoint)
@@ -190,5 +252,35 @@ public class GameManagerStage1 : MonoBehaviour
 
         isLoading = true;
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void ActivateSavedStage(string stageName)
+    {
+        if (string.IsNullOrEmpty(stageName)) return;
+
+        if (stageName == "Stage1.1")
+        {
+            SetActiveStage(stage11Object);
+            return;
+        }
+
+        if (stageName == "Stage1.2")
+        {
+            SetActiveStage(stage12Object);
+            return;
+        }
+
+        if (stageName == "Stage1.3")
+        {
+            SetActiveStage(stage13Object);
+        }
+    }
+
+    public string GetActiveStage()
+    {
+        if (stage11Object.activeSelf) return "Stage1.1";
+        if (stage12Object.activeSelf) return "Stage1.2";
+        if (stage13Object.activeSelf) return "Stage1.3";
+        return string.Empty;
     }
 }
