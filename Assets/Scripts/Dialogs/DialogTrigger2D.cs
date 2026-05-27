@@ -128,4 +128,5 @@ public class DialogTrigger2D : MonoBehaviour
     {
         TryStartDialogue();
     }
+
 }

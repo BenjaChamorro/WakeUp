@@ -7,7 +7,16 @@ public class TriggerActivateObject : MonoBehaviour
     [SerializeField] private bool stayActive = false;
     [SerializeField] private string playerTag = "Player";
 
+    [Header("Event Filter")]
+    [SerializeField] private bool useEventFilter = false;
+    [SerializeField] private string requiredEventId = "";
+    [SerializeField] private bool requireEventCompleted = false;
+
     private bool hasBeenActivated = false;
+
+    private void Awake()
+    {
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -24,6 +33,20 @@ public class TriggerActivateObject : MonoBehaviour
         if (!IsPlayer(otherObject))
         {
             return;
+        }
+
+        if (useEventFilter && !string.IsNullOrWhiteSpace(requiredEventId) && SaveManager.Instance != null)
+        {
+            bool completed = SaveManager.Instance.WasEventTriggered(requiredEventId);
+            if (requireEventCompleted && !completed)
+            {
+                return;
+            }
+
+            if (!requireEventCompleted && completed)
+            {
+                return;
+            }
         }
 
         if (activateOnce && hasBeenActivated)
@@ -66,4 +89,5 @@ public class TriggerActivateObject : MonoBehaviour
             targetObject.SetActive(activeState);
         }
     }
+
 }

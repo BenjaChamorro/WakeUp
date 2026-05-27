@@ -2,6 +2,18 @@ using UnityEngine;
 
 public class StageTrigger : MonoBehaviour
 {
+    public enum TargetStage
+    {
+        Stage11,
+        Stage12,
+        Stage13,
+        Stage14,
+        Stage15,
+        Stage16,
+        Stage17,
+        Stage18
+    }
+
     [Header("References")]
     [SerializeField] private GameManagerStage1 gameManager;
     [SerializeField] private FollowCamera followCamera;
@@ -11,8 +23,7 @@ public class StageTrigger : MonoBehaviour
     [SerializeField] private string requiredTag = "Player";
 
     [Header("Behavior")]
-    [SerializeField] private bool triggerOnlyOnce = true;
-    [SerializeField] private bool goToStage12 = true;
+    [SerializeField] private TargetStage targetStage = TargetStage.Stage12;
 
     [Header("Teleport")]
     [SerializeField] private bool useCustomTpPoint;
@@ -24,8 +35,6 @@ public class StageTrigger : MonoBehaviour
     [SerializeField] private float maxX = 10f;
     [SerializeField] private float minY = -5f;
     [SerializeField] private float maxY = 5f;
-
-    private bool wasTriggered;
 
     private void Awake()
     {
@@ -52,11 +61,6 @@ public class StageTrigger : MonoBehaviour
 
     private void TryTrigger(GameObject otherObject)
     {
-        if (wasTriggered && triggerOnlyOnce)
-        {
-            return;
-        }
-
         if (requireTag && !otherObject.CompareTag(requiredTag))
         {
             return;
@@ -68,15 +72,22 @@ public class StageTrigger : MonoBehaviour
             return;
         }
 
-        if (goToStage12)
+        // Obtener el nombre del stage destino
+        string targetStageName = GetStageName(targetStage);
+
+        // Verificar si ya estamos en el stage destino
+        if (SaveManager.Instance.GetSavedActiveStage(out string currentStage))
         {
-            gameManager.ActivateStage12(useCustomTpPoint ? tpPoint : null);
-        }
-        else
-        {
-            gameManager.ActivateStage11(useCustomTpPoint ? tpPoint : null);
+            if (currentStage == targetStageName)
+            {
+                return; // Ya estamos en el stage destino, no hacer nada
+            }
         }
 
+        // Activar el stage destino
+        ActivateTargetStage();
+
+        // Actualizar cámara si es necesario
         if (updateCameraBounds)
         {
             if (followCamera != null)
@@ -89,6 +100,48 @@ public class StageTrigger : MonoBehaviour
             }
         }
 
-        wasTriggered = true;
+        // Intentar guardar el estado actual (posición, cámara, stage).
+        // Si hay eventos pendientes, SaveManager.AutoSaveCurrentState() será bloqueado
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.CommitCurrentState();
+        }
     }
+
+    private void ActivateTargetStage()
+    {
+        switch (targetStage)
+        {
+            case TargetStage.Stage11:
+                gameManager.ActivateStage11(useCustomTpPoint ? tpPoint : null);
+                break;
+            case TargetStage.Stage12:
+                gameManager.ActivateStage12(useCustomTpPoint ? tpPoint : null);
+                break;
+            case TargetStage.Stage13:
+                gameManager.ActivateStage13(useCustomTpPoint ? tpPoint : null);
+                break;
+            default:
+                Debug.LogWarning($"ActivateTargetStage no soporta {targetStage} aún. Añade el método en GameManagerStage1.");
+                break;
+        }
+    }
+
+    private string GetStageName(TargetStage stage)
+    {
+        return stage switch
+        {
+            TargetStage.Stage11 => "Stage1.1",
+            TargetStage.Stage12 => "Stage1.2",
+            TargetStage.Stage13 => "Stage1.3",
+            TargetStage.Stage14 => "Stage1.4",
+            TargetStage.Stage15 => "Stage1.5",
+            TargetStage.Stage16 => "Stage1.6",
+            TargetStage.Stage17 => "Stage1.7",
+            TargetStage.Stage18 => "Stage1.8",
+            _ => "Stage1.1"
+        };
+    }
+
+
 }

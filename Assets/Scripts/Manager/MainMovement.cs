@@ -51,5 +51,6 @@ public class MainMovement : MonoBehaviour
     {
         animator.SetFloat("Horizontal", direccion.x);
         animator.SetFloat("Vertical", direccion.y);
+        animator.SetBool("IsWalking", direccion.sqrMagnitude > 0f);
     }
 }
