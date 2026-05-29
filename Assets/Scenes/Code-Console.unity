@@ -1054,21 +1054,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCodeInventory
   allBlocks:
   - {fileID: 11400000, guid: 80040ec8b98a71949a6358a369af2f42, type: 2}
-  - {fileID: 11400000, guid: 78e14f680aeab1c49bd8dade38d61c3d, type: 2}
   - {fileID: 11400000, guid: 757054e10f176a64caa728ddb232d3f9, type: 2}
-  - {fileID: 11400000, guid: f4418194f2734714cb6a428ff67f7cce, type: 2}
   - {fileID: 11400000, guid: 01a29e2c9bc9a3d43a80723d556ecf71, type: 2}
-  - {fileID: 11400000, guid: d77140dc3108a7c4e9ff4ab8a91cb736, type: 2}
-  - {fileID: 11400000, guid: 3d7bbf4656f86a44887b2bfc0a33aa7b, type: 2}
   - {fileID: 11400000, guid: d58dcf183707e9d4694e205d8c5c029f, type: 2}
-  - {fileID: 11400000, guid: 5562e9da7c12fc74987a6766b548fc62, type: 2}
-  - {fileID: 11400000, guid: e149020ce1b74b243accc7f6148c3ca1, type: 2}
-  - {fileID: 11400000, guid: d300c2533c83f5544a392cd95c8cc6f6, type: 2}
-  - {fileID: 11400000, guid: 6abc8babdf081064398aef63c5f4db0f, type: 2}
-  - {fileID: 11400000, guid: e8b066af241f3224b9f0a377a8836bdc, type: 2}
-  - {fileID: 11400000, guid: 1138200b538949542a231e00a787fa87, type: 2}
-  - {fileID: 11400000, guid: 89e0844c809ba154d9ff0f4cb22d263a, type: 2}
-  - {fileID: 11400000, guid: 8e23cdcfdaa60094cb1cdaab20a9dd89, type: 2}
   - {fileID: 11400000, guid: 40022e36e6f8c14489e46d9088d2c96a, type: 2}
   unlockedAtStart: []
 --- !u!4 &784106770
