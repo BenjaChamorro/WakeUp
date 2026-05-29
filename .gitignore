@@ -24,3 +24,5 @@ MemoryCaptures/
 *.VC.db
 
 .DS_Store
+Assets/saves/save.json
+Assets/saves/save.json.meta
