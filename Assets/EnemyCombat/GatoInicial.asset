@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: gatoInicial
   enemyDisplayName: Gato
-  enemySprite: {fileID: 4650395575937160843, guid: 1e1661d14e9b24b479054949418e70c9, type: 3}
+  enemySprite: {fileID: -739695128718787902, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
   introDialogues:
   - ' Miau Miau'
   defeatDialogues:

@@ -9038,6 +9038,8 @@ MonoBehaviour:
   horizontalParam: Horizontal
   verticalParam: Vertical
   talkingParam: IsTalking
+  walkingParam: IsWalking
+  flipXAnimations: 0
 --- !u!95 &211389704
 Animator:
   serializedVersion: 7
@@ -31405,7 +31407,7 @@ MonoBehaviour:
   destinos:
   - {fileID: 142719333}
   tiempoEsperaEntreDestinos: 0
-  spriteController: {fileID: 0}
+  spriteControllers: []
 --- !u!1 &503612755
 GameObject:
   m_ObjectHideFlags: 0
@@ -41158,6 +41160,8 @@ GameObject:
   m_Component:
   - component: {fileID: 750198839}
   - component: {fileID: 750198840}
+  - component: {fileID: 750198842}
+  - component: {fileID: 750198841}
   m_Layer: 0
   m_Name: Cat3
   m_TagString: Untagged
@@ -41174,7 +41178,7 @@ Transform:
   m_GameObject: {fileID: 750198838}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.2799988, y: 0.29000056, z: 0}
+  m_LocalPosition: {x: 1.53, y: 0.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -41229,16 +41233,55 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2820305447555642018, guid: be64d7201ad52b943aef42c7c83dc0ca, type: 3}
+  m_Sprite: {fileID: -4964510708930200738, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.375, y: 1}
+  m_Size: {x: 0.22, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
+--- !u!114 &750198841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750198838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e459858d73c024a8c909e0019142dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCSpriteController
+  horizontalParam: Horizontal
+  verticalParam: Vertical
+  talkingParam: Estado
+  walkingParam: IsWalking
+  flipXAnimations: 1
+--- !u!95 &750198842
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750198838}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3bb92b6740605834aaf52abc23498984, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &750560503
 GameObject:
   m_ObjectHideFlags: 0
@@ -45472,6 +45515,8 @@ GameObject:
   m_Component:
   - component: {fileID: 857628743}
   - component: {fileID: 857628744}
+  - component: {fileID: 857628746}
+  - component: {fileID: 857628745}
   m_Layer: 0
   m_Name: Cat2
   m_TagString: Untagged
@@ -45543,16 +45588,55 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8937594717961576507, guid: 8e44de278c525ce4d8922c3d81bcbd9f, type: 3}
+  m_Sprite: {fileID: -5638048773837152604, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.375, y: 1}
+  m_Size: {x: 0.22, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
+--- !u!114 &857628745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857628742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e459858d73c024a8c909e0019142dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCSpriteController
+  horizontalParam: Horizontal
+  verticalParam: Vertical
+  talkingParam: Estado
+  walkingParam: IsWalking
+  flipXAnimations: 1
+--- !u!95 &857628746
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857628742}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6f88db4d742d9644b850434b960c2496, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &858563126
 GameObject:
   m_ObjectHideFlags: 0
@@ -97398,7 +97482,8 @@ MonoBehaviour:
   - {fileID: 1323640273}
   - {fileID: 1195625757}
   tiempoEsperaEntreDestinos: 0.2
-  spriteController: {fileID: 1718233839}
+  spriteControllers:
+  - {fileID: 1718233839}
 --- !u!50 &1718233837
 Rigidbody2D:
   serializedVersion: 5
@@ -97478,6 +97563,8 @@ MonoBehaviour:
   horizontalParam: Horizontal
   verticalParam: Vertical
   talkingParam: IsTalking
+  walkingParam: IsWalking
+  flipXAnimations: 0
 --- !u!95 &1718233840
 Animator:
   serializedVersion: 7
@@ -113012,6 +113099,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2129306388}
   - component: {fileID: 2129306389}
+  - component: {fileID: 2129306391}
+  - component: {fileID: 2129306390}
   m_Layer: 0
   m_Name: Cat1
   m_TagString: Untagged
@@ -113083,16 +113172,55 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 4650395575937160843, guid: 1e1661d14e9b24b479054949418e70c9, type: 3}
+  m_Sprite: {fileID: 7673991327374130416, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.375, y: 1}
+  m_Size: {x: 0.22, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
+--- !u!114 &2129306390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129306387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e459858d73c024a8c909e0019142dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCSpriteController
+  horizontalParam: Horizontal
+  verticalParam: Vertical
+  talkingParam: Estado
+  walkingParam: IsWalking
+  flipXAnimations: 1
+--- !u!95 &2129306391
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129306387}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5b6198cdcff073243952df5ffa44eaea, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2132608605
 GameObject:
   m_ObjectHideFlags: 0
