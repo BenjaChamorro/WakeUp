@@ -101,6 +101,10 @@ public class EnemyCombatRuntime : MonoBehaviour {
             return;
         }
 
+        if (enemySpriteRenderer != null && currentEnemy.defeatSprite != null) {
+            enemySpriteRenderer.sprite = currentEnemy.defeatSprite;
+        }
+
         if (currentEnemy.defeatDialogues != null && currentEnemy.defeatDialogues.Count > 0) {
             for (int i = 0; i < currentEnemy.defeatDialogues.Count; i++) {
                 string line = currentEnemy.defeatDialogues[i];
@@ -125,6 +129,10 @@ public class EnemyCombatRuntime : MonoBehaviour {
     public void PlayDefeatAnimation() {
         if (currentEnemy == null || currentEnemy.defeatAnimationProfile == null) {
             return;
+        }
+
+        if (enemySpriteRenderer != null && currentEnemy.defeatSprite != null) {
+            enemySpriteRenderer.sprite = currentEnemy.defeatSprite;
         }
 
         Transform targetTransform = enemySpriteRenderer != null ? enemySpriteRenderer.transform : transform;
@@ -164,7 +172,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
     private IEnumerator VictorySequence()
     {
         ShowDefeatDialogue();
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.5f);
 
         ShowEnemyDefeatedMessage();
         yield return new WaitForSeconds(2f);

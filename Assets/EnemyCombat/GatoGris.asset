@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyId: gatoInicial
   enemyDisplayName: Gato
   enemySprite: {fileID: 1044313456682513950, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
+  defeatSprite: {fileID: -4272250343917243592, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
   introDialogues:
   - Miau miau miau
   defeatDialogues:

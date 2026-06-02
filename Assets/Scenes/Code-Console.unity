@@ -1535,7 +1535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 949a0846b242c0d4bafe345dcd924ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatRuntime
-  currentEnemy: {fileID: 11400000, guid: 5f9e7148bc1a25c49a19c0657ea10701, type: 2}
+  currentEnemy: {fileID: 11400000, guid: 0883a760f4ca66a44acdda3f2da4fb71, type: 2}
   enemySpriteRenderer: {fileID: 0}
   dialogueText: {fileID: 0}
   enemyNameText: {fileID: 0}

@@ -7,7 +7,7 @@ using System.Collections;
 public class CombateUIFlowController : MonoBehaviour {
     private const int IndentSizePixels = 24;
     private const int SpacesPerIndent = 4;
-    private const float VictoryMessageDelaySeconds = 3f;
+    private const float VictoryMessageDelaySeconds = 4f;
 
     [Header("Paneles")]
     public GameObject combateUI;

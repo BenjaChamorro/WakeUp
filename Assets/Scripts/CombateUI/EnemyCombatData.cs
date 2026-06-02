@@ -9,6 +9,7 @@ public class EnemyCombatData : ScriptableObject {
 
     [Header("Visual")]
     public Sprite enemySprite;
+    public Sprite defeatSprite;
 
     [Header("Dialogos")]
     [TextArea(2, 5)] public List<string> introDialogues = new List<string>();
