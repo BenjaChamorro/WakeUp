@@ -25,6 +25,7 @@ public class SaveData
     public PlayerData playerData = new PlayerData();
     public CameraData cameraData = new CameraData();
     public List<string> completedEventIds = new List<string>();
+    public List<string> unlockedBlockIds = new List<string>();
 
     // Scene / session persistence
     public int savedSceneIndex = -1;
@@ -36,5 +37,6 @@ public class SaveData
         playerData = new PlayerData();
         cameraData = new CameraData();
         completedEventIds = new List<string>();
+        unlockedBlockIds = new List<string> { SaveManager.DefaultUnlockedBlockId };
     }
 }

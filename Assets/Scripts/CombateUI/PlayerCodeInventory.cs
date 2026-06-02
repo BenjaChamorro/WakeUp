@@ -5,34 +5,55 @@ public class PlayerCodeInventory : MonoBehaviour {
     [Header("Catalogo total de bloques")]
     [SerializeField] private List<CodeBlockData> allBlocks = new List<CodeBlockData>();
 
-    [Header("Desbloqueados extra al iniciar")]
-    [SerializeField] private List<string> unlockedAtStart = new List<string>();
-
     private readonly HashSet<string> unlockedIds = new HashSet<string>();
     private readonly List<CodeBlockData> unlockedBlocks = new List<CodeBlockData>();
 
     void Awake() {
-        InitializeUnlockedBlocks();
+        EnsureSaveManagerExists();
+        LoadUnlockedBlocksFromSave();
     }
 
-    public void InitializeUnlockedBlocks() {
+    void Start() {
+        EnsureSaveManagerExists();
+        LoadUnlockedBlocksFromSave();
+    }
+
+    private void EnsureSaveManagerExists() {
+        if (SaveManager.Instance != null) {
+            return;
+        }
+
+        GameObject saveManagerObject = new GameObject("SaveManagers");
+        saveManagerObject.AddComponent<SaveManager>();
+    }
+
+    public void LoadUnlockedBlocksFromSave() {
         unlockedIds.Clear();
 
-        for (int i = 0; i < allBlocks.Count; i++) {
-            CodeBlockData block = allBlocks[i];
-            if (block != null && block.unlockedAtStart && !string.IsNullOrWhiteSpace(block.blockId)) {
-                unlockedIds.Add(block.blockId);
+        if (SaveManager.Instance != null) {
+            IReadOnlyList<string> savedUnlockedIds = SaveManager.Instance.GetUnlockedBlockIds();
+            if (savedUnlockedIds != null) {
+                for (int i = 0; i < savedUnlockedIds.Count; i++) {
+                    string id = savedUnlockedIds[i];
+                    if (!string.IsNullOrWhiteSpace(id)) {
+                        unlockedIds.Add(id);
+                    }
+                }
             }
         }
 
-        for (int i = 0; i < unlockedAtStart.Count; i++) {
-            string id = unlockedAtStart[i];
-            if (!string.IsNullOrWhiteSpace(id)) {
-                unlockedIds.Add(id);
-            }
+        unlockedIds.Add(SaveManager.DefaultUnlockedBlockId);
+
+        if (SaveManager.Instance != null) {
+            SaveManager.Instance.UnlockCodeBlock(SaveManager.DefaultUnlockedBlockId);
         }
 
         RefreshUnlockedCache();
+
+        CodePaletteBuilder paletteBuilder = FindObjectOfType<CodePaletteBuilder>(true);
+        if (paletteBuilder != null) {
+            paletteBuilder.RefreshPalette();
+        }
     }
 
     public IReadOnlyList<CodeBlockData> GetUnlockedBlocks() {
@@ -49,7 +70,14 @@ public class PlayerCodeInventory : MonoBehaviour {
 
         bool added = unlockedIds.Add(blockId);
         if (added) {
+            if (SaveManager.Instance != null) {
+                SaveManager.Instance.UnlockCodeBlock(blockId);
+            }
             RefreshUnlockedCache();
+            CodePaletteBuilder paletteBuilder = FindObjectOfType<CodePaletteBuilder>(true);
+            if (paletteBuilder != null) {
+                paletteBuilder.RefreshPalette();
+            }
         }
 
         return added;

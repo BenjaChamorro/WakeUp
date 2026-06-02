@@ -159,6 +159,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
             {
                 GameManager.Instance.MarkCurrentEncounterSucceeded();
             }
+            GrantEnemyRewards();
             HandleVictory();
         }
         return success;

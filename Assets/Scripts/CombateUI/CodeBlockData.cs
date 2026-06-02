@@ -6,7 +6,4 @@ public class CodeBlockData : ScriptableObject {
     public string blockId = "print";
     public string displayText = "print()";
     public string commandType = "function";
-
-    [Header("Progreso")]
-    public bool unlockedAtStart;
 }

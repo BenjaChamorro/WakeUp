@@ -5,6 +5,7 @@ using System.IO;
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
+    public const string DefaultUnlockedBlockId = "print";
 
     private SaveData saveData;
     private string savePath;
@@ -53,9 +54,10 @@ public class SaveManager : MonoBehaviour
         {
             string json = File.ReadAllText(savePath);
             saveData = JsonUtility.FromJson<SaveData>(json);
-            if (saveData != null && saveData.completedEventIds == null)
+            bool changed = EnsureSaveDataDefaults();
+            if (changed)
             {
-                saveData.completedEventIds = new List<string>();
+                SaveGame();
             }
             LoadPlayerPosition();
             LoadCameraBounds();
@@ -65,6 +67,7 @@ public class SaveManager : MonoBehaviour
         {
             saveData = new SaveData();
             Debug.Log("[SaveManager] Nuevo juego iniciado");
+            SaveGame();
         }
     }
 
@@ -74,6 +77,8 @@ public class SaveManager : MonoBehaviour
         {
             saveData = new SaveData();
         }
+
+        EnsureSaveDataDefaults();
 
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(savePath, json);
@@ -261,6 +266,31 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    public IReadOnlyList<string> GetUnlockedBlockIds()
+    {
+        EnsureSaveDataDefaults();
+        return saveData.unlockedBlockIds;
+    }
+
+    public bool UnlockCodeBlock(string blockId)
+    {
+        if (string.IsNullOrWhiteSpace(blockId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+
+        if (saveData.unlockedBlockIds.Contains(blockId))
+        {
+            return false;
+        }
+
+        saveData.unlockedBlockIds.Add(blockId);
+        SaveGame();
+        return true;
+    }
+
     public bool WasEventTriggered(string eventId)
     {
         if (saveData == null || string.IsNullOrWhiteSpace(eventId))
@@ -331,5 +361,36 @@ public class SaveManager : MonoBehaviour
                 SaveActiveStage(activeStage);
             }
         }
+    }
+
+    private bool EnsureSaveDataDefaults()
+    {
+        bool changed = false;
+
+        if (saveData == null)
+        {
+            saveData = new SaveData();
+            changed = true;
+        }
+
+        if (saveData.completedEventIds == null)
+        {
+            saveData.completedEventIds = new List<string>();
+            changed = true;
+        }
+
+        if (saveData.unlockedBlockIds == null)
+        {
+            saveData.unlockedBlockIds = new List<string>();
+            changed = true;
+        }
+
+        if (!saveData.unlockedBlockIds.Contains(DefaultUnlockedBlockId))
+        {
+            saveData.unlockedBlockIds.Insert(0, DefaultUnlockedBlockId);
+            changed = true;
+        }
+
+        return changed;
     }
 }
