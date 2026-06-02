@@ -53928,8 +53928,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 433200877f0f32f4fbc6e3ff7e4da325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySelect
-  enemyAsset: {fileID: 11400000, guid: 5ff85781cd868964498f2fc5e8f5129b, type: 2}
-  encounterId: 0
+  enemyAsset: {fileID: 11400000, guid: 5f9e7148bc1a25c49a19c0657ea10701, type: 2}
+  encounterId: 2
   succeed: 0
   combatSceneIndex: 1
   triggerOnce: 1
@@ -105986,8 +105986,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 433200877f0f32f4fbc6e3ff7e4da325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySelect
-  enemyAsset: {fileID: 11400000, guid: 5ff85781cd868964498f2fc5e8f5129b, type: 2}
-  encounterId: 0
+  enemyAsset: {fileID: 11400000, guid: 0883a760f4ca66a44acdda3f2da4fb71, type: 2}
+  encounterId: 1
   succeed: 0
   combatSceneIndex: 1
   triggerOnce: 1
