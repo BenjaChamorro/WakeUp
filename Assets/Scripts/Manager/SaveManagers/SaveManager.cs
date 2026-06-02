@@ -163,6 +163,16 @@ public class SaveManager : MonoBehaviour
         return pendingEventIds.Count > 0;
     }
 
+    public bool IsEventPending(string eventId)
+    {
+        if (string.IsNullOrWhiteSpace(eventId))
+        {
+            return false;
+        }
+
+        return pendingEventIds.Contains(eventId);
+    }
+
     public void CommitCurrentState()
     {
         AutoSaveCurrentState();
