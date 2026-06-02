@@ -1,10 +1,11 @@
 using UnityEngine;
+using System.Collections;
 
-public class TriggerActivateObject : MonoBehaviour
+public class TriggerDeactivateObject : MonoBehaviour
 {
     [SerializeField] private GameObject targetObject;
-    [SerializeField] private bool activateOnce = false;
-    [SerializeField] private bool stayActive = false;
+    [SerializeField] private bool deactivateOnce = false;
+    [SerializeField] private bool stayInactive = false;
     [SerializeField] private string playerTag = "Player";
 
     [Header("Event Filter")]
@@ -13,7 +14,7 @@ public class TriggerActivateObject : MonoBehaviour
     [SerializeField] private bool requireEventCompleted = false;
     [SerializeField] private bool requireEventIncomplete = false;
 
-    private bool hasBeenActivated = false;
+    private bool hasBeenDeactivated = false;
 
     private void Awake()
     {
@@ -21,7 +22,7 @@ public class TriggerActivateObject : MonoBehaviour
 
     private void Start()
     {
-        ApplyInitialState();
+        StartCoroutine(ApplyInitialStateDeferred());
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -43,46 +44,52 @@ public class TriggerActivateObject : MonoBehaviour
 
         if (useEventFilter && !string.IsNullOrWhiteSpace(requiredEventId) && SaveManager.Instance != null)
         {
-            if (!ShouldActivateBasedOnEventFilter())
+            if (!ShouldDeactivateBasedOnEventFilter())
             {
                 return;
             }
         }
 
-        if (activateOnce && hasBeenActivated)
+        if (deactivateOnce && hasBeenDeactivated)
         {
             return;
         }
 
-        SetTargetActive(true);
+        SetTargetActive(false);
 
-        if (activateOnce)
+        if (deactivateOnce)
         {
-            hasBeenActivated = true;
+            hasBeenDeactivated = true;
         }
     }
 
     private void ApplyInitialState()
     {
-        if (!ShouldActivateBasedOnEventFilter())
+        if (!ShouldDeactivateBasedOnEventFilter())
         {
             return;
         }
 
-        if (activateOnce && hasBeenActivated)
+        if (deactivateOnce && hasBeenDeactivated)
         {
             return;
         }
 
-        SetTargetActive(true);
+        SetTargetActive(false);
 
-        if (activateOnce)
+        if (deactivateOnce)
         {
-            hasBeenActivated = true;
+            hasBeenDeactivated = true;
         }
     }
 
-    private bool ShouldActivateBasedOnEventFilter()
+    private IEnumerator ApplyInitialStateDeferred()
+    {
+        yield return null;
+        ApplyInitialState();
+    }
+
+    private bool ShouldDeactivateBasedOnEventFilter()
     {
         if (!useEventFilter || string.IsNullOrWhiteSpace(requiredEventId) || SaveManager.Instance == null)
         {
@@ -111,12 +118,17 @@ public class TriggerActivateObject : MonoBehaviour
             return;
         }
 
-        if (stayActive)
+        if (stayInactive)
         {
             return;
         }
 
-        SetTargetActive(false);
+        if (ShouldDeactivateBasedOnEventFilter())
+        {
+            return;
+        }
+
+        SetTargetActive(true);
     }
 
     private bool IsPlayer(GameObject otherObject)
@@ -131,5 +143,4 @@ public class TriggerActivateObject : MonoBehaviour
             targetObject.SetActive(activeState);
         }
     }
-
 }
