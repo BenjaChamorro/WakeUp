@@ -199,6 +199,11 @@ public class SaveManager : MonoBehaviour
     public void LoadPlayerPosition()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null || saveData == null || saveData.playerData == null)
+        {
+            return;
+        }
+
         player.transform.position = new Vector3(saveData.playerData.posX, saveData.playerData.posY, saveData.playerData.posZ);
     }
 
@@ -224,6 +229,11 @@ public class SaveManager : MonoBehaviour
     public void LoadCameraBounds()
     {
         FollowCamera fc = FindObjectOfType<FollowCamera>();
+        if (fc == null || saveData == null || saveData.cameraData == null)
+        {
+            return;
+        }
+
         fc.SetCameraBounds(
             saveData.cameraData.minX,
             saveData.cameraData.maxX,

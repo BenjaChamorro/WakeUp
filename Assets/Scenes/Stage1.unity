@@ -4282,6 +4282,10 @@ MonoBehaviour:
   succeed: 0
   combatSceneIndex: 1
   triggerOnce: 1
+  useEventFilter: 1
+  requiredEventId: Battle
+  requireEventCompleted: 0
+  requireEventIncomplete: 1
 --- !u!61 &97984934
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4427,7 +4431,7 @@ MonoBehaviour:
   targetObject: {fileID: 1846966035}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -31432,9 +31436,11 @@ GameObject:
   m_Component:
   - component: {fileID: 497192055}
   - component: {fileID: 497192056}
+  - component: {fileID: 497192057}
+  - component: {fileID: 497192058}
   m_Layer: 0
   m_Name: Enemys
-  m_TagString: Untagged
+  m_TagString: Cats
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31474,6 +31480,79 @@ MonoBehaviour:
   - {fileID: 142719333}
   tiempoEsperaEntreDestinos: 0
   spriteControllers: []
+--- !u!61 &497192057
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497192054}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!50 &497192058
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497192054}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &503612755
 GameObject:
   m_ObjectHideFlags: 0
@@ -35630,6 +35709,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577466463}
   m_CullTransparentMesh: 1
+--- !u!1 &581572006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 581572007}
+  m_Layer: 0
+  m_Name: Comprobaciones
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &581572007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581572006}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 25.7, y: 0.45000076, z: 0}
+  m_LocalScale: {x: 14.3928995, y: 6.523612, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1436880936}
+  - {fileID: 1729456849}
+  - {fileID: 2073648520}
+  m_Father: {fileID: 1791804796}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &589125158
 GameObject:
   m_ObjectHideFlags: 0
@@ -36044,6 +36157,51 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
+--- !u!1 &601090158
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 601090160}
+  - component: {fileID: 601090159}
+  m_Layer: 0
+  m_Name: CatsMoveEvent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &601090159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601090158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0cfe9bff2d548429b5d54ba32f5030, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventPhaseState
+  eventId: CatsMove
+--- !u!4 &601090160
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601090158}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 25.3476, y: 0.409, z: 0}
+  m_LocalScale: {x: 12.852993, y: 7.416236, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1791804796}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &607899907
 GameObject:
   m_ObjectHideFlags: 0
@@ -48036,6 +48194,110 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
+--- !u!1 &916494318
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 916494319}
+  - component: {fileID: 916494321}
+  - component: {fileID: 916494320}
+  m_Layer: 0
+  m_Name: Switch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &916494319
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916494318}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -7.5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1669604418}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &916494320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916494318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d732a7482cdda44bbeca59c7881c27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerScriptActivate
+  playerTag: Cats
+  triggerOnlyOnce: 1
+  eventPhase: {fileID: 601090159}
+  isFirstTriggerInSequence: 1
+  isLastTriggerInSequence: 1
+  useEventFilter: 0
+  requiredEventId: 
+  requireEventCompleted: 0
+  npcMovement: {fileID: 0}
+  playerScriptsToBlockWhileNpcMoves: []
+  scriptsToEnable: []
+  scriptsToDisable: []
+  scriptsToEnablePostMovement: []
+--- !u!61 &916494321
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916494318}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &918533451
 GameObject:
   m_ObjectHideFlags: 0
@@ -53886,7 +54148,7 @@ MonoBehaviour:
   targetObject: {fileID: 1853361001}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -53933,6 +54195,10 @@ MonoBehaviour:
   succeed: 0
   combatSceneIndex: 1
   triggerOnce: 1
+  useEventFilter: 1
+  requiredEventId: BattleAux1
+  requireEventCompleted: 0
+  requireEventIncomplete: 1
 --- !u!61 &1049895200
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -59546,7 +59812,7 @@ MonoBehaviour:
   targetObject: {fileID: 1604040125}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -67480,7 +67746,7 @@ MonoBehaviour:
   targetObject: {fileID: 1897209043}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: Battle
   requireEventCompleted: 1
@@ -67500,7 +67766,7 @@ MonoBehaviour:
   targetObject: {fileID: 1846966035}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: Battle
   requireEventCompleted: 1
@@ -67520,7 +67786,7 @@ MonoBehaviour:
   targetObject: {fileID: 97984931}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: Battle
   requireEventCompleted: 1
@@ -67540,7 +67806,7 @@ MonoBehaviour:
   targetObject: {fileID: 932128272}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: Battle
   requireEventCompleted: 1
@@ -68059,10 +68325,11 @@ GameObject:
   - component: {fileID: 1436880939}
   - component: {fileID: 1436880938}
   - component: {fileID: 1436880937}
-  - component: {fileID: 1436880940}
+  - component: {fileID: 1436880943}
   - component: {fileID: 1436880941}
+  - component: {fileID: 1436880942}
   m_Layer: 0
-  m_Name: FinishEventInit
+  m_Name: Comprobar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68077,11 +68344,11 @@ Transform:
   m_GameObject: {fileID: 1436880935}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 25.7, y: 0.45, z: 0}
-  m_LocalScale: {x: 14.3928995, y: 6.523612, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1791804796}
+  m_Father: {fileID: 581572007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1436880937
 MonoBehaviour:
@@ -68095,12 +68362,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25ef307c85233824287ab517a7fcf079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerActivateObject
-  targetObject: {fileID: 2030866038}
+  targetObject: {fileID: 2115264692}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
-  requiredEventId: ClippyEvent
+  requiredEventId: CatsMove
   requireEventCompleted: 1
   requireEventIncomplete: 0
 --- !u!61 &1436880938
@@ -68208,26 +68475,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &1436880940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1436880935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25ef307c85233824287ab517a7fcf079, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TriggerActivateObject
-  targetObject: {fileID: 2115264692}
-  activateOnce: 1
-  stayActive: 1
-  playerTag: Player
-  useEventFilter: 1
-  requiredEventId: ClippyEvent
-  requireEventCompleted: 1
-  requireEventIncomplete: 0
 --- !u!114 &1436880941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68243,9 +68490,49 @@ MonoBehaviour:
   targetObject: {fileID: 1604040125}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
-  requiredEventId: ClippyEvent
+  requiredEventId: CatsMove
+  requireEventCompleted: 1
+  requireEventIncomplete: 0
+--- !u!114 &1436880942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436880935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b214fcaa0e26c4fb8950d8a19ebd32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerDeactivateObject
+  targetObject: {fileID: 1718233833}
+  deactivateOnce: 1
+  stayInactive: 1
+  requiredTag: Player
+  useEventFilter: 1
+  requiredEventId: CatsMove
+  requireEventCompleted: 1
+  requireEventIncomplete: 0
+--- !u!114 &1436880943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436880935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25ef307c85233824287ab517a7fcf079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerActivateObject
+  targetObject: {fileID: 2030866038}
+  activateOnce: 1
+  stayActive: 1
+  requiredTag: Player
+  useEventFilter: 1
+  requiredEventId: CatsMove
   requireEventCompleted: 1
   requireEventIncomplete: 0
 --- !u!1 &1437051200
@@ -68618,7 +68905,7 @@ MonoBehaviour:
   targetObject: {fileID: 97984931}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: Battle
   requireEventCompleted: 0
@@ -68789,7 +69076,7 @@ MonoBehaviour:
   targetObject: {fileID: 82456791}
   activateOnce: 1
   stayActive: 0
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -68936,7 +69223,7 @@ MonoBehaviour:
   targetObject: {fileID: 1787365074}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -69816,7 +70103,7 @@ MonoBehaviour:
   targetObject: {fileID: 1853361001}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux1
   requireEventCompleted: 1
@@ -69836,7 +70123,7 @@ MonoBehaviour:
   targetObject: {fileID: 1049895195}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux1
   requireEventCompleted: 1
@@ -69856,7 +70143,7 @@ MonoBehaviour:
   targetObject: {fileID: 1473944004}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux1
   requireEventCompleted: 1
@@ -69876,7 +70163,7 @@ MonoBehaviour:
   targetObject: {fileID: 2129708763}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux1
   requireEventCompleted: 1
@@ -88589,6 +88876,7 @@ Transform:
   - {fileID: 1214116963}
   - {fileID: 142719333}
   - {fileID: 497192055}
+  - {fileID: 916494319}
   m_Father: {fileID: 1791804796}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1672189001
@@ -99039,6 +99327,165 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
+--- !u!1 &1729456848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1729456849}
+  - component: {fileID: 1729456852}
+  - component: {fileID: 1729456851}
+  - component: {fileID: 1729456850}
+  m_Layer: 0
+  m_Name: Comprobar (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1729456849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729456848}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 581572007}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1729456850
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729456848}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &1729456851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729456848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b214fcaa0e26c4fb8950d8a19ebd32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerDeactivateObject
+  targetObject: {fileID: 1436880935}
+  deactivateOnce: 1
+  stayInactive: 1
+  requiredTag: Player
+  useEventFilter: 1
+  requiredEventId: BattleAux1
+  requireEventCompleted: 1
+  requireEventIncomplete: 0
+--- !u!212 &1729456852
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729456848}
+  m_Enabled: 0
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: -1520804035
+  m_SortingLayer: 3
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
 --- !u!1 &1732373049
 GameObject:
   m_ObjectHideFlags: 0
@@ -99227,7 +99674,7 @@ MonoBehaviour:
   targetObject: {fileID: 1049895195}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux
   requireEventCompleted: 1
@@ -99247,7 +99694,7 @@ MonoBehaviour:
   targetObject: {fileID: 1755813603}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux
   requireEventCompleted: 1
@@ -99267,7 +99714,7 @@ MonoBehaviour:
   targetObject: {fileID: 1897209043}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux
   requireEventCompleted: 1
@@ -99287,7 +99734,7 @@ MonoBehaviour:
   targetObject: {fileID: 1932914766}
   deactivateOnce: 1
   stayInactive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux
   requireEventCompleted: 1
@@ -99833,7 +100280,7 @@ MonoBehaviour:
   targetObject: {fileID: 1049895195}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: BattleAux
   requireEventCompleted: 1
@@ -101598,13 +102045,14 @@ Transform:
   - {fileID: 82456792}
   - {fileID: 1443038109}
   - {fileID: 1812632300}
+  - {fileID: 601090160}
   - {fileID: 1177222670}
   - {fileID: 1657765018}
   - {fileID: 276481462}
   - {fileID: 1669604418}
   - {fileID: 2115264693}
   - {fileID: 1604040126}
-  - {fileID: 1436880936}
+  - {fileID: 581572007}
   - {fileID: 2030866039}
   m_Father: {fileID: 2119207037}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -102313,11 +102761,11 @@ MonoBehaviour:
   targetObject: {fileID: 1443038108}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
-  useEventFilter: 1
+  requiredTag: Player
+  useEventFilter: 0
   requiredEventId: ClippyEvent
   requireEventCompleted: 0
-  requireEventIncomplete: 0
+  requireEventIncomplete: 1
 --- !u!61 &1812632302
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -104079,7 +104527,7 @@ MonoBehaviour:
   targetObject: {fileID: 1897209043}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 1
   requiredEventId: Battle
   requireEventCompleted: 1
@@ -104633,7 +105081,7 @@ MonoBehaviour:
   isFirstTriggerInSequence: 0
   isLastTriggerInSequence: 1
   useEventFilter: 1
-  requiredEventId: BattleAux
+  requiredEventId: BattleAux1
   requireEventCompleted: 0
   npcMovement: {fileID: 0}
   playerScriptsToBlockWhileNpcMoves: []
@@ -105944,7 +106392,7 @@ MonoBehaviour:
   targetObject: {fileID: 1755813603}
   activateOnce: 1
   stayActive: 1
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -105991,6 +106439,10 @@ MonoBehaviour:
   succeed: 0
   combatSceneIndex: 1
   triggerOnce: 1
+  useEventFilter: 1
+  requiredEventId: BattleAux
+  requireEventCompleted: 0
+  requireEventIncomplete: 1
 --- !u!61 &1897209048
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -108031,7 +108483,7 @@ MonoBehaviour:
   targetObject: {fileID: 1689262651}
   activateOnce: 0
   stayActive: 0
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -108604,7 +109056,7 @@ MonoBehaviour:
   targetObject: {fileID: 1442930740}
   activateOnce: 0
   stayActive: 0
-  playerTag: Player
+  requiredTag: Player
   useEventFilter: 0
   requiredEventId: 
   requireEventCompleted: 0
@@ -112901,6 +113353,207 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
+--- !u!1 &2073648519
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2073648520}
+  - component: {fileID: 2073648525}
+  - component: {fileID: 2073648524}
+  - component: {fileID: 2073648523}
+  - component: {fileID: 2073648522}
+  - component: {fileID: 2073648521}
+  m_Layer: 0
+  m_Name: Comprobar (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2073648520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073648519}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 581572007}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &2073648521
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073648519}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &2073648522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073648519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25ef307c85233824287ab517a7fcf079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerActivateObject
+  targetObject: {fileID: 2129708763}
+  activateOnce: 1
+  stayActive: 1
+  requiredTag: Player
+  useEventFilter: 1
+  requiredEventId: BattleAux1
+  requireEventCompleted: 1
+  requireEventIncomplete: 0
+--- !u!114 &2073648523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073648519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b214fcaa0e26c4fb8950d8a19ebd32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerDeactivateObject
+  targetObject: {fileID: 1604040125}
+  deactivateOnce: 1
+  stayInactive: 1
+  requiredTag: Player
+  useEventFilter: 1
+  requiredEventId: BattleAux1
+  requireEventCompleted: 1
+  requireEventIncomplete: 0
+--- !u!114 &2073648524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073648519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b214fcaa0e26c4fb8950d8a19ebd32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerDeactivateObject
+  targetObject: {fileID: 2115264692}
+  deactivateOnce: 1
+  stayInactive: 1
+  requiredTag: Player
+  useEventFilter: 1
+  requiredEventId: BattleAux1
+  requireEventCompleted: 1
+  requireEventIncomplete: 0
+--- !u!212 &2073648525
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073648519}
+  m_Enabled: 0
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: -1520804035
+  m_SortingLayer: 3
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
 --- !u!1 &2078687165
 GameObject:
   m_ObjectHideFlags: 0

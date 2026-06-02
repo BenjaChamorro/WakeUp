@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemySelect : MonoBehaviour
 {
@@ -8,6 +9,12 @@ public class EnemySelect : MonoBehaviour
     public int combatSceneIndex = 1;
     public bool triggerOnce = true;
     bool triggered = false;
+
+    [Header("Event Filter")]
+    [SerializeField] private bool useEventFilter = false;
+    [SerializeField] private string requiredEventId = "";
+    [SerializeField] private bool requireEventCompleted = false;
+    [SerializeField] private bool requireEventIncomplete = false;
 
     public bool Succeed => succeed;
 
@@ -61,9 +68,27 @@ public class EnemySelect : MonoBehaviour
             return;
         }
 
+        if (!ShouldAllowCombatByEventFilter())
+        {
+            Debug.LogWarning($"[EnemySelect] Combate bloqueado por filtro de evento. requiredEventId='{requiredEventId}', completed={SaveManager.Instance != null && SaveManager.Instance.WasEventTriggered(requiredEventId)}");
+            return;
+        }
+
+        triggered = true;
+        StartCoroutine(BeginCombatNextFrame());
+    }
+
+    private IEnumerator BeginCombatNextFrame()
+    {
+        yield return null;
+
+        if (GameManager.Instance == null)
+        {
+            yield break;
+        }
+
         Debug.Log($"[EnemySelect] Iniciando combate. enemyAsset={enemyAsset}, encounterId={encounterId}");
         GameManager.Instance.EnterCombat(combatSceneIndex, enemyAsset, BuildEncounterKey());
-        triggered = true;
     }
 
     public void SetSucceed(bool value)
@@ -81,6 +106,40 @@ public class EnemySelect : MonoBehaviour
         if (GameManager.Instance == null) return;
 
         succeed = GameManager.Instance.IsEncounterSucceeded(BuildEncounterKey());
+    }
+
+    private bool ShouldAllowCombatByEventFilter()
+    {
+        if (!useEventFilter)
+        {
+            return true;
+        }
+
+        string resolvedEventId = requiredEventId == null ? string.Empty : requiredEventId.Trim();
+
+        if (string.IsNullOrWhiteSpace(resolvedEventId) || SaveManager.Instance == null)
+        {
+            return false;
+        }
+
+        bool completed = SaveManager.Instance.WasEventTriggered(resolvedEventId);
+
+        if (requireEventCompleted && requireEventIncomplete)
+        {
+            return false;
+        }
+
+        if (requireEventIncomplete)
+        {
+            return !completed;
+        }
+
+        if (requireEventCompleted)
+        {
+            return completed;
+        }
+
+        return !completed;
     }
 
     private string BuildEncounterKey()
