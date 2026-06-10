@@ -399,6 +399,12 @@ public class SaveManager : MonoBehaviour
             changed = true;
         }
 
+        if (saveData.shownAdviceDialogIds == null)
+        {
+            saveData.shownAdviceDialogIds = new List<string>();
+            changed = true;
+        }
+
         if (saveData.unlockedBlockIds == null)
         {
             saveData.unlockedBlockIds = new List<string>();
@@ -412,5 +418,35 @@ public class SaveManager : MonoBehaviour
         }
 
         return changed;
+    }
+
+    public bool WasAdviceDialogShown(string adviceId)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(adviceId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+        return saveData.shownAdviceDialogIds.Contains(adviceId);
+    }
+
+    public bool MarkAdviceDialogAsShown(string adviceId)
+    {
+        if (string.IsNullOrWhiteSpace(adviceId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+
+        if (saveData.shownAdviceDialogIds.Contains(adviceId))
+        {
+            return false;
+        }
+
+        saveData.shownAdviceDialogIds.Add(adviceId);
+        SaveGame();
+        return true;
     }
 }
