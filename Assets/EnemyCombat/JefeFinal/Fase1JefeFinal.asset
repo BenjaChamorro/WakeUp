@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
+  m_Name: Fase1JefeFinal
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
+  enemyId: Fase1JefeFinal
+  enemyDisplayName: JefeFinal
+  enemySprite: {fileID: 2438763279523981462, guid: 8e7fe630ec26e2d4fb3c797e830026fd, type: 3}
+  defeatSprite: {fileID: 0}
+  introDialogues:
+  - "Jam\xE1s sabr\xE1s que este c\xF3digo est\xE1 mal!, Oh.. habl\xE9 de m\xE1s.
+    YO NO DIJE NADA!"
+  defeatDialogues:
+  - Te crees muy listo? A ver si puedes con esto!!
+  defeatAnimationProfile: {fileID: 0}
+  victoryCode: 'variable1 = {variable1 + 1 | 1 + variable1}
+
+    print(variable1)'
+  combatOnlyBlocks: []
+  unlockBlocksOnDefeat: []

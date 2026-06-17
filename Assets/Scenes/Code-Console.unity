@@ -1055,7 +1055,18 @@ MonoBehaviour:
   allBlocks:
   - {fileID: 11400000, guid: 80040ec8b98a71949a6358a369af2f42, type: 2}
   - {fileID: 11400000, guid: 757054e10f176a64caa728ddb232d3f9, type: 2}
+  - {fileID: 11400000, guid: 78e14f680aeab1c49bd8dade38d61c3d, type: 2}
+  - {fileID: 11400000, guid: 3d7bbf4656f86a44887b2bfc0a33aa7b, type: 2}
   - {fileID: 11400000, guid: 01a29e2c9bc9a3d43a80723d556ecf71, type: 2}
+  - {fileID: 11400000, guid: d58dcf183707e9d4694e205d8c5c029f, type: 2}
+  - {fileID: 11400000, guid: 5562e9da7c12fc74987a6766b548fc62, type: 2}
+  - {fileID: 11400000, guid: e149020ce1b74b243accc7f6148c3ca1, type: 2}
+  - {fileID: 11400000, guid: e8b066af241f3224b9f0a377a8836bdc, type: 2}
+  - {fileID: 11400000, guid: 1138200b538949542a231e00a787fa87, type: 2}
+  - {fileID: 11400000, guid: 40022e36e6f8c14489e46d9088d2c96a, type: 2}
+  - {fileID: 11400000, guid: 8e23cdcfdaa60094cb1cdaab20a9dd89, type: 2}
+  - {fileID: 11400000, guid: 89e0844c809ba154d9ff0f4cb22d263a, type: 2}
+  - {fileID: 11400000, guid: 1b89a417ec4e76241be6d824f068301c, type: 2}
 --- !u!4 &784106770
 Transform:
   m_ObjectHideFlags: 0
@@ -1532,7 +1543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 949a0846b242c0d4bafe345dcd924ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatRuntime
-  currentEnemy: {fileID: 11400000, guid: 5f9e7148bc1a25c49a19c0657ea10701, type: 2}
+  currentEnemy: {fileID: 11400000, guid: cd359afd25dd385489f9443025635715, type: 2}
   enemySpriteRenderer: {fileID: 0}
   dialogueText: {fileID: 0}
   enemyNameText: {fileID: 0}

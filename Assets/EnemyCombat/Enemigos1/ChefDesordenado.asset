@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
+  m_Name: ChefDesordenado
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
+  enemyId: ChefDesordenado
+  enemyDisplayName: ChefDesordenado
+  enemySprite: {fileID: 0}
+  defeatSprite: {fileID: 0}
+  introDialogues:
+  - "Tengo un lio en la cocina, la receta dice que primero van los tomates, luego
+    la cebolla y por \xFAltimo el ajo, pero est\xE1n todos todos los ingredientes
+    dispersos por la cocina."
+  defeatDialogues:
+  - Muchas gracias!, ahora si puedo cocinar.
+  defeatAnimationProfile: {fileID: 11400000, guid: e29102366b39731418f236eaa71bab77, type: 2}
+  victoryCode: 'variable1 = [tomate, cebolla, ajo]
+
+    print(variable1)'
+  combatOnlyBlocks:
+  - {fileID: 11400000, guid: 4ec0845ffd82e6340ae481ff7c9c1c1f, type: 2}
+  - {fileID: 11400000, guid: 7e539215a55be9541b3efdc4d5369e15, type: 2}
+  - {fileID: 11400000, guid: 313c86c2b7e408444be72a75026c3473, type: 2}
+  unlockBlocksOnDefeat:
+  - {fileID: 11400000, guid: 78e14f680aeab1c49bd8dade38d61c3d, type: 2}
+  - {fileID: 11400000, guid: e8b066af241f3224b9f0a377a8836bdc, type: 2}
+  - {fileID: 11400000, guid: 1138200b538949542a231e00a787fa87, type: 2}
+  - {fileID: 11400000, guid: 40022e36e6f8c14489e46d9088d2c96a, type: 2}
+  - {fileID: 11400000, guid: 8e23cdcfdaa60094cb1cdaab20a9dd89, type: 2}
+  - {fileID: 11400000, guid: 89e0844c809ba154d9ff0f4cb22d263a, type: 2}
+  - {fileID: 11400000, guid: 1b89a417ec4e76241be6d824f068301c, type: 2}

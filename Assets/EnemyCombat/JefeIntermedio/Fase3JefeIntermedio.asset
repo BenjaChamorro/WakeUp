@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
+  m_Name: Fase3JefeIntermedio
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
+  enemyId: fase3JefeIntermedio
+  enemyDisplayName: PanelDeControl
+  enemySprite: {fileID: 4146359361008769857, guid: 9ea69988cdb2ce642be5b432e46643a4, type: 3}
+  defeatSprite: {fileID: 0}
+  introDialogues:
+  - "Solo los usuarios con alto nivel de acceso pueden abrir la puerta, si hay suficiente
+    energ\xEDa..."
+  defeatDialogues:
+  - "Buen d\xEDa Admin. !!\xBF?@#!\xAC Falla de energ!?\xA1a, no hay suficien.?\xBF&%#te
+    para func!!0''ones basic@#\xBF?=|!! \xBFQUE PASHO?\xBFDUDAIS?"
+  defeatAnimationProfile: {fileID: 0}
+  victoryCode: "nivelAcceso = 0\nenergia = 3\nif (nivelAcceso { <= | <} 5):\n   
+    print(\"Acceso Denegado\")\nif (energia { > | >= } 10):\n     print(\"No hay
+    energ\xEDa suficiente para abrir la puerta\")\n"
+  combatOnlyBlocks:
+  - {fileID: 11400000, guid: 72e3de74e849bb54c96f3136ee86cd9f, type: 2}
+  - {fileID: 11400000, guid: 86a2e116871b835448195a35686825ed, type: 2}
+  unlockBlocksOnDefeat: []

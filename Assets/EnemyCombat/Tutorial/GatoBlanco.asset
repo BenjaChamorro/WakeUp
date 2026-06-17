@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
   m_Name: GatoBlanco
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
-  enemyId: gatoInicial
-  enemyDisplayName: Gato
+  enemyId: GatoBlanco
+  enemyDisplayName: GatoBlanco
   enemySprite: {fileID: -7652591164275892872, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
   defeatSprite: {fileID: 3404878821873683168, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
   introDialogues:

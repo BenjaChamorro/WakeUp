@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
+  m_Name: CafeIntenso
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
+  enemyId: CafeIntenso
+  enemyDisplayName: CafeIntenso
+  enemySprite: {fileID: 0}
+  defeatSprite: {fileID: 0}
+  introDialogues:
+  - "Dicen que soy muy intenso 7-7, quiz\xE1s un poco m\xE1s de azucar podr\xEDa
+    ayudar"
+  defeatDialogues:
+  - Muchas gracias, ahora si soy una dulzura uwu
+  defeatAnimationProfile: {fileID: 11400000, guid: e29102366b39731418f236eaa71bab77, type: 2}
+  victoryCode: 'azucar = { azucar + numero1 | numero1 + azucar}
+
+    print(azucar)
+
+
+    #
+    numero1 > 0'
+  combatOnlyBlocks:
+  - {fileID: 11400000, guid: 0a60cafddb8049845951551da21c10e3, type: 2}
+  unlockBlocksOnDefeat:
+  - {fileID: 11400000, guid: 3d7bbf4656f86a44887b2bfc0a33aa7b, type: 2}
