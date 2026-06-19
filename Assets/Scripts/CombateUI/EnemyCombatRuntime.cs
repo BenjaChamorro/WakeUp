@@ -81,6 +81,21 @@ public class EnemyCombatRuntime : MonoBehaviour {
         ApplyPrefilledCombatBlocks();
     }
 
+    public bool HasPrefilledCombatBlocks() {
+        return currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.prefilledBlocksCode);
+    }
+
+    public IEnumerator RestorePrefilledCombatBlocksRoutine() {
+        Transform consoleParent = ResolveCombatConsoleLineTarget();
+        if (consoleParent == null) {
+            yield break;
+        }
+
+        ClearCombatConsoleBlocks(consoleParent);
+        yield return null;
+        ApplyPrefilledCombatBlocks();
+    }
+
     public void GrantEnemyRewards() {
         if (currentEnemy == null || playerInventory == null) return;
 
@@ -309,6 +324,58 @@ public class EnemyCombatRuntime : MonoBehaviour {
                 }
             }
         }
+    }
+
+    private void ClearCombatConsoleBlocks(Transform consoleParent) {
+        if (consoleParent == null) {
+            return;
+        }
+
+        BloqueCodigo.consoleLines.Clear();
+
+        for (int i = consoleParent.childCount - 1; i >= 0; i--) {
+            Destroy(consoleParent.GetChild(i).gameObject);
+        }
+    }
+
+    private Transform ResolveCombatConsoleLineTarget() {
+        if (paletteBuilder != null) {
+            Transform target = paletteBuilder.GetConsoleLineTarget();
+            if (target != null) {
+                return target;
+            }
+        }
+
+        GameObject root = GameObject.Find("CombateUI-Consola");
+        if (root == null) {
+            return null;
+        }
+
+        Transform consola = root.transform.Find("Consola");
+        if (consola == null) {
+            return null;
+        }
+
+        Transform direct = consola.Find("LineasConsola");
+        if (direct != null) {
+            return direct;
+        }
+
+        Transform viewport = consola.Find("Viewport");
+        if (viewport != null) {
+            Transform underViewport = viewport.Find("LineasConsola");
+            if (underViewport != null) {
+                return underViewport;
+            }
+        }
+
+        foreach (Transform child in consola.GetComponentsInChildren<Transform>(true)) {
+            if (child.name == "LineasConsola") {
+                return child;
+            }
+        }
+
+        return null;
     }
 
     private string ExtractPrefillBlockId(string blockSpec) {
