@@ -8,6 +8,7 @@ using UnityEngine;
 public class EnemyCombatRuntime : MonoBehaviour {
     private const string EnemyIdRuntimeBlockId = "enemy_id";
     private const string EnemyIdFallbackText = "enemy_id";
+    private const int IndentSpacesPerLevel = 4;
     private static readonly Regex ComparisonRuleRegex = new Regex("^(.+?)\\s*(==|!=|>=|<=|>|<)\\s*(.+)$", RegexOptions.Compiled);
     private static readonly Regex PlaceholderTokenRegex = new Regex("^[A-Za-z_]+\\d+$", RegexOptions.Compiled);
     private static readonly Regex TokenRegex = new Regex("==|<=|>=|!=|[A-Za-z_][A-Za-z0-9_]*|\\d+(?:\\.\\d+)?|[^\\s]", RegexOptions.Compiled);
@@ -76,6 +77,8 @@ public class EnemyCombatRuntime : MonoBehaviour {
         if (paletteBuilder != null) {
             paletteBuilder.SetCombatExclusiveBlocks(BuildCombatPaletteBlocks());
         }
+
+        ApplyPrefilledCombatBlocks();
     }
 
     public void GrantEnemyRewards() {
@@ -261,6 +264,79 @@ public class EnemyCombatRuntime : MonoBehaviour {
         }
 
         return blocks;
+    }
+
+    private void ApplyPrefilledCombatBlocks() {
+        if (currentEnemy == null || string.IsNullOrWhiteSpace(currentEnemy.prefilledBlocksCode)) {
+            return;
+        }
+
+        if (paletteBuilder == null) {
+            return;
+        }
+
+        BloqueCodigo blockPrefab = paletteBuilder.GetBlockPrefab();
+        Transform consoleParent = paletteBuilder.GetConsoleLineTarget();
+        if (blockPrefab == null || consoleParent == null) {
+            return;
+        }
+
+        List<string> prefilledLines = SplitCodeLines(currentEnemy.prefilledBlocksCode);
+
+        for (int i = 0; i < prefilledLines.Count; i++) {
+            string lineSpec = prefilledLines[i];
+            if (string.IsNullOrWhiteSpace(lineSpec)) {
+                continue;
+            }
+
+            int indentLevel = CountLeadingIndentLevels(lineSpec);
+            string trimmedLine = lineSpec.TrimStart();
+            string blockId = ExtractPrefillBlockId(trimmedLine);
+            if (string.IsNullOrWhiteSpace(blockId)) {
+                continue;
+            }
+
+            BloqueCodigo line = Instantiate(blockPrefab, consoleParent, false);
+            line.gameObject.SetActive(true);
+            line.Setup(blockId, "prefilled", blockId);
+            line.lineasConsolaTarget = consoleParent;
+            line.SetupAsConsoleLine(consoleParent, indentLevel);
+
+            CodeLineTemplateRenderer renderer = line.GetComponent<CodeLineTemplateRenderer>();
+            if (renderer != null) {
+                if (!renderer.RenderPrefilledCombatLine(blockId, trimmedLine)) {
+                    Debug.LogWarning($"EnemyCombatRuntime: no se pudo renderizar el bloque pre-rellenado '{blockId}'.");
+                }
+            }
+        }
+    }
+
+    private string ExtractPrefillBlockId(string blockSpec) {
+        if (string.IsNullOrWhiteSpace(blockSpec)) {
+            return string.Empty;
+        }
+
+        string trimmed = blockSpec.Trim();
+        int separatorIndex = trimmed.IndexOf(" - ", System.StringComparison.Ordinal);
+        string headerPart = separatorIndex >= 0 ? trimmed.Substring(0, separatorIndex).Trim() : trimmed;
+        return headerPart.TrimEnd('*').Trim();
+    }
+
+    private int CountLeadingIndentLevels(string line) {
+        if (string.IsNullOrEmpty(line)) {
+            return 0;
+        }
+
+        int spaces = 0;
+        for (int i = 0; i < line.Length; i++) {
+            if (line[i] != ' ') {
+                break;
+            }
+
+            spaces++;
+        }
+
+        return Mathf.Max(0, spaces / 4);
     }
 
     private CodeBlockData GetOrCreateEnemyIdRuntimeBlock() {
@@ -580,8 +656,8 @@ public class EnemyCombatRuntime : MonoBehaviour {
             return false;
         }
 
-        string normalizedTemplate = templateLine.TrimEnd();
-        string normalizedPlayer = playerLine == null ? string.Empty : playerLine.TrimEnd();
+        string normalizedTemplate = NormalizeLeadingIndentation(templateLine).TrimEnd();
+        string normalizedPlayer = NormalizeLeadingIndentation(playerLine).TrimEnd();
 
         if (GetLeadingSpaces(normalizedTemplate) != GetLeadingSpaces(normalizedPlayer)) {
             reason = "La indentación de una línea no coincide con la condición de victoria.";
@@ -871,10 +947,49 @@ public class EnemyCombatRuntime : MonoBehaviour {
 
         int count = 0;
         for (int i = 0; i < line.Length; i++) {
-            if (line[i] == ' ') count++; else break;
+            if (line[i] == ' ') {
+                count++;
+                continue;
+            }
+
+            if (line[i] == '\t') {
+                count += 4;
+                continue;
+            }
+
+            break;
         }
 
         return count;
+    }
+
+    private string NormalizeLeadingIndentation(string line) {
+        if (string.IsNullOrEmpty(line)) {
+            return string.Empty;
+        }
+
+        int indentWidth = 0;
+        int index = 0;
+        while (index < line.Length) {
+            char c = line[index];
+            if (c == ' ') {
+                indentWidth++;
+                index++;
+                continue;
+            }
+
+            if (c == '\t') {
+                indentWidth += IndentSpacesPerLevel;
+                index++;
+                continue;
+            }
+
+            break;
+        }
+
+        int indentLevels = Mathf.Max(0, Mathf.RoundToInt((float)indentWidth / IndentSpacesPerLevel));
+        string normalizedIndent = new string(' ', indentLevels * IndentSpacesPerLevel);
+        return normalizedIndent + line.Substring(index);
     }
 
     private bool IsPlaceholderToken(string token) {

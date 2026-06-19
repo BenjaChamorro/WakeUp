@@ -1543,7 +1543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 949a0846b242c0d4bafe345dcd924ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatRuntime
-  currentEnemy: {fileID: 11400000, guid: cd359afd25dd385489f9443025635715, type: 2}
+  currentEnemy: {fileID: 11400000, guid: f7c5e9dce12ed2e48b52f3925320e379, type: 2}
   enemySpriteRenderer: {fileID: 0}
   dialogueText: {fileID: 0}
   enemyNameText: {fileID: 0}

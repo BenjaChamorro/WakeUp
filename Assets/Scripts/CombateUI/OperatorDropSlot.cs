@@ -9,8 +9,16 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
 
     [SerializeField] private TextMeshProUGUI slotText;
     [SerializeField] private RectTransform dynamicContentRoot;
+    private bool isLocked;
 
     public string CurrentOperator { get; private set; } = string.Empty;
+
+    public void SetLocked(bool locked) {
+        isLocked = locked;
+        if (locked) {
+            HidePlaceholderLabel();
+        }
+    }
 
     void Awake() {
         if (slotText == null) {
@@ -23,6 +31,8 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
     }
 
     public bool TrySetOperator(string operatorText) {
+        if (isLocked) return false;
+
         if (string.IsNullOrWhiteSpace(operatorText)) return false;
 
         string cleaned = NormalizeOperatorText(operatorText);
@@ -140,6 +150,8 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
     }
 
     public void OnDrop(PointerEventData eventData) {
+        if (isLocked) return;
+
         if (eventData.pointerDrag == null) return;
 
         BloqueCodigo dragged = eventData.pointerDrag.GetComponent<BloqueCodigo>();

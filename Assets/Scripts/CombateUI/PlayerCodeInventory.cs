@@ -60,6 +60,10 @@ public class PlayerCodeInventory : MonoBehaviour {
         return unlockedBlocks;
     }
 
+    public IReadOnlyList<CodeBlockData> GetAllBlocks() {
+        return allBlocks;
+    }
+
     public bool IsUnlocked(string blockId) {
         if (string.IsNullOrWhiteSpace(blockId)) return false;
         return unlockedIds.Contains(blockId);

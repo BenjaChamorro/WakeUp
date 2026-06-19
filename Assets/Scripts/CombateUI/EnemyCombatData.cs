@@ -24,6 +24,10 @@ public class EnemyCombatData : ScriptableObject {
     [Header("Bloques temporales del combate")]
     public List<CodeBlockData> combatOnlyBlocks = new List<CodeBlockData>();
 
+    [Header("Bloques Pre-Rellenados")]
+    [TextArea(4, 12)]
+    public string prefilledBlocksCode = string.Empty;
+
     [Header("Recompensas")]
     public List<CodeBlockData> unlockBlocksOnDefeat = new List<CodeBlockData>();
 }
