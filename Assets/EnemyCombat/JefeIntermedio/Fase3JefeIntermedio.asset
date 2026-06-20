@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
   m_Name: Fase3JefeIntermedio
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
-  enemyId: fase3JefeIntermedio
+  enemyId: PanelControl
   enemyDisplayName: PanelDeControl
   enemySprite: {fileID: 4146359361008769857, guid: 9ea69988cdb2ce642be5b432e46643a4, type: 3}
   defeatSprite: {fileID: 0}

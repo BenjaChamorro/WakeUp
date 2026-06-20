@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
   m_Name: Fase1JefeIntermedio
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
-  enemyId: fase1JefeIntermedio
+  enemyId: FireWall
   enemyDisplayName: firewall
   enemySprite: {fileID: 0}
   defeatSprite: {fileID: 0}
@@ -24,4 +24,5 @@ MonoBehaviour:
   victoryCode: print(waterNetwork)
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 30be97e53803a1c42a1f82016f801153, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []

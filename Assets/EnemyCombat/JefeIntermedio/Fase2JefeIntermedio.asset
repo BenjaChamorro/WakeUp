@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
   m_Name: Fase2JefeIntermedio
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
-  enemyId: fase2JefeIntermedio
+  enemyId: AntiVirus
   enemyDisplayName: antivirus
   enemySprite: {fileID: 0}
   defeatSprite: {fileID: 0}
@@ -25,4 +25,5 @@ MonoBehaviour:
     = 0"
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 8ba67946ed5f1fb4b9aeacf3e7554dae, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []
