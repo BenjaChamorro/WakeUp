@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private float moveInput;
     private bool isGrounded;
+    private bool groundedThisFrame;
 
     void Start()
     {
@@ -19,43 +20,38 @@ public class PlayerMovement : MonoBehaviour
     {
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        // SALTO
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
-        // CORTAR SALTO AL SOLTAR
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity.y > 0)
         {
-            if (rb.linearVelocity.y > 0)
-            {
-                rb.linearVelocity = new Vector2(
-                    rb.linearVelocity.x,
-                    rb.linearVelocity.y * jumpCutMultiplier
-                );
-            }
+            rb.linearVelocity = new Vector2(
+                rb.linearVelocity.x,
+                rb.linearVelocity.y * jumpCutMultiplier
+            );
         }
     }
 
     void FixedUpdate()
     {
+        // Se resetea cada frame físico; OnCollisionStay2D lo vuelve a activar si sigue en suelo
+        isGrounded = groundedThisFrame;
+        groundedThisFrame = false;
+
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        foreach (var contact in collision.contacts)
         {
-            isGrounded = true;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
+            if (contact.normal.y > 0.5f)
+            {
+                groundedThisFrame = true;
+                return;
+            }
         }
     }
 }
