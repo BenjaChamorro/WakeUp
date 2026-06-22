@@ -33,6 +33,8 @@ public class DialogAdvices : MonoBehaviour
     [SerializeField] private AdviceCorner corner = AdviceCorner.TopLeft;
     [SerializeField] private Vector2 screenOffset = new Vector2(36f, 36f);
     [SerializeField] private Camera targetCamera;
+    [SerializeField] private Canvas targetCanvas;
+    [SerializeField] private bool useExistingCanvas = false;
 
     [Header("Visual")]
     [SerializeField] private Vector2 panelSize = new Vector2(1040f, 300f);
@@ -272,8 +274,11 @@ public class DialogAdvices : MonoBehaviour
     private bool BuildAdviceUI()
     {
         if (adviceCanvas != null && panelRect != null && panelImage != null && adviceText != null && textContainerRect != null)
-        {
             return true;
+
+        if (useExistingCanvas && targetCanvas != null)
+        {
+            return BuildAdviceUIUnderCanvas(targetCanvas);
         }
 
         Camera cameraToUse = targetCamera != null ? targetCamera : Camera.main;
@@ -294,8 +299,23 @@ public class DialogAdvices : MonoBehaviour
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
         scaler.matchWidthOrHeight = 0.5f;
 
+        return BuildPanelContent(canvasObject.transform);
+    }
+
+    private bool BuildAdviceUIUnderCanvas(Canvas canvas)
+    {
+        adviceCanvas = canvas;
+
+        GameObject panelRoot = new GameObject("DialogAdvicesRoot", typeof(RectTransform));
+        panelRoot.transform.SetParent(canvas.transform, false);
+
+        return BuildPanelContent(panelRoot.transform);
+    }
+
+    private bool BuildPanelContent(Transform parent)
+    {
         GameObject panelObject = new GameObject("AdvicePanel", typeof(RectTransform), typeof(Image));
-        panelObject.transform.SetParent(canvasObject.transform, false);
+        panelObject.transform.SetParent(parent, false);
 
         panelRect = panelObject.GetComponent<RectTransform>();
         panelImage = panelObject.GetComponent<Image>();
@@ -303,18 +323,13 @@ public class DialogAdvices : MonoBehaviour
         panelImage.type = Image.Type.Simple;
         panelImage.preserveAspect = true;
 
-        GameObject textContainerObject = new GameObject(
-            "TextContainer",
-            typeof(RectTransform)
-        );
+        GameObject textContainerObject = new GameObject("TextContainer", typeof(RectTransform));
         textContainerObject.transform.SetParent(panelObject.transform, false);
         textContainerRect = textContainerObject.GetComponent<RectTransform>();
-        GameObject textObject = new GameObject(
-            "AdviceText",
-            typeof(RectTransform),
-            typeof(TextMeshProUGUI)
-        );
+
+        GameObject textObject = new GameObject("AdviceText", typeof(RectTransform), typeof(TextMeshProUGUI));
         textObject.transform.SetParent(textContainerObject.transform, false);
+
         adviceText = textObject.GetComponent<TextMeshProUGUI>();
         RectTransform textRect = adviceText.rectTransform;
         textRect.anchorMin = Vector2.zero;
@@ -331,27 +346,49 @@ public class DialogAdvices : MonoBehaviour
 
     private void ApplyLayout()
     {
-        if (panelRect == null || adviceText == null)
+        if (panelRect == null)
         {
             return;
         }
 
         panelRect.sizeDelta = panelSize;
 
-        bool isTopLeft = corner == AdviceCorner.TopLeft;
+        switch (corner)
+        {
+            case AdviceCorner.TopLeft:
 
-        panelRect.anchorMin = isTopLeft ? new Vector2(0f, 1f) : new Vector2(1f, 1f);
-        panelRect.anchorMax = panelRect.anchorMin;
-        panelRect.pivot = panelRect.anchorMin;
-        panelRect.anchoredPosition = isTopLeft
-            ? new Vector2(Mathf.Abs(screenOffset.x), -Mathf.Abs(screenOffset.y))
-            : new Vector2(-Mathf.Abs(screenOffset.x), -Mathf.Abs(screenOffset.y));
+                panelRect.anchorMin = new Vector2(0, 1);
+                panelRect.anchorMax = new Vector2(0, 1);
+                panelRect.pivot = new Vector2(0, 1);
+
+                panelRect.anchoredPosition = new Vector2(
+                    screenOffset.x,
+                    -screenOffset.y
+                );
+
+                break;
+
+
+            case AdviceCorner.TopRight:
+
+                panelRect.anchorMin = new Vector2(1, 1);
+                panelRect.anchorMax = new Vector2(1, 1);
+                panelRect.pivot = new Vector2(1, 1);
+
+                panelRect.anchoredPosition = new Vector2(
+                    -screenOffset.x,
+                    -screenOffset.y
+                );
+
+                break;
+        }
+
 
         if (textContainerRect != null)
         {
-            textContainerRect.anchorMin = new Vector2(0.5f, 0.5f);
-            textContainerRect.anchorMax = new Vector2(0.5f, 0.5f);
-            textContainerRect.pivot = new Vector2(0.5f, 0.5f);
+            textContainerRect.anchorMin = new Vector2(0.5f,0.5f);
+            textContainerRect.anchorMax = new Vector2(0.5f,0.5f);
+            textContainerRect.pivot = new Vector2(0.5f,0.5f);
 
             textContainerRect.sizeDelta = textContainerSize;
             textContainerRect.anchoredPosition = textContainerOffset;
