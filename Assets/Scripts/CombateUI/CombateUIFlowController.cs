@@ -12,6 +12,8 @@ public class CombateUIFlowController : MonoBehaviour {
     [Header("Paneles")]
     public GameObject combateUI;
     public GameObject combateUIConsola;
+    public GameObject minigame;
+    public GameObject fondoCombate;
 
     [Header("Botones (opcional)")]
     public Button botonScript;
@@ -132,6 +134,9 @@ public class CombateUIFlowController : MonoBehaviour {
             StartCoroutine(HandleVictorySequence(enemyRuntime));
         } else {
             Debug.Log("[CodeRunner] Aún no cumple la condición de victoria: " + victoryReason);
+            combateUIConsola.SetActive(false);
+            fondoCombate.SetActive(false);
+            minigame.SetActive(true);
         }
     }
 
