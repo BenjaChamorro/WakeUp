@@ -7,6 +7,7 @@ public class Acertijo1 : MonoBehaviour
     [Header("References")]
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private GameObject Arboles;
+    [SerializeField] private GameObject CompleteTrigger;
 
     [Header("Input")]
     [SerializeField] private Key confirmKey = Key.E;
@@ -38,6 +39,7 @@ public class Acertijo1 : MonoBehaviour
         if (respuesta == "0")
         {
             DesactivarArboles();
+            CompletarEvento();
         }
     }
 
@@ -50,5 +52,16 @@ public class Acertijo1 : MonoBehaviour
         }
 
         Arboles.SetActive(false);
+    }
+
+    private void CompletarEvento()
+    {
+        if (CompleteTrigger == null)
+        {
+            Debug.LogWarning("GameObject CompleteTrigger no asignado.");
+            return;
+        }
+
+        CompleteTrigger.SetActive(true);
     }
 }

@@ -12,6 +12,7 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
     private const float StringInputMaxWidth = 640f;
     private const float MathInputMinWidth = 38f;
     private const float MathInputMaxWidth = 320f;
+    private const float MathInputFontSize = 32f;
 
     [SerializeField] private TMP_InputField baseInput;
     [SerializeField] private RectTransform dynamicContentRoot;
@@ -75,6 +76,13 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
 
         if (draggedType == "definition") {
             TrySetDefinition(dragged.blockId, dragged.codeText);
+            return;
+        }
+
+        // Los bloques flatText se insertan en el input base
+        if (draggedType == "flattext" && baseInput != null) {
+            baseInput.text = dragged.codeText;
+            baseInput.caretPosition = baseInput.text.Length;
         }
     }
 
@@ -228,9 +236,9 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
         if (dynamicContentRoot == null) return;
 
         ClearContentRoot();
-        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, 20f, false);
+        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, MathInputFontSize, false);
         CreateStaticText(opText);
-        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, 20f, false);
+        CreateTextInput(MathInputMinWidth, MathInputMaxWidth, MathInputFontSize, false);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dynamicContentRoot);
     }
@@ -250,9 +258,8 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
 
         TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
         tmp.text = text;
-        tmp.fontSize = 20f;
+        CodeConsoleTypography.Apply(tmp, 32f, TextAlignmentOptions.Center);
         tmp.color = Color.white;
-        tmp.alignment = TextAlignmentOptions.Center;
 
         LayoutElement le = go.GetComponent<LayoutElement>();
         le.preferredWidth = Mathf.Max(14f, tmp.preferredWidth + 2f);
@@ -282,6 +289,10 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
         le.preferredHeight = 24f;
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
+
+        // Agregar handler para bloques flatText
+        FlatTextInputHandler flatTextHandler = root.AddComponent<FlatTextInputHandler>();
+
         input.lineType = TMP_InputField.LineType.SingleLine;
         input.contentType = numericOnly ? TMP_InputField.ContentType.DecimalNumber : TMP_InputField.ContentType.Standard;
 
@@ -295,9 +306,8 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
 
         TextMeshProUGUI textComp = textGO.GetComponent<TextMeshProUGUI>();
         textComp.text = string.Empty;
-        textComp.fontSize = fontSize;
+        CodeConsoleTypography.Apply(textComp, fontSize, TextAlignmentOptions.Center);
         textComp.color = Color.white;
-        textComp.alignment = TextAlignmentOptions.Center;
 
         GameObject phGO = new GameObject("Placeholder", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform phRect = phGO.GetComponent<RectTransform>();
@@ -309,9 +319,8 @@ public class AssignmentValueSlot : MonoBehaviour, IDropHandler {
 
         TextMeshProUGUI phText = phGO.GetComponent<TextMeshProUGUI>();
         phText.text = string.Empty;
-        phText.fontSize = fontSize;
+        CodeConsoleTypography.Apply(phText, fontSize, TextAlignmentOptions.Center);
         phText.color = new Color(1f, 1f, 1f, 0.4f);
-        phText.alignment = TextAlignmentOptions.Center;
 
         input.textComponent = textComp;
         input.placeholder = phText;

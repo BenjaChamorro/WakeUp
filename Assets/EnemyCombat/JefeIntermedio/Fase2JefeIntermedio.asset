@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
+  m_Name: Fase2JefeIntermedio
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
+  enemyId: AntiVirus
+  enemyDisplayName: antivirus
+  enemySprite: {fileID: 0}
+  defeatSprite: {fileID: 0}
+  introDialogues:
+  - Antivirus activado... -- BUSCANDO VIRUS --
+  defeatDialogues:
+  - "Antivirus no detecta ning\xFAn virus en el sistema..."
+  defeatAnimationProfile: {fileID: 0}
+  victoryCode: "if ({virusDetectados >= 1 | virusDetectados > 0}):\n    virusDetectados
+    = 0"
+  combatOnlyBlocks:
+  - {fileID: 11400000, guid: 8ba67946ed5f1fb4b9aeacf3e7554dae, type: 2}
+  prefilledBlocksCode: 
+  unlockBlocksOnDefeat: []

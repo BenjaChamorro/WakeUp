@@ -7,7 +7,7 @@ using System.Collections;
 public class CombateUIFlowController : MonoBehaviour {
     private const int IndentSizePixels = 24;
     private const int SpacesPerIndent = 4;
-    private const float VictoryMessageDelaySeconds = 3f;
+    private const float VictoryMessageDelaySeconds = 4f;
 
     [Header("Paneles")]
     public GameObject combateUI;
@@ -86,6 +86,12 @@ public class CombateUIFlowController : MonoBehaviour {
     }
 
     public void OnBorrar() {
+        EnemyCombatRuntime enemyRuntime = FindObjectOfType<EnemyCombatRuntime>(true);
+        if (enemyRuntime != null && enemyRuntime.HasPrefilledCombatBlocks()) {
+            StartCoroutine(ResetPrefilledConsole(enemyRuntime));
+            return;
+        }
+
         Transform consolaLineas = ResolveLineasConsola();
         if (consolaLineas == null) {
             Debug.LogWarning("No se encontró LineasConsola para limpiar");
@@ -97,6 +103,14 @@ public class CombateUIFlowController : MonoBehaviour {
         for (int i = childCount - 1; i >= 0; i--) {
             Destroy(consolaLineas.GetChild(i).gameObject);
         }
+    }
+
+    private IEnumerator ResetPrefilledConsole(EnemyCombatRuntime enemyRuntime) {
+        if (enemyRuntime == null) {
+            yield break;
+        }
+
+        yield return enemyRuntime.RestorePrefilledCombatBlocksRoutine();
     }
 
     public void OnEjecutar() {

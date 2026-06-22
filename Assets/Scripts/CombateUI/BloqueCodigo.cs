@@ -39,6 +39,7 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private Vector2 templateOffsetMin;
     private Vector2 templateOffsetMax;
     private bool hasTemplateRect;
+    private bool combatPresetLocked;
     private LayoutElement lineNumberLayout;
     private bool hasLineNumberLayoutTemplate;
     private float lineNumberPreferredWidth;
@@ -76,7 +77,31 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         SetLineNumberVisible(false);
     }
 
+    public void SetCombatPresetLocked(bool locked) {
+        combatPresetLocked = locked;
+    }
+
+    public void SetupAsConsoleLine(Transform lineasConsola, int indent = 0) {
+        if (lineasConsola == null) return;
+
+        EnsureCachedComponents();
+        if (rectTransform == null) {
+            Debug.LogWarning("BloqueCodigo: no se encontró RectTransform al preparar la línea de consola.");
+            return;
+        }
+
+        indentLevel = Mathf.Max(0, indent);
+        originalParent = lineasConsola;
+        originalSiblingIndex = transform.GetSiblingIndex();
+        originalAnchoredPosition = Vector2.zero;
+        ApplyConsoleLineLayout(lineasConsola);
+    }
+
     public void OnBeginDrag(PointerEventData eventData) {
+        if (combatPresetLocked) {
+            return;
+        }
+
         originalParent = transform.parent;
         originalSiblingIndex = transform.GetSiblingIndex();
         originalAnchoredPosition = rectTransform.anchoredPosition;
@@ -91,12 +116,33 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     }
 
     public void OnDrag(PointerEventData eventData) {
+        if (combatPresetLocked) {
+            return;
+        }
+
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
+        if (combatPresetLocked) {
+            return;
+        }
+
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1f;
+
+        // Los bloques flatText solo se devuelven si fueron procesados en un input
+        string commandTypeLower = commandType != null ? commandType.Trim().ToLowerInvariant() : string.Empty;
+        if (commandTypeLower == "flattext") {
+            FlatTextInputHandler flatTextHandler = FindParentWithComponent<FlatTextInputHandler>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
+            if (flatTextHandler != null) {
+                // Se soltó sobre un input, FlatTextInputHandler ya lo procesó, devolver a paleta
+                ReturnToOriginalPosition();
+                return;
+            }
+            // No se soltó sobre un input, procesar como línea normal en consola
+            // Continuar con el flujo normal
+        }
 
         OperatorDropSlot operatorSlot = FindParentWithComponent<OperatorDropSlot>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
         if (operatorSlot != null && IsOperatorType(commandType)) {
@@ -272,16 +318,70 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         EnsureConsoleLinesLayout(lineasConsola);
 
-        transform.SetParent(lineasConsola, false);
         IndentDropLineMarker dropMarker = FindParentWithComponent<IndentDropLineMarker>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
         if (dropMarker != null && dropMarker.transform.parent == lineasConsola) {
-            int markerIndex = dropMarker.transform.GetSiblingIndex();
-            transform.SetSiblingIndex(markerIndex);
             indentLevel = Mathf.Max(1, dropMarker.indentLevel);
         } else {
-            rectTransform.SetAsLastSibling();
             indentLevel = 0;
         }
+        ApplyConsoleLineLayout(lineasConsola);
+
+        if (draggedFromPalette && contenedorBloques != null && prefabOriginal != null) {
+            BloqueCodigo nuevo = Instantiate(prefabOriginal, contenedorBloques, false);
+            nuevo.gameObject.SetActive(true);
+            nuevo.blockId = this.blockId;
+            nuevo.codeText = this.codeText;
+            nuevo.commandType = this.commandType;
+            nuevo.UpdateBlockText();
+
+            int targetIndex = Mathf.Clamp(originalSiblingIndex, 0, Mathf.Max(0, contenedorBloques.childCount - 1));
+            nuevo.transform.SetSiblingIndex(targetIndex);
+
+            RectTransform nrt = nuevo.GetComponent<RectTransform>();
+            if (nrt != null) {
+                ApplyTemplateToRect(nrt);
+
+                // En paleta con VerticalLayoutGroup, el layout decide la posicion.
+                nrt.anchoredPosition = Vector2.zero;
+                nrt.localScale = Vector3.one;
+            }
+
+            LayoutGroup paletteLayout = contenedorBloques.GetComponent<LayoutGroup>();
+            if (paletteLayout != null) {
+                LayoutElement le = nuevo.GetComponent<LayoutElement>();
+                if (le != null) {
+                    le.ignoreLayout = false;
+                }
+
+                RectTransform paletteRect = contenedorBloques as RectTransform;
+                if (paletteRect != null) {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(paletteRect);
+                }
+            }
+
+            var lineNumTxt = nuevo.transform.Find("TextoNumeroLinea")?.GetComponent<TextMeshProUGUI>();
+            if (lineNumTxt) lineNumTxt.text = string.Empty;
+            nuevo.SetLineNumberVisible(false);
+
+            nuevo.contenedorBloques = contenedorBloques;
+            nuevo.prefabOriginal = prefabOriginal;
+            nuevo.puntoSpawnBloques = puntoSpawnBloques;
+            nuevo.consolaDropZone = consolaDropZone;
+            nuevo.lineasConsolaTarget = lineasConsolaTarget;
+            nuevo.CopyTemplateFrom(this);
+        }
+    }
+
+    private void ApplyConsoleLineLayout(Transform lineasConsola) {
+        if (lineasConsola == null) return;
+
+        EnsureCachedComponents();
+        if (rectTransform == null) {
+            Debug.LogWarning("BloqueCodigo: no se pudo aplicar el layout de consola porque falta RectTransform.");
+            return;
+        }
+
+        transform.SetParent(lineasConsola, false);
         rectTransform.localScale = Vector3.one;
 
         // Debe participar siempre en el VerticalLayoutGroup de la consola.
@@ -344,50 +444,15 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         RefreshLineNumbersFromHierarchy(lineasConsola);
         RefreshConsoleLayout(lineasConsola);
+    }
 
-        if (draggedFromPalette && contenedorBloques != null && prefabOriginal != null) {
-            BloqueCodigo nuevo = Instantiate(prefabOriginal, contenedorBloques, false);
-            nuevo.gameObject.SetActive(true);
-            nuevo.blockId = this.blockId;
-            nuevo.codeText = this.codeText;
-            nuevo.commandType = this.commandType;
-            nuevo.UpdateBlockText();
+    private void EnsureCachedComponents() {
+        if (rectTransform == null) {
+            rectTransform = GetComponent<RectTransform>();
+        }
 
-            int targetIndex = Mathf.Clamp(originalSiblingIndex, 0, Mathf.Max(0, contenedorBloques.childCount - 1));
-            nuevo.transform.SetSiblingIndex(targetIndex);
-
-            RectTransform nrt = nuevo.GetComponent<RectTransform>();
-            if (nrt != null) {
-                ApplyTemplateToRect(nrt);
-
-                // En paleta con VerticalLayoutGroup, el layout decide la posicion.
-                nrt.anchoredPosition = Vector2.zero;
-                nrt.localScale = Vector3.one;
-            }
-
-            LayoutGroup paletteLayout = contenedorBloques.GetComponent<LayoutGroup>();
-            if (paletteLayout != null) {
-                LayoutElement le = nuevo.GetComponent<LayoutElement>();
-                if (le != null) {
-                    le.ignoreLayout = false;
-                }
-
-                RectTransform paletteRect = contenedorBloques as RectTransform;
-                if (paletteRect != null) {
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(paletteRect);
-                }
-            }
-
-            var lineNumTxt = nuevo.transform.Find("TextoNumeroLinea")?.GetComponent<TextMeshProUGUI>();
-            if (lineNumTxt) lineNumTxt.text = string.Empty;
-            nuevo.SetLineNumberVisible(false);
-
-            nuevo.contenedorBloques = contenedorBloques;
-            nuevo.prefabOriginal = prefabOriginal;
-            nuevo.puntoSpawnBloques = puntoSpawnBloques;
-            nuevo.consolaDropZone = consolaDropZone;
-            nuevo.lineasConsolaTarget = lineasConsolaTarget;
-            nuevo.CopyTemplateFrom(this);
+        if (canvasGroup == null) {
+            canvasGroup = GetComponent<CanvasGroup>();
         }
     }
 
@@ -545,9 +610,8 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         TextMeshProUGUI text = textObj.GetComponent<TextMeshProUGUI>();
         text.text = "[arrastra bloque aqui]";
-        text.fontSize = 18f;
+        CodeConsoleTypography.Apply(text, 29f, TextAlignmentOptions.MidlineLeft);
         text.color = new Color(1f, 1f, 1f, 0.45f);
-        text.alignment = TextAlignmentOptions.MidlineLeft;
         text.enableWordWrapping = false;
 
         LayoutElement textLE = textObj.AddComponent<LayoutElement>();

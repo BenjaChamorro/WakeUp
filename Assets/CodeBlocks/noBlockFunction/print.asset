@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: print
   m_EditorClassIdentifier: Assembly-CSharp::CodeBlockData
   blockId: print
-  displayText: print( _ )
+  displayText: print(_)
   commandType: noBlockFunction
   unlockedAtStart: 1

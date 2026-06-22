@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -20,7 +22,7 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
     private string currentBlockId;
     private TMP_FontAsset referenceFont;
     private Material referenceFontMaterial;
-    private float referenceFontSize = 20f;
+    private float referenceFontSize = 32f;
     private Color referenceColor = Color.white;
 
     public void Initialize(string templateText, string commandType, string blockId = "") {
@@ -54,6 +56,56 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         }
 
         RebuildTemplate();
+    }
+
+    public bool ApplyCombatPrefill(string prefilledBlockSpec) {
+        if (containerRect == null || string.IsNullOrWhiteSpace(prefilledBlockSpec)) {
+            return false;
+        }
+
+        if (!TryParseCombatPrefill(prefilledBlockSpec, out bool lockWholeBlock, out List<PrefillSlotValue> slotValues)) {
+            return false;
+        }
+
+        BloqueCodigo owner = GetComponent<BloqueCodigo>();
+        if (owner != null) {
+            owner.SetCombatPresetLocked(lockWholeBlock);
+        }
+
+        ApplyPrefillValues(slotValues);
+        return true;
+    }
+
+    public bool RenderPrefilledCombatLine(string blockId, string prefilledBlockSpec) {
+        if (string.IsNullOrWhiteSpace(blockId) || string.IsNullOrWhiteSpace(prefilledBlockSpec)) {
+            return false;
+        }
+
+        if (!TryParseCombatPrefill(prefilledBlockSpec, out bool lockWholeBlock, out List<PrefillSlotValue> slotValues)) {
+            return false;
+        }
+
+        string normalizedBlockId = blockId.Trim().ToLowerInvariant();
+        TextMeshProUGUI mainText = transform.Find("TextoBloqueCodigo")?.GetComponent<TextMeshProUGUI>();
+        CacheReferenceStyle(mainText);
+
+        EnsureContainer();
+        ClearContainer();
+
+        if (mainText != null) {
+            mainText.gameObject.SetActive(false);
+        }
+
+        BuildPrefilledLineLayout(normalizedBlockId);
+        ApplyPrefillValues(slotValues);
+
+        BloqueCodigo owner = GetComponent<BloqueCodigo>();
+        if (owner != null) {
+            owner.SetCombatPresetLocked(true);
+        }
+
+        RefreshOwnerLineHeight();
+        return true;
     }
 
     private bool IsArrayDefinitionMode() {
@@ -90,13 +142,14 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         if (source.font != null) {
             referenceFont = source.font;
+            CodeConsoleTypography.CaptureDefaultFont(referenceFont);
         }
 
         if (source.fontSharedMaterial != null) {
             referenceFontMaterial = source.fontSharedMaterial;
         }
 
-        referenceFontSize = source.fontSize > 0f ? source.fontSize : 20f;
+        referenceFontSize = source.fontSize > 0f ? source.fontSize : 32f;
         referenceColor = source.color;
     }
 
@@ -111,12 +164,8 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
             target.fontSharedMaterial = referenceFontMaterial;
         }
 
-        target.fontSize = fontSizeOverride ?? referenceFontSize;
+        CodeConsoleTypography.Apply(target, fontSizeOverride ?? referenceFontSize, alignOverride);
         target.color = referenceColor;
-
-        if (alignOverride.HasValue) {
-            target.alignment = alignOverride.Value;
-        }
     }
 
     private void EnsureContainer() {
@@ -207,6 +256,68 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
         RefreshOwnerLineHeight();
+    }
+
+    private void ClearContainer() {
+        if (containerRect == null) return;
+
+        for (int i = containerRect.childCount - 1; i >= 0; i--) {
+            Destroy(containerRect.GetChild(i).gameObject);
+        }
+    }
+
+    private void BuildPrefilledLineLayout(string blockId) {
+        if (containerRect == null) return;
+
+        string lower = blockId != null ? blockId.Trim().ToLowerInvariant() : string.Empty;
+
+        switch (lower) {
+            case "equal":
+            case "assignment":
+                BuildAssignmentPrefillLine();
+                break;
+            case "if":
+                BuildIfPrefillLine();
+                break;
+            case "print":
+                BuildPrintPrefillLine();
+                break;
+            default:
+                BuildFallbackPrefillLine(blockId);
+                break;
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+    }
+
+    private void BuildAssignmentPrefillLine() {
+        CreateInlineInput(AssignmentKeyMinWidth, AssignmentKeyMaxWidth, true, false);
+        CreateStaticLabel(" = ");
+        CreateInlineInput(AssignmentValueMinWidth, AssignmentValueMaxWidth, false, false);
+    }
+
+    private void BuildIfPrefillLine() {
+        CreateStaticLabel("if (");
+        CreateInlineInput(InlineInputMinWidth, InlineInputMaxWidth, true, false);
+        CreateStaticLabel(" ");
+        CreateOperatorSlot();
+        CreateStaticLabel(" ");
+        CreateInlineInput(InlineInputMinWidth, InlineInputMaxWidth, false, false);
+        CreateStaticLabel("):");
+    }
+
+    private void BuildPrintPrefillLine() {
+        CreateStaticLabel("print(");
+        CreateInlineInput(InlineInputMinWidth, InlineInputMaxWidth, false, false);
+        CreateStaticLabel(")");
+    }
+
+    private void BuildFallbackPrefillLine(string blockId) {
+        if (!string.IsNullOrWhiteSpace(blockId)) {
+            CreateStaticLabel(blockId);
+        } else {
+            CreateStaticLabel("line");
+        }
     }
 
     public void RefreshOwnerLineHeight() {
@@ -304,6 +415,9 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
 
+        // Agregar handler para bloques flatText
+        FlatTextInputHandler flatTextHandler = root.AddComponent<FlatTextInputHandler>();
+
         GameObject textGO = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform textRect = textGO.GetComponent<RectTransform>();
         textRect.SetParent(rect, false);
@@ -387,7 +501,244 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
         TextMeshProUGUI text = textGO.GetComponent<TextMeshProUGUI>();
         text.text = "op";
         ApplyReferenceStyle(text, referenceFontSize, TextAlignmentOptions.Center);
+        OperatorDropSlot slot = root.GetComponent<OperatorDropSlot>();
+        if (slot != null) {
+            slot.SetLocked(false);
+        }
+    }
 
+    private void ApplyPrefillValues(List<PrefillSlotValue> slotValues) {
+        if (slotValues == null || slotValues.Count == 0) {
+            return;
+        }
+
+        List<TMP_InputField> inputSlots = new List<TMP_InputField>();
+        List<OperatorDropSlot> operatorSlots = new List<OperatorDropSlot>();
+        CollectSlotComponents(containerRect, inputSlots, operatorSlots);
+
+        for (int i = 0; i < slotValues.Count; i++) {
+            PrefillSlotValue value = slotValues[i];
+            if (value == null) continue;
+
+            if (value.Kind == PrefillSlotKind.Input) {
+                int index = Mathf.Max(0, value.Index - 1);
+                if (index >= inputSlots.Count) continue;
+
+                TMP_InputField input = inputSlots[index];
+                if (input == null) continue;
+
+                input.SetTextWithoutNotify(value.Value);
+                input.ForceLabelUpdate();
+
+                LayoutElement inputLayout = input.GetComponent<LayoutElement>();
+                if (inputLayout != null) {
+                    float minWidth = Mathf.Max(48f, inputLayout.minWidth);
+                    float maxWidth = Mathf.Max(minWidth, 640f);
+                    UpdateInputSlotWidth(input, inputLayout, minWidth, maxWidth);
+                }
+
+                if (value.Locked) {
+                    input.readOnly = true;
+                    input.interactable = false;
+                }
+            } else if (value.Kind == PrefillSlotKind.Operator) {
+                int index = Mathf.Max(0, value.Index - 1);
+                if (index >= operatorSlots.Count) continue;
+
+                OperatorDropSlot slot = operatorSlots[index];
+                if (slot == null) continue;
+
+                if (!string.IsNullOrWhiteSpace(value.Value)) {
+                    slot.TrySetOperator(value.Value);
+                }
+
+                if (value.Locked) {
+                    slot.SetLocked(true);
+                }
+            }
+        }
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+        RefreshOwnerLineHeight();
+    }
+
+    private void CollectSlotComponents(Transform node, List<TMP_InputField> inputs, List<OperatorDropSlot> operators) {
+        if (node == null) return;
+
+        TMP_InputField input = node.GetComponent<TMP_InputField>();
+        if (input != null) {
+            inputs.Add(input);
+        }
+
+        OperatorDropSlot operatorSlot = node.GetComponent<OperatorDropSlot>();
+        if (operatorSlot != null) {
+            operators.Add(operatorSlot);
+        }
+
+        for (int i = 0; i < node.childCount; i++) {
+            CollectSlotComponents(node.GetChild(i), inputs, operators);
+        }
+    }
+
+    private bool TryParseCombatPrefill(string prefilledBlockSpec, out bool lockWholeBlock, out List<PrefillSlotValue> slotValues) {
+        lockWholeBlock = false;
+        slotValues = new List<PrefillSlotValue>();
+
+        string normalized = prefilledBlockSpec.Trim();
+        if (string.IsNullOrWhiteSpace(normalized)) {
+            return false;
+        }
+
+        int separatorIndex = normalized.IndexOf(" - ", System.StringComparison.Ordinal);
+        string headerPart;
+        string bodyPart;
+
+        if (separatorIndex >= 0) {
+            headerPart = normalized.Substring(0, separatorIndex).Trim();
+            bodyPart = normalized.Substring(separatorIndex + 3).Trim();
+        } else {
+            headerPart = normalized;
+            bodyPart = string.Empty;
+        }
+
+        if (string.IsNullOrWhiteSpace(headerPart)) {
+            return false;
+        }
+
+        lockWholeBlock = headerPart.EndsWith("*", System.StringComparison.Ordinal);
+
+        if (string.IsNullOrWhiteSpace(bodyPart)) {
+            return true;
+        }
+
+        if (bodyPart.StartsWith("-")) {
+            bodyPart = bodyPart.Substring(1).TrimStart();
+        }
+
+        List<string> tokens = SplitPrefillTokens(bodyPart);
+        for (int i = 0; i < tokens.Count; i++) {
+            string token = tokens[i];
+            if (string.IsNullOrWhiteSpace(token)) continue;
+
+            int equalsIndex = token.IndexOf('=');
+            string keyPart = equalsIndex >= 0 ? token.Substring(0, equalsIndex).Trim() : token.Trim();
+            string valuePart = equalsIndex >= 0 ? token.Substring(equalsIndex + 1).Trim() : string.Empty;
+
+            bool locked = keyPart.EndsWith("*", System.StringComparison.Ordinal);
+            keyPart = keyPart.TrimEnd('*').Trim();
+
+            if (string.IsNullOrWhiteSpace(keyPart)) continue;
+
+            if (!TryParseSlotKey(keyPart, out PrefillSlotKind kind, out int index)) {
+                continue;
+            }
+
+            valuePart = UnwrapLiteralValue(valuePart);
+
+            slotValues.Add(new PrefillSlotValue {
+                Kind = kind,
+                Index = index,
+                Value = valuePart,
+                Locked = locked
+            });
+        }
+
+        return true;
+    }
+
+    private List<string> SplitPrefillTokens(string bodyPart) {
+        List<string> tokens = new List<string>();
+        StringBuilder current = new StringBuilder();
+        int braceDepth = 0;
+
+        for (int i = 0; i < bodyPart.Length; i++) {
+            char c = bodyPart[i];
+
+            if (char.IsWhiteSpace(c) && braceDepth == 0) {
+                if (current.Length > 0) {
+                    tokens.Add(current.ToString());
+                    current.Length = 0;
+                }
+                continue;
+            }
+
+            if (c == '{') {
+                braceDepth++;
+            } else if (c == '}' && braceDepth > 0) {
+                braceDepth--;
+            }
+
+            current.Append(c);
+        }
+
+        if (current.Length > 0) {
+            tokens.Add(current.ToString());
+        }
+
+        return tokens;
+    }
+
+    private bool TryParseSlotKey(string keyPart, out PrefillSlotKind kind, out int index) {
+        kind = PrefillSlotKind.Input;
+        index = 1;
+
+        string lower = keyPart.ToLowerInvariant();
+        if (lower.StartsWith("input")) {
+            string numericPart = lower.Substring(5);
+            if (string.IsNullOrWhiteSpace(numericPart)) {
+                return true;
+            }
+
+            if (int.TryParse(numericPart, out int parsedIndex) && parsedIndex > 0) {
+                index = parsedIndex;
+                return true;
+            }
+
+            return false;
+        }
+
+        if (lower.StartsWith("operator")) {
+            kind = PrefillSlotKind.Operator;
+            string numericPart = lower.Substring(8);
+            if (string.IsNullOrWhiteSpace(numericPart)) {
+                return true;
+            }
+
+            if (int.TryParse(numericPart, out int parsedIndex) && parsedIndex > 0) {
+                index = parsedIndex;
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    private string UnwrapLiteralValue(string valuePart) {
+        if (string.IsNullOrWhiteSpace(valuePart)) {
+            return string.Empty;
+        }
+
+        string trimmed = valuePart.Trim();
+        if (trimmed.Length >= 2 && trimmed[0] == '{' && trimmed[trimmed.Length - 1] == '}') {
+            trimmed = trimmed.Substring(1, trimmed.Length - 2);
+        }
+
+        return trimmed;
+    }
+
+    private enum PrefillSlotKind {
+        Input,
+        Operator
+    }
+
+    private class PrefillSlotValue {
+        public PrefillSlotKind Kind;
+        public int Index;
+        public string Value;
+        public bool Locked;
     }
 
     private void RemoveContainerIfExists() {

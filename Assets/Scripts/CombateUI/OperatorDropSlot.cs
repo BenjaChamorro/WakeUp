@@ -9,8 +9,16 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
 
     [SerializeField] private TextMeshProUGUI slotText;
     [SerializeField] private RectTransform dynamicContentRoot;
+    private bool isLocked;
 
     public string CurrentOperator { get; private set; } = string.Empty;
+
+    public void SetLocked(bool locked) {
+        isLocked = locked;
+        if (locked) {
+            HidePlaceholderLabel();
+        }
+    }
 
     void Awake() {
         if (slotText == null) {
@@ -23,6 +31,8 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
     }
 
     public bool TrySetOperator(string operatorText) {
+        if (isLocked) return false;
+
         if (string.IsNullOrWhiteSpace(operatorText)) return false;
 
         string cleaned = NormalizeOperatorText(operatorText);
@@ -131,9 +141,8 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
 
         TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
         tmp.text = text;
-        tmp.fontSize = 22f;
+        CodeConsoleTypography.Apply(tmp, 35f, TextAlignmentOptions.Center);
         tmp.color = Color.white;
-        tmp.alignment = TextAlignmentOptions.Center;
 
         LayoutElement le = go.GetComponent<LayoutElement>();
         le.preferredWidth = Mathf.Max(16f, tmp.preferredWidth + 2f);
@@ -141,12 +150,18 @@ public class OperatorDropSlot : MonoBehaviour, IDropHandler {
     }
 
     public void OnDrop(PointerEventData eventData) {
+        if (isLocked) return;
+
         if (eventData.pointerDrag == null) return;
 
         BloqueCodigo dragged = eventData.pointerDrag.GetComponent<BloqueCodigo>();
-        if (dragged == null || !IsOperatorType(dragged.commandType)) return;
+        if (dragged == null) return;
 
-        TrySetOperator(dragged.codeText);
+        string draggedType = dragged.commandType != null ? dragged.commandType.Trim().ToLowerInvariant() : string.Empty;
+        
+        if (IsOperatorType(draggedType)) {
+            TrySetOperator(dragged.codeText);
+        }
     }
 
     private bool IsOperatorType(string type) {

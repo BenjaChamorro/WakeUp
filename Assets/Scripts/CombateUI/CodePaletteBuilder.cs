@@ -96,6 +96,14 @@ public class CodePaletteBuilder : MonoBehaviour {
         RefreshPalette();
     }
 
+    public BloqueCodigo GetBlockPrefab() {
+        return bloquePrefab;
+    }
+
+    public Transform GetConsoleLineTarget() {
+        return lineasConsolaTarget;
+    }
+
     public void UnlockAndRefresh(CodeBlockData block) {
         if (inventory == null || block == null) return;
 

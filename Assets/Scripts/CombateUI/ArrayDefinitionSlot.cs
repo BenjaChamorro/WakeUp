@@ -115,6 +115,10 @@ public class ArrayDefinitionSlot : MonoBehaviour {
         le.preferredHeight = 24f;
 
         TMP_InputField input = root.GetComponent<TMP_InputField>();
+
+        // Agregar handler para bloques flatText
+        FlatTextInputHandler flatTextHandler = root.AddComponent<FlatTextInputHandler>();
+
         input.lineType = TMP_InputField.LineType.SingleLine;
         input.contentType = TMP_InputField.ContentType.Standard;
 
@@ -128,9 +132,8 @@ public class ArrayDefinitionSlot : MonoBehaviour {
 
         TextMeshProUGUI text = textGo.GetComponent<TextMeshProUGUI>();
         text.text = string.Empty;
-        text.fontSize = 20f;
+        CodeConsoleTypography.Apply(text, 32f, TextAlignmentOptions.Center);
         text.color = Color.white;
-        text.alignment = TextAlignmentOptions.Center;
 
         GameObject phGo = new GameObject("Placeholder", typeof(RectTransform), typeof(TextMeshProUGUI));
         RectTransform phRect = phGo.GetComponent<RectTransform>();
@@ -142,9 +145,8 @@ public class ArrayDefinitionSlot : MonoBehaviour {
 
         TextMeshProUGUI ph = phGo.GetComponent<TextMeshProUGUI>();
         ph.text = string.Empty;
-        ph.fontSize = 20f;
+        CodeConsoleTypography.Apply(ph, 32f, TextAlignmentOptions.Center);
         ph.color = new Color(1f, 1f, 1f, 0.4f);
-        ph.alignment = TextAlignmentOptions.Center;
 
         input.textComponent = text;
         input.placeholder = ph;
@@ -187,9 +189,8 @@ public class ArrayDefinitionSlot : MonoBehaviour {
 
         TextMeshProUGUI txt = txtGo.GetComponent<TextMeshProUGUI>();
         txt.text = "+";
-        txt.fontSize = 18f;
+        CodeConsoleTypography.Apply(txt, 29f, TextAlignmentOptions.Center);
         txt.color = Color.white;
-        txt.alignment = TextAlignmentOptions.Center;
     }
 
     private void OnAddClicked() {
@@ -266,9 +267,8 @@ public class ArrayDefinitionSlot : MonoBehaviour {
 
         TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
         tmp.text = text;
-        tmp.fontSize = 20f;
+        CodeConsoleTypography.Apply(tmp, 32f, TextAlignmentOptions.Center);
         tmp.color = Color.white;
-        tmp.alignment = TextAlignmentOptions.Center;
 
         LayoutElement le = go.GetComponent<LayoutElement>();
         le.preferredWidth = Mathf.Max(12f, tmp.preferredWidth + 1f);

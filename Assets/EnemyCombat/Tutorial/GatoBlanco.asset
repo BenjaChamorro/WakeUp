@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
+  m_Name: GatoBlanco
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
+  enemyId: GatoBlanco
+  enemyDisplayName: GatoBlanco
+  enemySprite: {fileID: -7652591164275892872, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
+  defeatSprite: {fileID: 3404878821873683168, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
+  introDialogues:
+  - Miau...      -- tembloroso --
+  defeatDialogues:
+  - Gghhhh
+  defeatAnimationProfile: {fileID: 11400000, guid: e29102366b39731418f236eaa71bab77, type: 2}
+  victoryCode: print(pepino)
+  combatOnlyBlocks:
+  - {fileID: 11400000, guid: 63be2860f7acaa74dbe9a728e7e010fd, type: 2}
+  unlockBlocksOnDefeat: []

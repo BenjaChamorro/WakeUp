@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class DialogBoxController : MonoBehaviour
 {
@@ -55,6 +56,13 @@ public class DialogBoxController : MonoBehaviour
     public bool IsShowing => isShowing;
     public string CurrentDialogueId => currentDialogueId;
     public event Action<string> DialogueFinished;
+    public event Action<int> LineShown;
+
+    [Header("Optional Animation")]
+    [Tooltip("Optional: NPCSpriteController to mark as talking while dialog is active.")]
+    [SerializeField] private NPCSpriteController spriteController;
+
+    
 
     private void Awake()
     {
@@ -122,7 +130,12 @@ public class DialogBoxController : MonoBehaviour
         if (dialogRoutine != null)
         {
             StopCoroutine(dialogRoutine);
+            dialogRoutine = null;
         }
+
+        // Mark as talking if a sprite controller is assigned (optional)
+        if (spriteController != null)
+            spriteController.SetTalking(true);
 
         dialogRoutine = StartCoroutine(RunDialogue(lines));
     }
@@ -146,6 +159,9 @@ public class DialogBoxController : MonoBehaviour
         SetDialogVisible(false);
         SetGameplayEnabled(true);
 
+        if (spriteController != null)
+            spriteController.SetTalking(false);
+
         if (!string.IsNullOrEmpty(finishedDialogueId))
         {
             DialogueFinished?.Invoke(finishedDialogueId);
@@ -167,6 +183,7 @@ public class DialogBoxController : MonoBehaviour
             string line = lines[i] ?? string.Empty;
 
             yield return ShowLine(line);
+            LineShown?.Invoke(i);
             yield return WaitForAdvance();
         }
 
@@ -350,4 +367,6 @@ public class DialogBoxController : MonoBehaviour
             dialogText.text = string.Empty;
         }
     }
+
+    
 }

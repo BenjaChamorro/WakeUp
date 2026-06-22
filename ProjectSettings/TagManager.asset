@@ -4,9 +4,7 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Ground
-  - Platform
-  - Floor
+  - Cats
   layers:
   - Default
   - TransparentFX
@@ -14,9 +12,9 @@ TagManager:
   - 
   - Water
   - UI
-  - Ground
-  - Projectile
-  - Plataform
+  - 
+  - 
+  - 
   - 
   - 
   - 
