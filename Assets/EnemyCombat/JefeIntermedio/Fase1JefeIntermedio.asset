@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: FireWall
   enemyDisplayName: firewall
-  enemySprite: {fileID: 0}
-  defeatSprite: {fileID: 0}
+  enemySprite: {fileID: 1991304687740942788, guid: 7e0c3b83ff535144ca4283d000b58e8a, type: 3}
+  defeatSprite: {fileID: -1894583265448014078, guid: 7e0c3b83ff535144ca4283d000b58e8a, type: 3}
   introDialogues:
   - "Este firewall bloquea el paso de todas las redes hac\xEDa la consola consola."
   defeatDialogues:

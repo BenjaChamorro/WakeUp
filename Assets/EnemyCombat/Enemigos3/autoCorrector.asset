@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: AutoCorrector
   enemyDisplayName: AutoCorrector
-  enemySprite: {fileID: 0}
+  enemySprite: {fileID: -1861183262728056753, guid: 32d34cb061ce2e44fa8e8543b5dfbe0b, type: 3}
   defeatSprite: {fileID: 0}
   introDialogues:
   - "Corregir la gramatica es mi deber, sin embargo estoy roto, necesito que me repares.
@@ -27,4 +27,5 @@ MonoBehaviour:
     1"
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 8cd82f3ddb241db41bcfd7faf7c1a27f, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []
