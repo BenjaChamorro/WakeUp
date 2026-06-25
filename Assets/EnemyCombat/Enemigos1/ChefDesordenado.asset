@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyId: ChefDesordenado
   enemyDisplayName: ChefDesordenado
   enemySprite: {fileID: 3198799625009063001, guid: 08c55aaae4914ae418c714b2394fd65f, type: 3}
-  defeatSprite: {fileID: 3198799625009063001, guid: 08c55aaae4914ae418c714b2394fd65f, type: 3}
+  defeatSprite: {fileID: 0}
   introDialogues:
   - "Tengo un la cabeza en las nubes y un lio en la cocina, la receta dice que primero
     van los tomates, luego la cebolla y por \xFAltimo el ajo, pero est\xE1n todos

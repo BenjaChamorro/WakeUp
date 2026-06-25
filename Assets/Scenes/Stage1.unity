@@ -63201,8 +63201,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.006684065, y: 0.5670867}
-  m_Size: {x: 0.9438348, y: 1.1341887}
+  m_Offset: {x: -0.006375313, y: 0.5599866}
+  m_Size: {x: 0.94142914, y: 1.1199884}
   m_Direction: 0
 --- !u!1 &1255574715
 GameObject:
@@ -63542,7 +63542,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 1
+  m_SpriteSortPoint: 0
 --- !u!50 &1256420708
 Rigidbody2D:
   serializedVersion: 5
@@ -63625,8 +63625,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.029182434, y: 0.7795}
-  m_Size: {x: 1.5914536, y: 1.5914536}
+  m_Offset: {x: -0.01275301, y: 0.74144554}
+  m_Size: {x: 1.64289, y: 1.6428909}
   m_Direction: 0
 --- !u!1 &1260620933
 GameObject:

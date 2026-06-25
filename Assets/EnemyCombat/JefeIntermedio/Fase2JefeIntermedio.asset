@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: AntiVirus
   enemyDisplayName: antivirus
-  enemySprite: {fileID: 0}
-  defeatSprite: {fileID: 0}
+  enemySprite: {fileID: -4483163079261841770, guid: 519f94be64029c942b39d2187694969f, type: 3}
+  defeatSprite: {fileID: -4735169262380950740, guid: 519f94be64029c942b39d2187694969f, type: 3}
   introDialogues:
   - Antivirus activado... -- BUSCANDO VIRUS --
   defeatDialogues:
