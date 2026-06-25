@@ -36117,6 +36117,8 @@ MonoBehaviour:
   corner: 0
   screenOffset: {x: 36, y: 36}
   targetCamera: {fileID: 519420031}
+  targetCanvas: {fileID: 0}
+  useExistingCanvas: 0
   panelSize: {x: 1040, y: 300}
   textContainerSize: {x: 500, y: 200}
   textContainerOffset: {x: -80, y: 50}
@@ -63018,9 +63020,11 @@ GameObject:
   - component: {fileID: 1255171660}
   - component: {fileID: 1255171662}
   - component: {fileID: 1255171663}
+  - component: {fileID: 1255171665}
   - component: {fileID: 1255171661}
+  - component: {fileID: 1255171664}
   m_Layer: 0
-  m_Name: BasicEnemy1
+  m_Name: Cafe_Intenso
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63053,8 +63057,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1a3b287d9df79f408f4f7fd241a919e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemyMovement
-  distanciaDeteccion: 7
-  velocidadMovimiento: 4
+  distanciaDeteccion: 6
+  velocidadMovimiento: 3.5
   objetivo: {fileID: 1561055461}
 --- !u!212 &1255171662
 SpriteRenderer:
@@ -63105,7 +63109,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 4903682920358546511, guid: ce0b67fd0a1642e4c9810b8aa5cc2088, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -63114,7 +63118,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!50 &1255171663
 Rigidbody2D:
   serializedVersion: 5
@@ -63142,6 +63146,64 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1255171664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255171659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433200877f0f32f4fbc6e3ff7e4da325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySelect
+  enemyAsset: {fileID: 11400000, guid: 05211c09ddc30f14b8559e167375e9ac, type: 2}
+  encounterId: 3
+  succeed: 0
+  combatSceneIndex: 1
+  triggerOnce: 1
+  useEventFilter: 0
+  requiredEventId: 
+  requireEventCompleted: 0
+  requireEventIncomplete: 0
+--- !u!70 &1255171665
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255171659}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.006375313, y: 0.5599866}
+  m_Size: {x: 0.94142914, y: 1.1199884}
+  m_Direction: 0
 --- !u!1 &1255574715
 GameObject:
   m_ObjectHideFlags: 0
@@ -63382,9 +63444,11 @@ GameObject:
   - component: {fileID: 1256420705}
   - component: {fileID: 1256420707}
   - component: {fileID: 1256420708}
+  - component: {fileID: 1256420710}
   - component: {fileID: 1256420706}
+  - component: {fileID: 1256420709}
   m_Layer: 0
-  m_Name: BasicEnemy1 (1)
+  m_Name: ChefDesordenado
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63417,8 +63481,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1a3b287d9df79f408f4f7fd241a919e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemyMovement
-  distanciaDeteccion: 7
-  velocidadMovimiento: 4
+  distanciaDeteccion: 6
+  velocidadMovimiento: 3.5
   objetivo: {fileID: 1561055461}
 --- !u!212 &1256420707
 SpriteRenderer:
@@ -63469,7 +63533,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 3198799625009063001, guid: 08c55aaae4914ae418c714b2394fd65f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -63506,6 +63570,64 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1256420709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256420704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433200877f0f32f4fbc6e3ff7e4da325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySelect
+  enemyAsset: {fileID: 11400000, guid: 945f5df2c33147b40b7e361acd67e668, type: 2}
+  encounterId: 4
+  succeed: 0
+  combatSceneIndex: 1
+  triggerOnce: 1
+  useEventFilter: 0
+  requiredEventId: 
+  requireEventCompleted: 0
+  requireEventIncomplete: 0
+--- !u!70 &1256420710
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256420704}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.01275301, y: 0.74144554}
+  m_Size: {x: 1.64289, y: 1.6428909}
+  m_Direction: 0
 --- !u!1 &1260620933
 GameObject:
   m_ObjectHideFlags: 0
