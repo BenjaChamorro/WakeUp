@@ -26,6 +26,14 @@ public class EnemySelect : MonoBehaviour
         SyncSucceedFromGameManager();
     }
 
+    void Update()
+    {
+        if (succeed == true)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
     void OnEnable()
     {
         SyncSucceedFromGameManager();
