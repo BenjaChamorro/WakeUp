@@ -5,6 +5,8 @@ using System.IO;
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
+    public static bool SuppressPreferredSceneLoadOnNextBoot { get; set; }
+    public static bool SuppressSceneStateRestoreOnNextSceneLoad { get; set; }
     public const string DefaultUnlockedBlockId = "print";
 
     private SaveData saveData;
@@ -23,6 +25,14 @@ public class SaveManager : MonoBehaviour
         else if (Instance != this)
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (Application.isPlaying)
+        {
+            AutoSaveCurrentState();
         }
     }
 
@@ -59,8 +69,14 @@ public class SaveManager : MonoBehaviour
             {
                 SaveGame();
             }
-            LoadPlayerPosition();
-            LoadCameraBounds();
+
+            bool suppressPreferredSceneLoad = SuppressPreferredSceneLoadOnNextBoot;
+            SuppressPreferredSceneLoadOnNextBoot = false;
+
+            if (!suppressPreferredSceneLoad && TryLoadPreferredSceneOnStartup())
+            {
+                return;
+            }
             Debug.Log("[SaveManager] Juego cargado desde: " + savePath);
         }
         else
@@ -136,6 +152,29 @@ public class SaveManager : MonoBehaviour
         if (saveData == null) saveData = new SaveData();
         saveData.savedActiveStage = stageName ?? string.Empty;
         SaveGame();
+    }
+
+    public bool SetPreferredScene(string sceneName)
+    {
+        if (saveData == null)
+        {
+            saveData = new SaveData();
+        }
+
+        string normalizedSceneName = string.IsNullOrWhiteSpace(sceneName) ? string.Empty : sceneName;
+        if (saveData.preferredSceneName == normalizedSceneName)
+        {
+            return false;
+        }
+
+        saveData.preferredSceneName = normalizedSceneName;
+        SaveGame();
+        return true;
+    }
+
+    public void ClearPreferredScene()
+    {
+        SetPreferredScene(string.Empty);
     }
 
     public void RegisterPendingEvent(string eventId)
@@ -381,6 +420,35 @@ public class SaveManager : MonoBehaviour
                 SaveActiveStage(activeStage);
             }
         }
+    }
+
+    private bool TryLoadPreferredSceneOnStartup()
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(saveData.preferredSceneName))
+        {
+            return false;
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.OnCombat)
+        {
+            return false;
+        }
+
+        string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (currentSceneName == saveData.preferredSceneName)
+        {
+            return false;
+        }
+
+        if (!UnityEngine.Application.CanStreamedLevelBeLoaded(saveData.preferredSceneName))
+        {
+            Debug.LogWarning("[SaveManager] La escena preferida '" + saveData.preferredSceneName + "' no esta en Build Settings.");
+            return false;
+        }
+
+        Debug.Log("[SaveManager] Cargando escena preferida: " + saveData.preferredSceneName);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(saveData.preferredSceneName);
+        return true;
     }
 
     private bool EnsureSaveDataDefaults()

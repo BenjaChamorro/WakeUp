@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -10,30 +11,61 @@ public class GameManagerStage1 : MonoBehaviour
     [SerializeField] private GameObject stage11Object;
     [SerializeField] private GameObject stage12Object;
     [SerializeField] private GameObject stage13Object;
+    [SerializeField] private GameObject stage14Object;
     [SerializeField] private bool startOnStage11 = true;
 
     [Header("Scene Names (Optional)")]
     [SerializeField] private string stage11SceneName = "Stage1.1";
     [SerializeField] private string stage12SceneName = "Stage1.2";
     [SerializeField] private string stage13SceneName = "Stage1.3";
+    [SerializeField] private string stage14SceneName = "Stage1.4";
 
     [Header("Player Respawn")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform stage11SpawnPoint;
     [SerializeField] private Transform stage12SpawnPoint;
     [SerializeField] private Transform stage13SpawnPoint;
+    [SerializeField] private Transform stage14SpawnPoint;
     [SerializeField] private bool resetPlayerPositionOnStageChange = true;
+
+    [Header("Camera")]
+    [SerializeField] private FollowCamera followCamera;
 
     [Header("Debug")]
     [SerializeField] private bool enableDebugKeys = true;
 
     private bool isLoading;
+    private bool restorePlayerPositionAfterCombat;
+    private bool suppressSceneStateRestore;
+    private bool isInitializingScene = true;
 
     void Start()
     {
+        suppressSceneStateRestore = SaveManager.SuppressSceneStateRestoreOnNextSceneLoad;
+        SaveManager.SuppressSceneStateRestoreOnNextSceneLoad = false;
+
+        if (SaveManager.Instance != null)
+        {
+            restorePlayerPositionAfterCombat = SaveManager.Instance.ConsumeReturnFromCombatFlag();
+        }
+
         if (!TryRestoreSavedStage())
         {
             SetInitialStage();
+        }
+
+        ApplySceneCameraDefaults();
+
+        if (!restorePlayerPositionAfterCombat && !suppressSceneStateRestore)
+        {
+            RestoreSavedSceneState();
+        }
+
+        isInitializingScene = false;
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.CommitCurrentState();
         }
     }
 
@@ -65,6 +97,11 @@ public class GameManagerStage1 : MonoBehaviour
         {
             ActivateStage13();
         }
+
+        if (keyboard.digit4Key.wasPressedThisFrame)
+        {
+            ActivateStage14();
+        }
     }
 
     public void ActivateStage11()
@@ -75,7 +112,8 @@ public class GameManagerStage1 : MonoBehaviour
     public void ActivateStage11(Transform customSpawnPoint)
     {
         SetActiveStage(stage11Object);
-        MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage11SpawnPoint);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage11SpawnPoint);
+        FinalizeStageActivation();
     }
 
     public void ActivateStage12()
@@ -86,7 +124,8 @@ public class GameManagerStage1 : MonoBehaviour
     public void ActivateStage12(Transform customSpawnPoint)
     {
         SetActiveStage(stage12Object);
-        MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage12SpawnPoint);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage12SpawnPoint);
+        FinalizeStageActivation();
     }
 
     public void ActivateStage13()
@@ -97,7 +136,20 @@ public class GameManagerStage1 : MonoBehaviour
     public void ActivateStage13(Transform customSpawnPoint)
     {
         SetActiveStage(stage13Object);
-        MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage13SpawnPoint);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage13SpawnPoint);
+        FinalizeStageActivation();
+    }
+
+    public void ActivateStage14()
+    {
+        ActivateStage14(null);
+    }
+
+    public void ActivateStage14(Transform customSpawnPoint)
+    {
+        SetActiveStage(stage14Object);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage14SpawnPoint);
+        FinalizeStageActivation();
     }
 
     public void RestartCurrentScene()
@@ -126,29 +178,35 @@ public class GameManagerStage1 : MonoBehaviour
         LoadSceneByName(stage13SceneName);
     }
 
+    public void LoadStage14Scene()
+    {
+        LoadSceneByName(stage14SceneName);
+    }
+
     private void SetInitialStage()
     {
         if (startOnStage11)
         {
-            SetActiveStage(stage11Object);
+            ActivateStage11();
         }
         else
         {
-            SetActiveStage(stage12Object);
+            ActivateStage12();
         }
     }
 
     private void SetActiveStage(GameObject stageToActivate)
     {
-        if (stage11Object == null || stage12Object == null || stage13Object == null)
+        if (stage11Object == null || stage12Object == null || stage13Object == null || stage14Object == null)
         {
-            Debug.LogWarning("Asigna stage11Object, stage12Object y stage13Object en el Inspector.");
+            Debug.LogWarning("Asigna stage11Object, stage12Object, stage13Object y stage14Object en el Inspector.");
             return;
         }
 
         stage11Object.SetActive(stageToActivate == stage11Object);
         stage12Object.SetActive(stageToActivate == stage12Object);
         stage13Object.SetActive(stageToActivate == stage13Object);
+        stage14Object.SetActive(stageToActivate == stage14Object);
 
         SaveActiveStage(stageToActivate);
     }
@@ -164,23 +222,58 @@ public class GameManagerStage1 : MonoBehaviour
 
         if (savedStageName == "Stage1.1")
         {
-            SetActiveStage(stage11Object);
+            ActivateStage11();
             return true;
         }
 
         if (savedStageName == "Stage1.2")
         {
-            SetActiveStage(stage12Object);
+            ActivateStage12();
             return true;
         }
 
         if (savedStageName == "Stage1.3")
         {
-            SetActiveStage(stage13Object);
+            ActivateStage13();
+            return true;
+        }
+
+        if (savedStageName == "Stage1.4")
+        {
+            ActivateStage14();
             return true;
         }
 
         return false;
+    }
+
+    private void FinalizeStageActivation()
+    {
+        if (isInitializingScene)
+        {
+            return;
+        }
+
+        ApplySceneCameraDefaults();
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.CommitCurrentState();
+        }
+    }
+
+    private void ApplySceneCameraDefaults()
+    {
+        if (followCamera == null)
+        {
+            followCamera = FindObjectOfType<FollowCamera>();
+        }
+
+        if (followCamera != null)
+        {
+            followCamera.ResetToSceneDefaults();
+            BindCameraToPlayer();
+        }
     }
 
     private void SaveActiveStage(GameObject activeStage)
@@ -206,6 +299,11 @@ public class GameManagerStage1 : MonoBehaviour
         {
             SaveManager.Instance.SaveActiveStage("Stage1.3");
         }
+
+        if (activeStage == stage14Object)
+        {
+            SaveManager.Instance.SaveActiveStage("Stage1.4");
+        }
     }
 
     private void MovePlayerToSpawn(Transform spawnPoint)
@@ -213,6 +311,15 @@ public class GameManagerStage1 : MonoBehaviour
         if (!resetPlayerPositionOnStageChange)
         {
             return;
+        }
+
+        if (playerTransform == null)
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            if (playerObject != null)
+            {
+                playerTransform = playerObject.transform;
+            }
         }
 
         if (playerTransform == null || spawnPoint == null)
@@ -234,6 +341,117 @@ public class GameManagerStage1 : MonoBehaviour
         {
             rb2D.linearVelocity = Vector2.zero;
             rb2D.angularVelocity = 0f;
+        }
+    }
+
+    private void MovePlayerToStagePosition(Transform spawnPoint)
+    {
+        if (restorePlayerPositionAfterCombat)
+        {
+            MovePlayerToSavedPosition(spawnPoint);
+            restorePlayerPositionAfterCombat = false;
+            return;
+        }
+
+        MovePlayerToSpawn(spawnPoint);
+    }
+
+    private void MovePlayerToSavedPosition(Transform fallbackSpawnPoint)
+    {
+        if (playerTransform == null)
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            if (playerObject != null)
+            {
+                playerTransform = playerObject.transform;
+            }
+        }
+
+        if (playerTransform == null)
+        {
+            return;
+        }
+
+        if (SaveManager.Instance != null)
+        {
+            Vector3? savedPosition = SaveManager.Instance.GetPlayerPosition();
+            if (savedPosition.HasValue)
+            {
+                playerTransform.position = savedPosition.Value;
+                return;
+            }
+        }
+
+        MovePlayerToSpawn(fallbackSpawnPoint);
+    }
+
+    private void RestoreSavedSceneState()
+    {
+        if (SaveManager.Instance == null)
+        {
+            return;
+        }
+
+        LoadSavedPlayerPosition();
+
+        if (SaveManager.Instance.GetCameraBounds(out float minX, out float maxX, out float minY, out float maxY))
+        {
+            if (followCamera == null)
+            {
+                followCamera = FindObjectOfType<FollowCamera>();
+            }
+
+            if (followCamera != null)
+            {
+                followCamera.SetCameraBounds(minX, maxX, minY, maxY);
+            }
+        }
+    }
+
+    private void LoadSavedPlayerPosition()
+    {
+        if (playerTransform == null)
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            if (playerObject != null)
+            {
+                playerTransform = playerObject.transform;
+            }
+        }
+
+        if (playerTransform == null || SaveManager.Instance == null)
+        {
+            return;
+        }
+
+        Vector3? savedPosition = SaveManager.Instance.GetPlayerPosition();
+        if (!savedPosition.HasValue)
+        {
+            return;
+        }
+
+        playerTransform.position = savedPosition.Value;
+    }
+
+    private void BindCameraToPlayer()
+    {
+        if (followCamera == null)
+        {
+            return;
+        }
+
+        if (playerTransform == null)
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            if (playerObject != null)
+            {
+                playerTransform = playerObject.transform;
+            }
+        }
+
+        if (playerTransform != null)
+        {
+            followCamera.SetTarget(playerTransform);
         }
     }
 
@@ -260,19 +478,25 @@ public class GameManagerStage1 : MonoBehaviour
 
         if (stageName == "Stage1.1")
         {
-            SetActiveStage(stage11Object);
+            ActivateStage11();
             return;
         }
 
         if (stageName == "Stage1.2")
         {
-            SetActiveStage(stage12Object);
+            ActivateStage12();
             return;
         }
 
         if (stageName == "Stage1.3")
         {
-            SetActiveStage(stage13Object);
+            ActivateStage13();
+            return;
+        }
+
+        if (stageName == "Stage1.4")
+        {
+            ActivateStage14();
         }
     }
 
@@ -281,6 +505,7 @@ public class GameManagerStage1 : MonoBehaviour
         if (stage11Object.activeSelf) return "Stage1.1";
         if (stage12Object.activeSelf) return "Stage1.2";
         if (stage13Object.activeSelf) return "Stage1.3";
+        if (stage14Object.activeSelf) return "Stage1.4";
         return string.Empty;
     }
 }

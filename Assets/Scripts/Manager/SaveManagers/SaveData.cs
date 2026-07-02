@@ -32,6 +32,7 @@ public class SaveData
     public int savedSceneIndex = -1;
     public bool returnFromCombat = false;
     public string savedActiveStage = "";
+    public string preferredSceneName = "";
 
     public SaveData()
     {

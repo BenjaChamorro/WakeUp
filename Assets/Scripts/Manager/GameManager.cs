@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [Header("Combat")]
+    [SerializeField] private int combatSceneIndex = 1;
+
     
     private readonly HashSet<string> succeededEncounters = new HashSet<string>();
     public bool OnCombat { get; private set; }
@@ -50,9 +53,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Llamar para entrar en combate (por defecto la escena de combate es 1)
-    public void EnterCombat(int combatSceneIndex = 1, Object enemyAsset = null, string encounterKey = null)
+    public int CombatSceneIndex => combatSceneIndex;
+
+    // Llamar para entrar en combate usando la escena de combate configurada en el inspector.
+    public void EnterCombat(Object enemyAsset = null, string encounterKey = null)
     {
+        if (SceneManager.GetActiveScene().buildIndex == combatSceneIndex)
+        {
+            Debug.LogWarning($"[GameManager] La escena de combate configurada ({combatSceneIndex}) coincide con la escena actual. Revisa el inspector.");
+            return;
+        }
+
         SaveCurrentStage();
         if (SaveManager.Instance != null)
         {

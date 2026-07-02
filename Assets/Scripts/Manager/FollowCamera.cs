@@ -22,12 +22,45 @@ public class FollowCamera : MonoBehaviour
     [SerializeField] private float minY = -5f;
     [SerializeField] private float maxY = 5f;
 
+    private float initialMinX;
+    private float initialMaxX;
+    private float initialMinY;
+    private float initialMaxY;
+
+    private void Awake()
+    {
+        initialMinX = minX;
+        initialMaxX = maxX;
+        initialMinY = minY;
+        initialMaxY = maxY;
+
+        ResolveTargetIfNeeded();
+    }
+
+    private void Start()
+    {
+        ResolveTargetIfNeeded();
+    }
+
     public void SetCameraBounds(float newMinX, float newMaxX, float newMinY, float newMaxY)
     {
         minX = newMinX;
         maxX = newMaxX;
         minY = newMinY;
         maxY = newMaxY;
+    }
+
+    public void ResetToSceneDefaults()
+    {
+        minX = initialMinX;
+        maxX = initialMaxX;
+        minY = initialMinY;
+        maxY = initialMaxY;
+    }
+
+    public void SetTarget(Transform newTarget)
+    {
+        objetoSeguir = newTarget;
     }
 
     public bool TryGetCameraBounds(out float currentMinX, out float currentMaxX, out float currentMinY, out float currentMaxY)
@@ -41,6 +74,8 @@ public class FollowCamera : MonoBehaviour
 
     void LateUpdate()
     {
+        ResolveTargetIfNeeded();
+
         if (objetoSeguir == null)
         {
             return;
@@ -80,5 +115,19 @@ public class FollowCamera : MonoBehaviour
 
         posicionCamara.z = posicionObjetivo.z;
         transform.position = posicionCamara;
+    }
+
+    private void ResolveTargetIfNeeded()
+    {
+        if (objetoSeguir != null)
+        {
+            return;
+        }
+
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            objetoSeguir = playerObject.transform;
+        }
     }
 }
