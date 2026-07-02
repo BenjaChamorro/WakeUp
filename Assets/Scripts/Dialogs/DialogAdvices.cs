@@ -56,6 +56,7 @@ public class DialogAdvices : MonoBehaviour
     private bool isWaitingToShow;
     private bool isShowing;
     private bool isWaiting;
+    private bool runtimeConfigured;
     private float waitTime;
     private float lineTime;
     private float typewriterProgress;
@@ -81,6 +82,11 @@ public class DialogAdvices : MonoBehaviour
 
     private void Start()
     {
+        if (runtimeConfigured)
+        {
+            return;
+        }
+
         BuildAdviceUI();
         HideAdvice();
         ResetPendingDialogue();
@@ -116,6 +122,39 @@ public class DialogAdvices : MonoBehaviour
 
         isWaitingToShow = true;
         waitTime = Mathf.Max(0f, delayBeforeShow);
+    }
+
+    public void ConfigureCombatDialogue(string dialogueText)
+    {
+        runtimeConfigured = true;
+        lines = string.IsNullOrWhiteSpace(dialogueText) ? new string[0] : new[] { dialogueText };
+    }
+
+    public void ClearCombatDialogue()
+    {
+        runtimeConfigured = false;
+        lines = new string[0];
+        ResetPendingDialogue();
+        HideAdvice();
+    }
+
+    public void ShowCombatDialogueNow()
+    {
+        if (lines == null || lines.Length == 0)
+        {
+            HideAdvice();
+            ResetPendingDialogue();
+            return;
+        }
+
+        runtimeConfigured = true;
+
+        if (!BuildAdviceUI())
+        {
+            return;
+        }
+
+        ShowDialogue();
     }
 
     private void UpdatePendingDialogue()

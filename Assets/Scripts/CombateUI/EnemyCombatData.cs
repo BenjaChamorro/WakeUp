@@ -21,6 +21,9 @@ public class EnemyCombatData : ScriptableObject {
     [Header("Reglas de victoria")]
     [TextArea(4, 10)] public string victoryCode = string.Empty;
 
+    [Header("Dialogo Clippy")]
+    [TextArea(2, 5)] public string dialogoClippy = string.Empty;
+
     [Header("Bloques temporales del combate")]
     public List<CodeBlockData> combatOnlyBlocks = new List<CodeBlockData>();
 

@@ -79,6 +79,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
         }
 
         ApplyPrefilledCombatBlocks();
+        ApplyClippyDialogue();
     }
 
     public bool HasPrefilledCombatBlocks() {
@@ -324,6 +325,30 @@ public class EnemyCombatRuntime : MonoBehaviour {
                 }
             }
         }
+    }
+
+    private void ApplyClippyDialogue() {
+        DialogAdvices dialogAdvices = FindObjectOfType<DialogAdvices>(true);
+        if (dialogAdvices == null) {
+            return;
+        }
+
+        string clippyDialogue = currentEnemy != null ? currentEnemy.dialogoClippy : string.Empty;
+        if (string.IsNullOrWhiteSpace(clippyDialogue)) {
+            dialogAdvices.ClearCombatDialogue();
+            if (dialogAdvices.gameObject.activeSelf) {
+                dialogAdvices.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        dialogAdvices.ConfigureCombatDialogue(clippyDialogue);
+
+        if (!dialogAdvices.gameObject.activeSelf) {
+            dialogAdvices.gameObject.SetActive(true);
+        }
+
+        dialogAdvices.ShowCombatDialogueNow();
     }
 
     private void ClearCombatConsoleBlocks(Transform consoleParent) {
