@@ -10,18 +10,21 @@ public class GameManagerStage1 : MonoBehaviour
     [SerializeField] private GameObject stage11Object;
     [SerializeField] private GameObject stage12Object;
     [SerializeField] private GameObject stage13Object;
+    [SerializeField] private GameObject stage14Object;
     [SerializeField] private bool startOnStage11 = true;
 
     [Header("Scene Names (Optional)")]
     [SerializeField] private string stage11SceneName = "Stage1.1";
     [SerializeField] private string stage12SceneName = "Stage1.2";
     [SerializeField] private string stage13SceneName = "Stage1.3";
+    [SerializeField] private string stage14SceneName = "Stage1.4";
 
     [Header("Player Respawn")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform stage11SpawnPoint;
     [SerializeField] private Transform stage12SpawnPoint;
     [SerializeField] private Transform stage13SpawnPoint;
+    [SerializeField] private Transform stage14SpawnPoint;
     [SerializeField] private bool resetPlayerPositionOnStageChange = true;
 
     [Header("Debug")]
@@ -65,6 +68,11 @@ public class GameManagerStage1 : MonoBehaviour
         {
             ActivateStage13();
         }
+
+        if (keyboard.digit4Key.wasPressedThisFrame)
+        {
+            ActivateStage14();
+        }
     }
 
     public void ActivateStage11()
@@ -100,6 +108,17 @@ public class GameManagerStage1 : MonoBehaviour
         MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage13SpawnPoint);
     }
 
+    public void ActivateStage14()
+    {
+        ActivateStage14(null);
+    }
+
+    public void ActivateStage14(Transform customSpawnPoint)
+    {
+        SetActiveStage(stage14Object);
+        MovePlayerToSpawn(customSpawnPoint != null ? customSpawnPoint : stage14SpawnPoint);
+    }
+
     public void RestartCurrentScene()
     {
         if (isLoading)
@@ -126,6 +145,11 @@ public class GameManagerStage1 : MonoBehaviour
         LoadSceneByName(stage13SceneName);
     }
 
+    public void LoadStage14Scene()
+    {
+        LoadSceneByName(stage14SceneName);
+    }
+
     private void SetInitialStage()
     {
         if (startOnStage11)
@@ -140,15 +164,16 @@ public class GameManagerStage1 : MonoBehaviour
 
     private void SetActiveStage(GameObject stageToActivate)
     {
-        if (stage11Object == null || stage12Object == null || stage13Object == null)
+        if (stage11Object == null || stage12Object == null || stage13Object == null || stage14Object == null)
         {
-            Debug.LogWarning("Asigna stage11Object, stage12Object y stage13Object en el Inspector.");
+            Debug.LogWarning("Asigna stage11Object, stage12Object, stage13Object y stage14Object en el Inspector.");
             return;
         }
 
         stage11Object.SetActive(stageToActivate == stage11Object);
         stage12Object.SetActive(stageToActivate == stage12Object);
         stage13Object.SetActive(stageToActivate == stage13Object);
+        stage14Object.SetActive(stageToActivate == stage14Object);
 
         SaveActiveStage(stageToActivate);
     }
@@ -180,6 +205,12 @@ public class GameManagerStage1 : MonoBehaviour
             return true;
         }
 
+        if (savedStageName == "Stage1.4")
+        {
+            SetActiveStage(stage14Object);
+            return true;
+        }
+
         return false;
     }
 
@@ -205,6 +236,11 @@ public class GameManagerStage1 : MonoBehaviour
         if (activeStage == stage13Object)
         {
             SaveManager.Instance.SaveActiveStage("Stage1.3");
+        }
+
+        if (activeStage == stage14Object)
+        {
+            SaveManager.Instance.SaveActiveStage("Stage1.4");
         }
     }
 
@@ -274,6 +310,11 @@ public class GameManagerStage1 : MonoBehaviour
         {
             SetActiveStage(stage13Object);
         }
+
+        if (stageName == "Stage1.4")
+        {
+            SetActiveStage(stage14Object);
+        }
     }
 
     public string GetActiveStage()
@@ -281,6 +322,7 @@ public class GameManagerStage1 : MonoBehaviour
         if (stage11Object.activeSelf) return "Stage1.1";
         if (stage12Object.activeSelf) return "Stage1.2";
         if (stage13Object.activeSelf) return "Stage1.3";
+        if (stage14Object.activeSelf) return "Stage1.4";
         return string.Empty;
     }
 }
