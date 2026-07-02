@@ -127,13 +127,16 @@ public class DialogAdvices : MonoBehaviour
     public void ConfigureCombatDialogue(string dialogueText)
     {
         runtimeConfigured = true;
-        lines = string.IsNullOrWhiteSpace(dialogueText) ? new string[0] : new[] { dialogueText };
+        lines = SplitCombatDialogueLines(dialogueText);
+        buttonRequired = true;
+        useDelay = false;
     }
 
     public void ClearCombatDialogue()
     {
         runtimeConfigured = false;
         lines = new string[0];
+        buttonRequired = false;
         ResetPendingDialogue();
         HideAdvice();
     }
@@ -148,6 +151,7 @@ public class DialogAdvices : MonoBehaviour
         }
 
         runtimeConfigured = true;
+        buttonRequired = true;
 
         if (!BuildAdviceUI())
         {
@@ -580,6 +584,28 @@ public class DialogAdvices : MonoBehaviour
     {
         isWaitingToShow = false;
         waitTime = 0f;
+    }
+
+    private string[] SplitCombatDialogueLines(string dialogueText)
+    {
+        if (string.IsNullOrWhiteSpace(dialogueText))
+        {
+            return new string[0];
+        }
+
+        string[] rawParts = dialogueText.Split(';');
+        System.Collections.Generic.List<string> result = new System.Collections.Generic.List<string>();
+
+        for (int i = 0; i < rawParts.Length; i++)
+        {
+            string part = rawParts[i].Trim();
+            if (!string.IsNullOrWhiteSpace(part))
+            {
+                result.Add(part);
+            }
+        }
+
+        return result.Count > 0 ? result.ToArray() : new string[0];
     }
 
     private void ShowSourceVisual()
