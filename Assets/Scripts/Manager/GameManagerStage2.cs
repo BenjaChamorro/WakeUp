@@ -3,29 +3,29 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
-public class GameManagerStage1 : MonoBehaviour
+public class GameManagerStage2 : MonoBehaviour
 {
     
 
     [Header("Stage GameObjects")]
-    [SerializeField] private GameObject stage11Object;
-    [SerializeField] private GameObject stage12Object;
-    [SerializeField] private GameObject stage13Object;
-    [SerializeField] private GameObject stage14Object;
-    [SerializeField] private bool startOnStage11 = true;
+    [SerializeField] private GameObject stage21Object;
+    [SerializeField] private GameObject stage22Object;
+    [SerializeField] private GameObject stage23Object;
+    [SerializeField] private GameObject stage24Object;
+    [SerializeField] private bool startOnStage21 = true;
 
     [Header("Scene Names (Optional)")]
-    [SerializeField] private string stage11SceneName = "Stage1.1";
-    [SerializeField] private string stage12SceneName = "Stage1.2";
-    [SerializeField] private string stage13SceneName = "Stage1.3";
-    [SerializeField] private string stage14SceneName = "Stage1.4";
+    [SerializeField] private string stage21SceneName = "Stage2.1";
+    [SerializeField] private string stage22SceneName = "Stage2.2";
+    [SerializeField] private string stage23SceneName = "Stage2.3";
+    [SerializeField] private string stage24SceneName = "Stage2.4";
 
     [Header("Player Respawn")]
     [SerializeField] private Transform playerTransform;
-    [SerializeField] private Transform stage11SpawnPoint;
-    [SerializeField] private Transform stage12SpawnPoint;
-    [SerializeField] private Transform stage13SpawnPoint;
-    [SerializeField] private Transform stage14SpawnPoint;
+    [SerializeField] private Transform stage21SpawnPoint;
+    [SerializeField] private Transform stage22SpawnPoint;
+    [SerializeField] private Transform stage23SpawnPoint;
+    [SerializeField] private Transform stage24SpawnPoint;
     [SerializeField] private bool resetPlayerPositionOnStageChange = true;
 
     [Header("Camera")]
@@ -85,70 +85,70 @@ public class GameManagerStage1 : MonoBehaviour
         // Solo para pruebas rapidas.
         if (keyboard.digit1Key.wasPressedThisFrame)
         {
-            ActivateStage11();
+            ActivateStage21();
         }
 
         if (keyboard.digit2Key.wasPressedThisFrame)
         {
-            ActivateStage12();
+            ActivateStage22();
         }
 
         if (keyboard.digit3Key.wasPressedThisFrame)
         {
-            ActivateStage13();
+            ActivateStage23();
         }
 
         if (keyboard.digit4Key.wasPressedThisFrame)
         {
-            ActivateStage14();
+            ActivateStage24();
         }
     }
 
-    public void ActivateStage11()
+    public void ActivateStage21()
     {
-        ActivateStage11(null);
+        ActivateStage21(null);
     }
 
-    public void ActivateStage11(Transform customSpawnPoint)
+    public void ActivateStage21(Transform customSpawnPoint)
     {
-        SetActiveStage(stage11Object);
-        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage11SpawnPoint);
+        SetActiveStage(stage21Object);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage21SpawnPoint);
         FinalizeStageActivation();
     }
 
-    public void ActivateStage12()
+    public void ActivateStage22()
     {
-        ActivateStage12(null);
+        ActivateStage22(null);
     }
 
-    public void ActivateStage12(Transform customSpawnPoint)
+    public void ActivateStage22(Transform customSpawnPoint)
     {
-        SetActiveStage(stage12Object);
-        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage12SpawnPoint);
+        SetActiveStage(stage22Object);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage22SpawnPoint);
         FinalizeStageActivation();
     }
 
-    public void ActivateStage13()
+    public void ActivateStage23()
     {
-        ActivateStage13(null);
+        ActivateStage23(null);
     }
 
-    public void ActivateStage13(Transform customSpawnPoint)
+    public void ActivateStage23(Transform customSpawnPoint)
     {
-        SetActiveStage(stage13Object);
-        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage13SpawnPoint);
+        SetActiveStage(stage23Object);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage23SpawnPoint);
         FinalizeStageActivation();
     }
 
-    public void ActivateStage14()
+    public void ActivateStage24()
     {
-        ActivateStage14(null);
+        ActivateStage24(null);
     }
 
-    public void ActivateStage14(Transform customSpawnPoint)
+    public void ActivateStage24(Transform customSpawnPoint)
     {
-        SetActiveStage(stage14Object);
-        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage14SpawnPoint);
+        SetActiveStage(stage24Object);
+        MovePlayerToStagePosition(customSpawnPoint != null ? customSpawnPoint : stage24SpawnPoint);
         FinalizeStageActivation();
     }
 
@@ -163,50 +163,50 @@ public class GameManagerStage1 : MonoBehaviour
         LoadSceneByName(currentScene);
     }
 
-    public void LoadStage11Scene()
+    public void LoadStage21Scene()
     {
-        LoadSceneByName(stage11SceneName);
+        LoadSceneByName(stage21SceneName);
     }
 
-    public void LoadStage12Scene()
+    public void LoadStage22Scene()
     {
-        LoadSceneByName(stage12SceneName);
+        LoadSceneByName(stage22SceneName);
     }
 
-    public void LoadStage13Scene()
+    public void LoadStage23Scene()
     {
-        LoadSceneByName(stage13SceneName);
+        LoadSceneByName(stage23SceneName);
     }
 
-    public void LoadStage14Scene()
+    public void LoadStage24Scene()
     {
-        LoadSceneByName(stage14SceneName);
+        LoadSceneByName(stage24SceneName);
     }
 
     private void SetInitialStage()
     {
-        if (startOnStage11)
+        if (startOnStage21)
         {
-            ActivateStage11();
+            ActivateStage21();
         }
         else
         {
-            ActivateStage12();
+            ActivateStage22();
         }
     }
 
     private void SetActiveStage(GameObject stageToActivate)
     {
-        if (stage11Object == null || stage12Object == null || stage13Object == null || stage14Object == null)
+        if (stage21Object == null || stage22Object == null || stage23Object == null || stage24Object == null)
         {
-            Debug.LogWarning("Asigna stage11Object, stage12Object, stage13Object y stage14Object en el Inspector.");
+            Debug.LogWarning("Asigna stage21Object, stage22Object, stage23Object y stage24Object en el Inspector.");
             return;
         }
 
-        stage11Object.SetActive(stageToActivate == stage11Object);
-        stage12Object.SetActive(stageToActivate == stage12Object);
-        stage13Object.SetActive(stageToActivate == stage13Object);
-        stage14Object.SetActive(stageToActivate == stage14Object);
+        stage21Object.SetActive(stageToActivate == stage21Object);
+        stage22Object.SetActive(stageToActivate == stage22Object);
+        stage23Object.SetActive(stageToActivate == stage23Object);
+        stage24Object.SetActive(stageToActivate == stage24Object);
 
         SaveActiveStage(stageToActivate);
     }
@@ -220,27 +220,27 @@ public class GameManagerStage1 : MonoBehaviour
             return false;
         }
 
-        if (savedStageName == "Stage1.1")
+        if (savedStageName == "Stage2.1")
         {
-            ActivateStage11();
+            ActivateStage21();
             return true;
         }
 
-        if (savedStageName == "Stage1.2")
+        if (savedStageName == "Stage2.2")
         {
-            ActivateStage12();
+            ActivateStage22();
             return true;
         }
 
-        if (savedStageName == "Stage1.3")
+        if (savedStageName == "Stage2.3")
         {
-            ActivateStage13();
+            ActivateStage23();
             return true;
         }
 
-        if (savedStageName == "Stage1.4")
+        if (savedStageName == "Stage2.4")
         {
-            ActivateStage14();
+            ActivateStage24();
             return true;
         }
 
@@ -283,26 +283,26 @@ public class GameManagerStage1 : MonoBehaviour
             return;
         }
 
-        if (activeStage == stage11Object)
+        if (activeStage == stage21Object)
         {
-            SaveManager.Instance.SaveActiveStage("Stage1.1");
+            SaveManager.Instance.SaveActiveStage("Stage2.1");
             return;
         }
 
-        if (activeStage == stage12Object)
+        if (activeStage == stage22Object)
         {
-            SaveManager.Instance.SaveActiveStage("Stage1.2");
+            SaveManager.Instance.SaveActiveStage("Stage2.2");
             return;
         }
 
-        if (activeStage == stage13Object)
+        if (activeStage == stage23Object)
         {
-            SaveManager.Instance.SaveActiveStage("Stage1.3");
+            SaveManager.Instance.SaveActiveStage("Stage2.3");
         }
 
-        if (activeStage == stage14Object)
+        if (activeStage == stage24Object)
         {
-            SaveManager.Instance.SaveActiveStage("Stage1.4");
+            SaveManager.Instance.SaveActiveStage("Stage2.4");
         }
     }
 
@@ -476,36 +476,36 @@ public class GameManagerStage1 : MonoBehaviour
     {
         if (string.IsNullOrEmpty(stageName)) return;
 
-        if (stageName == "Stage1.1")
+        if (stageName == "Stage2.1")
         {
-            ActivateStage11();
+            ActivateStage21();
             return;
         }
 
-        if (stageName == "Stage1.2")
+        if (stageName == "Stage2.2")
         {
-            ActivateStage12();
+            ActivateStage22();
             return;
         }
 
-        if (stageName == "Stage1.3")
+        if (stageName == "Stage2.3")
         {
-            ActivateStage13();
+            ActivateStage23();
             return;
         }
 
-        if (stageName == "Stage1.4")
+        if (stageName == "Stage2.4")
         {
-            ActivateStage14();
+            ActivateStage24();
         }
     }
 
     public string GetActiveStage()
     {
-        if (stage11Object.activeSelf) return "Stage1.1";
-        if (stage12Object.activeSelf) return "Stage1.2";
-        if (stage13Object.activeSelf) return "Stage1.3";
-        if (stage14Object.activeSelf) return "Stage1.4";
+        if (stage21Object.activeSelf) return "Stage2.1";
+        if (stage22Object.activeSelf) return "Stage2.2";
+        if (stage23Object.activeSelf) return "Stage2.3";
+        if (stage24Object.activeSelf) return "Stage2.4";
         return string.Empty;
     }
 }

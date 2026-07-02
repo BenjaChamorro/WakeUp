@@ -6,7 +6,6 @@ public class EnemySelect : MonoBehaviour
     [SerializeField] private Object enemyAsset;
     [SerializeField] private string encounterId;
     [SerializeField] private bool succeed;
-    public int combatSceneIndex = 1;
     public bool triggerOnce = true;
     bool triggered = false;
 
@@ -96,7 +95,7 @@ public class EnemySelect : MonoBehaviour
         }
 
         Debug.Log($"[EnemySelect] Iniciando combate. enemyAsset={enemyAsset}, encounterId={encounterId}");
-        GameManager.Instance.EnterCombat(combatSceneIndex, enemyAsset, BuildEncounterKey());
+        GameManager.Instance.EnterCombat(enemyAsset, BuildEncounterKey());
     }
 
     public void SetSucceed(bool value)
