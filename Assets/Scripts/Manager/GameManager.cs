@@ -61,6 +61,12 @@ public class GameManager : MonoBehaviour
         OnCombat = true;
         CurrentEnemyAsset = enemyAsset;
         CurrentEncounterKey = encounterKey;
+
+        if (SaveManager.Instance != null && !string.IsNullOrWhiteSpace(CurrentEncounterKey))
+        {
+            SaveManager.Instance.ClearAdviceDialogShown(CurrentEncounterKey);
+        }
+
         SceneManager.LoadScene(combatSceneIndex);
     }
 
@@ -70,6 +76,7 @@ public class GameManager : MonoBehaviour
         OnCombat = false;
         CurrentEnemyAsset = null;
         CurrentEncounterKey = null;
+
         if (SaveManager.Instance != null && SaveManager.Instance.TryConsumeSavedSceneIndex(out int saved))
         {
             SceneManager.sceneLoaded += OnSceneLoadedRestore;

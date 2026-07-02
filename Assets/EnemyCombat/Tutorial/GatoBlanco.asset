@@ -22,6 +22,8 @@ MonoBehaviour:
   - Gghhhh
   defeatAnimationProfile: {fileID: 11400000, guid: e29102366b39731418f236eaa71bab77, type: 2}
   victoryCode: print(pepino)
+  dialogoClippy: 
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 63be2860f7acaa74dbe9a728e7e010fd, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []

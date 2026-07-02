@@ -22,6 +22,9 @@ MonoBehaviour:
   - Miau miau miau miau... ( T n T )
   defeatAnimationProfile: {fileID: 0}
   victoryCode: print(cubetaDeAgua)
+  dialogoClippy: Con Print( ) puedes escribir o mostrar cosas en pantalla. Intenta
+    usarlo con este gato.
   combatOnlyBlocks:
   - {fileID: 11400000, guid: f15fec5989682e24fafcb7111e2779bb, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []

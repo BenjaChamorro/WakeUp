@@ -78,6 +78,11 @@ public class CombateUIFlowController : MonoBehaviour {
         if (paletteBuilder != null) {
             paletteBuilder.RefreshPalette();
         }
+
+        EnemyCombatRuntime enemyRuntime = FindObjectOfType<EnemyCombatRuntime>(true);
+        if (enemyRuntime != null) {
+            enemyRuntime.TryShowClippyDialogueForScripts();
+        }
     }
 
     public void BackToCombatUI() {

@@ -57,6 +57,7 @@ public class DialogAdvices : MonoBehaviour
     private bool isShowing;
     private bool isWaiting;
     private bool runtimeConfigured;
+    private string runtimeAdviceId = string.Empty;
     private float waitTime;
     private float lineTime;
     private float typewriterProgress;
@@ -124,12 +125,14 @@ public class DialogAdvices : MonoBehaviour
         waitTime = Mathf.Max(0f, delayBeforeShow);
     }
 
-    public void ConfigureCombatDialogue(string dialogueText)
+    public void ConfigureCombatDialogue(string dialogueText, string adviceIdOverride = "")
     {
         runtimeConfigured = true;
         lines = SplitCombatDialogueLines(dialogueText);
         buttonRequired = true;
         useDelay = false;
+        showOnlyOnce = true;
+        runtimeAdviceId = adviceIdOverride;
     }
 
     public void ClearCombatDialogue()
@@ -137,28 +140,23 @@ public class DialogAdvices : MonoBehaviour
         runtimeConfigured = false;
         lines = new string[0];
         buttonRequired = false;
+        runtimeAdviceId = string.Empty;
         ResetPendingDialogue();
         HideAdvice();
     }
 
-    public void ShowCombatDialogueNow()
+    public bool ShowCombatDialogueNow()
     {
-        if (lines == null || lines.Length == 0)
+        if (!CanShowDialogue())
         {
-            HideAdvice();
-            ResetPendingDialogue();
-            return;
+            return false;
         }
 
         runtimeConfigured = true;
         buttonRequired = true;
 
-        if (!BuildAdviceUI())
-        {
-            return;
-        }
-
         ShowDialogue();
+        return true;
     }
 
     private void UpdatePendingDialogue()
@@ -260,13 +258,15 @@ public class DialogAdvices : MonoBehaviour
             return false;
         }
 
-        if (showOnlyOnce && string.IsNullOrWhiteSpace(adviceId))
+        string effectiveAdviceId = GetEffectiveAdviceId();
+
+        if (showOnlyOnce && string.IsNullOrWhiteSpace(effectiveAdviceId))
         {
             Debug.LogWarning($"{name}: DialogAdvices necesita adviceId para usar showOnlyOnce.", this);
             return false;
         }
 
-        if (showOnlyOnce && SaveManager.Instance != null && SaveManager.Instance.WasAdviceDialogShown(adviceId))
+        if (showOnlyOnce && SaveManager.Instance != null && SaveManager.Instance.WasAdviceDialogShown(effectiveAdviceId))
         {
             return false;
         }
@@ -306,12 +306,23 @@ public class DialogAdvices : MonoBehaviour
             panelRect.gameObject.SetActive(true);
         }
 
-        if (SaveManager.Instance != null && !string.IsNullOrWhiteSpace(adviceId))
+        string effectiveAdviceId = GetEffectiveAdviceId();
+        if (SaveManager.Instance != null && !string.IsNullOrWhiteSpace(effectiveAdviceId))
         {
-            SaveManager.Instance.MarkAdviceDialogAsShown(adviceId);
+            SaveManager.Instance.MarkAdviceDialogAsShown(effectiveAdviceId);
         }
 
         hasShown = true;
+    }
+
+    private string GetEffectiveAdviceId()
+    {
+        if (!string.IsNullOrWhiteSpace(runtimeAdviceId))
+        {
+            return runtimeAdviceId;
+        }
+
+        return adviceId;
     }
 
     private bool BuildAdviceUI()

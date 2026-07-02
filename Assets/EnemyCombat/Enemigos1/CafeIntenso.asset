@@ -29,6 +29,9 @@ MonoBehaviour:
 
     #
     numero1 > 0'
+  dialogoClippy: "En programaci\xF3n, los contadores son variables n\xFAmericas que
+    se incrementan en 1 o m\xE1s, en cada uso.; Generalmente usados en ciclos.\nUn
+    ejemplo de uso es: contador = contador + 1"
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 0a60cafddb8049845951551da21c10e3, type: 2}
   prefilledBlocksCode: 

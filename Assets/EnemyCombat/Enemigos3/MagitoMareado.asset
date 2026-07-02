@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyId: MagitoMareado
   enemyDisplayName: Magito Mareado
   enemySprite: {fileID: 5401187673579205893, guid: 2e2a159dac3b45c4f86917648498f596, type: 3}
+  defeatSprite: {fileID: 0}
   introDialogues:
   - "Me siento un poco mareado \xBA~\xBA"
   defeatDialogues:
@@ -23,5 +24,9 @@ MonoBehaviour:
   victoryCode: "variable1 = numero1\r\nwhile (variable1 {< | <=} numero2):\r\n   
     MagitoMareado\r\n    { variable1 = variable1 + 1 | variable1 = 1 + variable1
     }\r\n# numero2 > numero1\r\n# {LINEA3 | LINEA4}"
+  dialogoClippy: "Es muy com\xFAn ver ciclos while junto con contadores en su condici\xF3n
+    interna, aqu\xED un ejemplo.;\ni = 0\nwhile (i < 3):\n    print(\"Dentro\")\n   
+    i = i + 1\nAqu\xED el ciclo se ejcutar\xEDa 3 veces antes de salir."
   combatOnlyBlocks: []
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []

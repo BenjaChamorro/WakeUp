@@ -449,4 +449,22 @@ public class SaveManager : MonoBehaviour
         SaveGame();
         return true;
     }
+
+    public bool ClearAdviceDialogShown(string adviceId)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(adviceId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+
+        if (!saveData.shownAdviceDialogIds.Remove(adviceId))
+        {
+            return false;
+        }
+
+        SaveGame();
+        return true;
+    }
 }

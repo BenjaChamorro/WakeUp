@@ -97,6 +97,19 @@ public class EnemyCombatRuntime : MonoBehaviour {
         ApplyPrefilledCombatBlocks();
     }
 
+    public bool TryShowClippyDialogueForScripts() {
+        if (currentEnemy == null || string.IsNullOrWhiteSpace(currentEnemy.dialogoClippy)) {
+            return false;
+        }
+
+        DialogAdvices dialogAdvices = FindObjectOfType<DialogAdvices>(true);
+        if (dialogAdvices == null) {
+            return false;
+        }
+
+        return dialogAdvices.ShowCombatDialogueNow();
+    }
+
     public void GrantEnemyRewards() {
         if (currentEnemy == null || playerInventory == null) return;
 
@@ -342,13 +355,24 @@ public class EnemyCombatRuntime : MonoBehaviour {
             return;
         }
 
-        dialogAdvices.ConfigureCombatDialogue(clippyDialogue);
+        dialogAdvices.ClearCombatDialogue();
+        dialogAdvices.ConfigureCombatDialogue(clippyDialogue, BuildCombatClippyAdviceId());
 
         if (!dialogAdvices.gameObject.activeSelf) {
             dialogAdvices.gameObject.SetActive(true);
         }
+    }
 
-        dialogAdvices.ShowCombatDialogueNow();
+    private string BuildCombatClippyAdviceId() {
+        if (GameManager.Instance != null && !string.IsNullOrWhiteSpace(GameManager.Instance.CurrentEncounterKey)) {
+            return "combat_clippy_" + GameManager.Instance.CurrentEncounterKey;
+        }
+
+        if (currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.enemyId)) {
+            return "combat_clippy_" + currentEnemy.enemyId;
+        }
+
+        return "combat_clippy_runtime";
     }
 
     private void ClearCombatConsoleBlocks(Transform consoleParent) {
