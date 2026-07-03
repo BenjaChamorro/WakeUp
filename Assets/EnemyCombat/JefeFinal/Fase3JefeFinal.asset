@@ -26,4 +26,9 @@ MonoBehaviour:
     validacion\")"
   dialogoClippy: 
   combatOnlyBlocks: []
+  prefilledBlocksCode: "equal* - input1*={x} input2={}\nequal* - input1*={y} input2={}\nequal*
+    - input1*={ecuacion1} input2*={2x - 3y}\nequal* - input1*={ecuacion2} input2*={3x
+    - 2y}\nif* - input1*={ecuacion1} input2*={-5} operator*={==}\n    print(\"primera
+    validacion\")\nif* - input1*={ecuacion2} input2*={0} operator*={==}\n    print(\"segunda
+    validacion\")"
   unlockBlocksOnDefeat: []
