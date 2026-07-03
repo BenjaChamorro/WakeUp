@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f024972c6503c664dac52f9bdb3dd0b8, type: 3}
+  m_Name: MG_Gato1
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGameData
+  miniGameId: dino_proyectiles1
+  miniGameDisplayName: Dino_Proyectiles1
+  enemySprite: {fileID: -739695128718787902, guid: 10161ead643d12d4f9f344884fa38195, type: 3}
+  enemyScale: {x: -1, y: 0}
+  projectileSprite: {fileID: -5738370327368418488, guid: 8adad47ed3d12a244b4675025af99dee, type: 3}
+  projectileScale: {x: -4, y: 4}
+  projectileFallSpeed: 10
+  projectileRotationSpeed: 0
+  projectileDamage: 10
+  movementDirection: 1
+  spawnMinY: -3
+  spawnMaxY: 3
+  horizontalSpawnEdgeX: 8
+  spawnPattern: 0
+  spawnInterval: 0.6
+  spawnMinX: 3
+  spawnMaxX: 3
+  overrideSpawnHeight: 1
+  spawnHeight: 3.8
+  columnCount: 4
+  projectilesPerWave: 3
+  survivalTime: 10
+  platforms:
+  - platformName: platform
+    localPosition: {x: -5, y: -2}
+    size: {x: 4, y: 0.4}
+    borderThickness: 0.1
+    localScale: {x: 0, y: 0, z: 0}
+    tag: Platform
+  - platformName: platform2
+    localPosition: {x: 5, y: -2}
+    size: {x: 4, y: 0.4}
+    borderThickness: 0.1
+    localScale: {x: 0, y: 0, z: 0}
+    tag: Platform
+  - platformName: platform3
+    localPosition: {x: 0, y: 0}
+    size: {x: 4, y: 0.4}
+    borderThickness: 0.1
+    localScale: {x: 0, y: 0, z: 0}
+    tag: Platform

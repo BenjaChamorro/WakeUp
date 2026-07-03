@@ -23,13 +23,26 @@ public class Platform : MonoBehaviour
     {
         if (sr == null) sr = GetComponent<SpriteRenderer>();
         if (col == null) col = GetComponent<BoxCollider2D>();
-        Apply();
+        // No llamar Apply() aquí: cambia SpriteRenderer.sprite, lo que dispara un
+        // SendMessage interno hacia el BoxCollider2D, y Unity no permite SendMessage
+        // durante OnValidate. Update() detecta el cambio de tamaño al frame siguiente
+        // y aplica el layout ahí, fuera de ese contexto restringido.
     }
 
     void Update()
     {
         if (size != lastSize || borderThickness != lastBorder)
             Apply();
+    }
+
+    // Permite a MiniGameRuntime fijar la disposición (tamaño y borde) en tiempo de ejecución.
+    public void SetLayout(Vector2 newSize, float newBorder)
+    {
+        if (sr == null) sr = GetComponent<SpriteRenderer>();
+        if (col == null) col = GetComponent<BoxCollider2D>();
+        size = newSize;
+        borderThickness = newBorder;
+        Apply();
     }
 
     void Apply()

@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f024972c6503c664dac52f9bdb3dd0b8, type: 3}
+  m_Name: Chef
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGameData
+  miniGameId: chef_proyectiles
+  miniGameDisplayName: Chef_Proyectiles
+  enemySprite: {fileID: 3198799625009063001, guid: 08c55aaae4914ae418c714b2394fd65f, type: 3}
+  enemyScale: {x: 0, y: 0}
+  projectileSprite: {fileID: -4815624878175856884, guid: d7b15e3ec52c96345bb88b2dba71d416, type: 3}
+  projectileScale: {x: -5, y: 5}
+  projectileFallSpeed: 7
+  projectileRotationSpeed: 0
+  projectileDamage: 10
+  movementDirection: 1
+  spawnMinY: -3
+  spawnMaxY: 3
+  horizontalSpawnEdgeX: 8
+  spawnPattern: 2
+  spawnInterval: 1
+  spawnMinX: 3
+  spawnMaxX: 3
+  overrideSpawnHeight: 1
+  spawnHeight: 3.8
+  columnCount: 4
+  projectilesPerWave: 3
+  useSurvivalTimer: 1
+  survivalTime: 10
+  useCoins: 0
+  coinSprite: {fileID: 0}
+  coinScale: {x: 0, y: 0}
+  coinsToCollect: 5
+  coinSpawnMinX: -7
+  coinSpawnMaxX: 7
+  coinSpawnMinY: -2
+  coinSpawnMaxY: 3.5
+  platforms:
+  - platformName: platform
+    localPosition: {x: -5, y: -2}
+    size: {x: 4, y: 0.4}
+    borderThickness: 0.1
+    localScale: {x: 0, y: 0, z: 0}
+    tag: Platform
+  - platformName: platform2
+    localPosition: {x: 5, y: -2}
+    size: {x: 4, y: 0.4}
+    borderThickness: 0.1
+    localScale: {x: 0, y: 0, z: 0}
+    tag: Platform
+  - platformName: platform3
+    localPosition: {x: 0, y: 0}
+    size: {x: 4, y: 0.4}
+    borderThickness: 0.1
+    localScale: {x: 0, y: 0, z: 0}
+    tag: Platform

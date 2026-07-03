@@ -30,4 +30,8 @@ public class EnemyCombatData : ScriptableObject {
 
     [Header("Recompensas")]
     public List<CodeBlockData> unlockBlocksOnDefeat = new List<CodeBlockData>();
+
+    [Header("Minijuego")]
+    [Tooltip("Variante de minijuego que se carga durante este combate. La aplica MiniGameRuntime.")]
+    public MiniGameData miniGameVariant;
 }
