@@ -23,6 +23,8 @@ MonoBehaviour:
   defeatDialogues:
   - 3ste Ser4 el F1N...
   defeatAnimationProfile: {fileID: 0}
-  victoryCode: 
+  victoryCode: variable1 = numero1
+  dialogoClippy: 
   combatOnlyBlocks: []
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []
