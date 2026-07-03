@@ -22,8 +22,9 @@ MonoBehaviour:
   defeatDialogues:
   - Te crees muy listo? A ver si puedes con esto!!
   defeatAnimationProfile: {fileID: 0}
-  victoryCode: 'variable1 = {variable1 + 1 | 1 + variable1}
-
-    print(variable1)'
+  victoryCode: "verificador = 0\nif (verificador { < | <= } 3):\n    print(\"Ejecutando...\")"
+  dialogoClippy: 
   combatOnlyBlocks: []
+  prefilledBlocksCode: "equal* - input1*=verificador input2*={0}\rif* - input1*=verificador
+    input2*={3} operator={>}\n    print* - input1*={\"Ejecutando...\"}"
   unlockBlocksOnDefeat: []
