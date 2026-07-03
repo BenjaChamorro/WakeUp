@@ -24,6 +24,7 @@ public class SaveData
 
     public PlayerData playerData = new PlayerData();
     public CameraData cameraData = new CameraData();
+    public bool hasSavedCameraBounds = false;
     public List<string> completedEventIds = new List<string>();
     public List<string> shownAdviceDialogIds = new List<string>();
     public List<string> unlockedBlockIds = new List<string>();
@@ -41,5 +42,6 @@ public class SaveData
         completedEventIds = new List<string>();
         shownAdviceDialogIds = new List<string>();
         unlockedBlockIds = new List<string> { SaveManager.DefaultUnlockedBlockId };
+        hasSavedCameraBounds = false;
     }
 }
