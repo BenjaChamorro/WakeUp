@@ -23,6 +23,11 @@ public class PlayerCodeInventory : MonoBehaviour {
             return;
         }
 
+        if (GameManager.Instance != null && GameManager.Instance.OnCombat)
+        {
+            SaveManager.SuppressPreferredSceneLoadOnNextBoot = true;
+        }
+
         GameObject saveManagerObject = new GameObject("SaveManagers");
         saveManagerObject.AddComponent<SaveManager>();
     }

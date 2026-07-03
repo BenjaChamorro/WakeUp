@@ -26,6 +26,11 @@ MonoBehaviour:
   victoryCode: 'variable1 = [tomate, cebolla, ajo]
 
     print(variable1)'
+  dialogoClippy: 'Las listas son un tipo de variable que permite encapsular varios
+    elementos ; al ingresarlos en un "[ ]" separados por comas
+
+    dentro de una
+    sola variable; un ejemplo de uso es: lista = [elemento1, elemento2]'
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 4ec0845ffd82e6340ae481ff7c9c1c1f, type: 2}
   - {fileID: 11400000, guid: 7e539215a55be9541b3efdc4d5369e15, type: 2}

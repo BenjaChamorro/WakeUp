@@ -56,6 +56,8 @@ public class DialogAdvices : MonoBehaviour
     private bool isWaitingToShow;
     private bool isShowing;
     private bool isWaiting;
+    private bool runtimeConfigured;
+    private string runtimeAdviceId = string.Empty;
     private float waitTime;
     private float lineTime;
     private float typewriterProgress;
@@ -81,6 +83,11 @@ public class DialogAdvices : MonoBehaviour
 
     private void Start()
     {
+        if (runtimeConfigured)
+        {
+            return;
+        }
+
         BuildAdviceUI();
         HideAdvice();
         ResetPendingDialogue();
@@ -116,6 +123,40 @@ public class DialogAdvices : MonoBehaviour
 
         isWaitingToShow = true;
         waitTime = Mathf.Max(0f, delayBeforeShow);
+    }
+
+    public void ConfigureCombatDialogue(string dialogueText, string adviceIdOverride = "")
+    {
+        runtimeConfigured = true;
+        lines = SplitCombatDialogueLines(dialogueText);
+        buttonRequired = true;
+        useDelay = false;
+        showOnlyOnce = true;
+        runtimeAdviceId = adviceIdOverride;
+    }
+
+    public void ClearCombatDialogue()
+    {
+        runtimeConfigured = false;
+        lines = new string[0];
+        buttonRequired = false;
+        runtimeAdviceId = string.Empty;
+        ResetPendingDialogue();
+        HideAdvice();
+    }
+
+    public bool ShowCombatDialogueNow()
+    {
+        if (!CanShowDialogue())
+        {
+            return false;
+        }
+
+        runtimeConfigured = true;
+        buttonRequired = true;
+
+        ShowDialogue();
+        return true;
     }
 
     private void UpdatePendingDialogue()
@@ -217,13 +258,15 @@ public class DialogAdvices : MonoBehaviour
             return false;
         }
 
-        if (showOnlyOnce && string.IsNullOrWhiteSpace(adviceId))
+        string effectiveAdviceId = GetEffectiveAdviceId();
+
+        if (showOnlyOnce && string.IsNullOrWhiteSpace(effectiveAdviceId))
         {
             Debug.LogWarning($"{name}: DialogAdvices necesita adviceId para usar showOnlyOnce.", this);
             return false;
         }
 
-        if (showOnlyOnce && SaveManager.Instance != null && SaveManager.Instance.WasAdviceDialogShown(adviceId))
+        if (showOnlyOnce && SaveManager.Instance != null && SaveManager.Instance.WasAdviceDialogShown(effectiveAdviceId))
         {
             return false;
         }
@@ -263,12 +306,23 @@ public class DialogAdvices : MonoBehaviour
             panelRect.gameObject.SetActive(true);
         }
 
-        if (SaveManager.Instance != null && !string.IsNullOrWhiteSpace(adviceId))
+        string effectiveAdviceId = GetEffectiveAdviceId();
+        if (SaveManager.Instance != null && !string.IsNullOrWhiteSpace(effectiveAdviceId))
         {
-            SaveManager.Instance.MarkAdviceDialogAsShown(adviceId);
+            SaveManager.Instance.MarkAdviceDialogAsShown(effectiveAdviceId);
         }
 
         hasShown = true;
+    }
+
+    private string GetEffectiveAdviceId()
+    {
+        if (!string.IsNullOrWhiteSpace(runtimeAdviceId))
+        {
+            return runtimeAdviceId;
+        }
+
+        return adviceId;
     }
 
     private bool BuildAdviceUI()
@@ -541,6 +595,28 @@ public class DialogAdvices : MonoBehaviour
     {
         isWaitingToShow = false;
         waitTime = 0f;
+    }
+
+    private string[] SplitCombatDialogueLines(string dialogueText)
+    {
+        if (string.IsNullOrWhiteSpace(dialogueText))
+        {
+            return new string[0];
+        }
+
+        string[] rawParts = dialogueText.Split(';');
+        System.Collections.Generic.List<string> result = new System.Collections.Generic.List<string>();
+
+        for (int i = 0; i < rawParts.Length; i++)
+        {
+            string part = rawParts[i].Trim();
+            if (!string.IsNullOrWhiteSpace(part))
+            {
+                result.Add(part);
+            }
+        }
+
+        return result.Count > 0 ? result.ToArray() : new string[0];
     }
 
     private void ShowSourceVisual()

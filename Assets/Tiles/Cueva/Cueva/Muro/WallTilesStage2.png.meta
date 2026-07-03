@@ -137,8 +137,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1e9f003fd1ea463418c981afb2fd0525
-      internalID: -169591210
+      spriteID: 441c547f78a9122439564276f48053fe
+      internalID: -1053585861
       vertices: []
       indices: 
       edges: []
@@ -159,8 +159,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0ac0bd3b5ad45d641b982350bfc52f9b
-      internalID: 1619778251
+      spriteID: 2f82244bf8fccee428c9c98940d0e188
+      internalID: 858132643
       vertices: []
       indices: 
       edges: []
@@ -181,8 +181,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7044d244dee77a3468e66cf3f3b18a81
-      internalID: 2086794471
+      spriteID: eb3d71c6600c6c14ebe9e287225df1a4
+      internalID: -1600303836
       vertices: []
       indices: 
       edges: []
@@ -203,8 +203,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5f2a0169f6c68543bf134b240fb0e6f
-      internalID: 855091112
+      spriteID: ce7e182d6ebad9444bb1527928877ff0
+      internalID: 123818028
       vertices: []
       indices: 
       edges: []
@@ -225,8 +225,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ec7400c3b8c3cb946891bc3d83dc5890
-      internalID: -2071170581
+      spriteID: 331e4e043c3774840949318ca5264f9b
+      internalID: 365016862
       vertices: []
       indices: 
       edges: []
@@ -247,8 +247,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ccd5c5f8abae5f4296d9e16b772980c
-      internalID: 1343102444
+      spriteID: bd690173b7415b94eafbe6b222e49b62
+      internalID: 239975632
       vertices: []
       indices: 
       edges: []
@@ -269,8 +269,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ad0d43b03bf8f0744914efc8467b043b
-      internalID: 1338279937
+      spriteID: 89eb91a99de3725409405ffe9a58f7d2
+      internalID: 1632068848
       vertices: []
       indices: 
       edges: []
@@ -291,8 +291,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 385c7a48bad9d9b44a0225c61703f690
-      internalID: -384447703
+      spriteID: 62dbf4156796b3940aeef41f620f7bb4
+      internalID: -1788687330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallTilesStage2_9
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b4f99efa879c9c4cb8d2bd53fe86b19
+      internalID: 39820750
       vertices: []
       indices: 
       edges: []
@@ -301,7 +323,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1cfa35e62aaf5064cb48c2219bea5fac
+    spriteID: b59a4873a42587446a42ca99812a976f
     internalID: 0
     vertices: []
     indices: 
@@ -314,14 +336,15 @@ TextureImporter:
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       WallTilesStage2_0: 4931411411250715989
-      WallTilesStage2_1: -169591210
-      WallTilesStage2_2: 1619778251
-      WallTilesStage2_3: 2086794471
-      WallTilesStage2_4: 855091112
-      WallTilesStage2_5: -2071170581
-      WallTilesStage2_6: 1343102444
-      WallTilesStage2_7: 1338279937
-      WallTilesStage2_8: -384447703
+      WallTilesStage2_1: -1053585861
+      WallTilesStage2_2: 858132643
+      WallTilesStage2_3: -1600303836
+      WallTilesStage2_4: 123818028
+      WallTilesStage2_5: 365016862
+      WallTilesStage2_6: 239975632
+      WallTilesStage2_7: 1632068848
+      WallTilesStage2_8: -1788687330
+      WallTilesStage2_9: 39820750
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -22,6 +22,10 @@ MonoBehaviour:
   - NooOoO#@!OOoO!@#OoOoo@#|$%
   defeatAnimationProfile: {fileID: 11400000, guid: b616456704e0c504587584a3beabfae5, type: 2}
   victoryCode: "while(true):\n    JefeFinal"
+  dialogoClippy: "Para los programadores, una de las peores practicas es usar un
+    while (true);\nEste tipo de ciclos son infinitos, jam\xE1s se terminar\xE1n de
+    ejecutar."
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 26ce8c402863e8c428217ba7cf653094, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat: []

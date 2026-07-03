@@ -23,6 +23,8 @@ MonoBehaviour:
   defeatAnimationProfile: {fileID: 0}
   victoryCode: "if ({virusDetectados >= 1 | virusDetectados > 0}):\n    virusDetectados
     = 0"
+  dialogoClippy: "Intenta enga\xF1ar al sistema para que si detecte un virus, este
+    contador se reinicie."
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 8ba67946ed5f1fb4b9aeacf3e7554dae, type: 2}
   prefilledBlocksCode: 
