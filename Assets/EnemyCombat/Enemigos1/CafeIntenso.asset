@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: CafeIntenso
   enemyDisplayName: CafeIntenso
-  enemySprite: {fileID: 0}
-  defeatSprite: {fileID: 0}
+  enemySprite: {fileID: 4903682920358546511, guid: ce0b67fd0a1642e4c9810b8aa5cc2088, type: 3}
+  defeatSprite: {fileID: 1422129236764291179, guid: ce0b67fd0a1642e4c9810b8aa5cc2088, type: 3}
   introDialogues:
   - "Dicen que soy muy intenso 7-7, quiz\xE1s un poco m\xE1s de azucar podr\xEDa
     ayudar"
@@ -29,7 +29,11 @@ MonoBehaviour:
 
     #
     numero1 > 0'
+  dialogoClippy: "En programaci\xF3n, los contadores son variables n\xFAmericas que
+    se incrementan en 1 o m\xE1s, en cada uso.; Generalmente usados en ciclos.\nUn
+    ejemplo de uso es: contador = contador + 1"
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 0a60cafddb8049845951551da21c10e3, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat:
   - {fileID: 11400000, guid: 3d7bbf4656f86a44887b2bfc0a33aa7b, type: 2}

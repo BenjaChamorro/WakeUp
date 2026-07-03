@@ -1863,7 +1863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 949a0846b242c0d4bafe345dcd924ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatRuntime
-  currentEnemy: {fileID: 11400000, guid: 5ff85781cd868964498f2fc5e8f5129b, type: 2}
+  currentEnemy: {fileID: 11400000, guid: 7986bcef26e52ed49b4fee9f5941149e, type: 2}
   enemySpriteRenderer: {fileID: 1380827841}
   dialogueText: {fileID: 0}
   enemyNameText: {fileID: 0}
@@ -2579,7 +2579,7 @@ Transform:
   m_GameObject: {fileID: 1380827839}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3, y: 298, z: -5553.0005}
+  m_LocalPosition: {x: -3, y: 125, z: -5553.0005}
   m_LocalScale: {x: 153.7228, y: 148.69028, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3957,6 +3957,18 @@ PrefabInstance:
       value: AdvicePrint1
       objectReference: {fileID: 0}
     - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
+      propertyPath: continueKey
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
+      propertyPath: panelSize.x
+      value: 750
+      objectReference: {fileID: 0}
+    - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
+      propertyPath: panelSize.y
+      value: 350
+      objectReference: {fileID: 0}
+    - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
       propertyPath: showOnlyOnce
       value: 0
       objectReference: {fileID: 0}
@@ -3970,7 +3982,7 @@ PrefabInstance:
       objectReference: {fileID: 125679843}
     - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
       propertyPath: screenOffset.x
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
       propertyPath: screenOffset.y
@@ -3991,6 +4003,18 @@ PrefabInstance:
     - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
       propertyPath: 'lines.Array.data[1]'
       value: estoy en la escena de combate wuuuu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
+      propertyPath: textContainerSize.x
+      value: 540
+      objectReference: {fileID: 0}
+    - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
+      propertyPath: textContainerSize.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7751924802428439343, guid: 79b35756bd683d9459f1bd0233fdb85b, type: 3}
+      propertyPath: textContainerOffset.x
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -23,14 +23,17 @@ MonoBehaviour:
   - "Buen d\xEDa Admin. !!\xBF?@#!\xAC Falla de energ!?\xA1a, no hay suficien.?\xBF&%#te
     para func!!0''ones basic@#\xBF?=|!! \xBFQUE PASHO?\xBFDUDAIS?"
   defeatAnimationProfile: {fileID: 0}
-  victoryCode: "nivelAcceso = 0\nenergia = 3\nif (nivelAcceso {<= | <} 5):\n    print(\"Acceso
+  victoryCode: "nivelAcceso = 0\nenergia = 3\nif (nivelAcceso {>= | >} 5):\n    print(\"Acceso
     Denegado\")\nif (energia {> | >=} 10):\n     print(\"No hay energ\xEDa suficiente
     para abrir la puerta\")"
+  dialogoClippy: "Algunos enemigos vendr\xE1n con c\xF3digo pre rellenado y solo
+    podr\xE1s modificar algunas partes.;\nEn este caso busca que puedes hacer con
+    lo que te deja modificar."
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 72e3de74e849bb54c96f3136ee86cd9f, type: 2}
   - {fileID: 11400000, guid: 86a2e116871b835448195a35686825ed, type: 2}
   prefilledBlocksCode: "equal* - input1*=nivelAcceso input2*={0}\r\nequal* - input1*=energia
-    input2*={3}\r\nif* - input1*=nivelAcceso input2*={5} operator={>}\n    print*
+    input2*={3}\r\nif* - input1*=nivelAcceso input2*={5} operator={<}\n    print*
     - input1*={\"Acceso Denegado\"}\r\nif* - input1*=energia input2*={10} operator={<}\r\n   
     print* - input1*={\"No hay energ\xEDa suficiente para abrir la puerta\"}\n"
   unlockBlocksOnDefeat: []

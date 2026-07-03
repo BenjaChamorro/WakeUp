@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: Investigador
   enemyDisplayName: Investigador
-  enemySprite: {fileID: 0}
+  enemySprite: {fileID: -1061616580122066588, guid: 1a137251d70a5be45926de969c70d1d6, type: 3}
   defeatSprite: {fileID: 0}
   introDialogues:
   - ' Voy a interrogar a un sospechoso. Puede mentir hasta 3 veces sin consecuencias.
@@ -23,8 +23,12 @@ MonoBehaviour:
   - "Con este detector no se escapar\xE1 de m\xED, muchas gracias."
   defeatAnimationProfile: {fileID: 11400000, guid: e29102366b39731418f236eaa71bab77, type: 2}
   victoryCode: "if ({numeroMentiras > 3 | 3 < numeroMentiras}):\n    print(limiteSuperado)"
+  dialogoClippy: "Los if([condici\xF3n]): son operadores que permiten ejecutar acciones
+    solo si se cumple la condici\xF3n interna.;\nEjemplo de uso: \nif (numero1 >
+    numero 2):\n    print(\"numero1 es mayor que numero2\")"
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 303935d5b83a76b43b324df08ffd9520, type: 2}
   - {fileID: 11400000, guid: 5d2530350b7d05f48b48952a2abc4d41, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat:
   - {fileID: 11400000, guid: 757054e10f176a64caa728ddb232d3f9, type: 2}

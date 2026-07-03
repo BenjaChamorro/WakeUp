@@ -7,11 +7,7 @@ public class StageTrigger : MonoBehaviour
         Stage11,
         Stage12,
         Stage13,
-        Stage14,
-        Stage15,
-        Stage16,
-        Stage17,
-        Stage18
+        Stage14
     }
 
     [Header("References")]
@@ -121,6 +117,9 @@ public class StageTrigger : MonoBehaviour
             case TargetStage.Stage13:
                 gameManager.ActivateStage13(useCustomTpPoint ? tpPoint : null);
                 break;
+            case TargetStage.Stage14:
+                gameManager.ActivateStage14(useCustomTpPoint ? tpPoint : null);
+                break;
             default:
                 Debug.LogWarning($"ActivateTargetStage no soporta {targetStage} aún. Añade el método en GameManagerStage1.");
                 break;
@@ -135,10 +134,6 @@ public class StageTrigger : MonoBehaviour
             TargetStage.Stage12 => "Stage1.2",
             TargetStage.Stage13 => "Stage1.3",
             TargetStage.Stage14 => "Stage1.4",
-            TargetStage.Stage15 => "Stage1.5",
-            TargetStage.Stage16 => "Stage1.6",
-            TargetStage.Stage17 => "Stage1.7",
-            TargetStage.Stage18 => "Stage1.8",
             _ => "Stage1.1"
         };
     }

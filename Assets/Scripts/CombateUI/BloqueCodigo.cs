@@ -319,12 +319,27 @@ public class BloqueCodigo : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         EnsureConsoleLinesLayout(lineasConsola);
 
         IndentDropLineMarker dropMarker = FindParentWithComponent<IndentDropLineMarker>(eventData.pointerEnter != null ? eventData.pointerEnter.transform : null);
+        int targetSiblingIndex = -1;
         if (dropMarker != null && dropMarker.transform.parent == lineasConsola) {
             indentLevel = Mathf.Max(1, dropMarker.indentLevel);
+            targetSiblingIndex = dropMarker.transform.GetSiblingIndex();
         } else {
             indentLevel = 0;
         }
         ApplyConsoleLineLayout(lineasConsola);
+
+        if (targetSiblingIndex >= 0) {
+            transform.SetSiblingIndex(targetSiblingIndex);
+        } else {
+            rectTransform.SetAsLastSibling();
+        }
+
+        if (RequiresIndentedBody()) {
+            EnsureIndentPlaceholderExists(lineasConsola);
+        }
+
+        RefreshLineNumbersFromHierarchy(lineasConsola);
+        RefreshConsoleLayout(lineasConsola);
 
         if (draggedFromPalette && contenedorBloques != null && prefabOriginal != null) {
             BloqueCodigo nuevo = Instantiate(prefabOriginal, contenedorBloques, false);

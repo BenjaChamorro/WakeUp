@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: AntiVirus
   enemyDisplayName: antivirus
-  enemySprite: {fileID: 0}
-  defeatSprite: {fileID: 0}
+  enemySprite: {fileID: -4483163079261841770, guid: 519f94be64029c942b39d2187694969f, type: 3}
+  defeatSprite: {fileID: -4735169262380950740, guid: 519f94be64029c942b39d2187694969f, type: 3}
   introDialogues:
   - Antivirus activado... -- BUSCANDO VIRUS --
   defeatDialogues:
@@ -23,6 +23,8 @@ MonoBehaviour:
   defeatAnimationProfile: {fileID: 0}
   victoryCode: "if ({virusDetectados >= 1 | virusDetectados > 0}):\n    virusDetectados
     = 0"
+  dialogoClippy: "Intenta enga\xF1ar al sistema para que si detecte un virus, este
+    contador se reinicie."
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 8ba67946ed5f1fb4b9aeacf3e7554dae, type: 2}
   prefilledBlocksCode: 

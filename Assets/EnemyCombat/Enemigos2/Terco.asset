@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: Terco
   enemyDisplayName: Terco
-  enemySprite: {fileID: 0}
-  defeatSprite: {fileID: 0}
+  enemySprite: {fileID: 6443237164651057855, guid: eb138ade739f4b64eb65e736434c6d7e, type: 3}
+  defeatSprite: {fileID: -1149009770, guid: eb138ade739f4b64eb65e736434c6d7e, type: 3}
   introDialogues:
   - "Estoy muy seguro de que 6 es mayor que 7 y nadie podr\xE1 demostrarme lo contrario."
   defeatDialogues:
   - NoOOooOoOoo SIX SEVEN...
   defeatAnimationProfile: {fileID: 11400000, guid: e57ca5b11f33118439275e595f861bc5, type: 2}
-  victoryCode: "if ({6 > 7 | 7 < 6}):\n    print(teLoDije)"
+  victoryCode: "if ({6 < 7 | 7 > 6}):\n    print(teLoDije)"
+  dialogoClippy: 
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 7561052a10c2e384ba2421655835ce3b, type: 2}
   prefilledBlocksCode: 

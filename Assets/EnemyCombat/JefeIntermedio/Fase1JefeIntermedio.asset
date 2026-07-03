@@ -14,14 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
   enemyId: FireWall
   enemyDisplayName: firewall
-  enemySprite: {fileID: 0}
-  defeatSprite: {fileID: 0}
+  enemySprite: {fileID: 1991304687740942788, guid: 7e0c3b83ff535144ca4283d000b58e8a, type: 3}
+  defeatSprite: {fileID: -1894583265448014078, guid: 7e0c3b83ff535144ca4283d000b58e8a, type: 3}
   introDialogues:
-  - "Este firewall bloquea el paso de todas las redes hac\xEDa la consola consola."
+  - "Este firewall bloquea el paso de todas las redes hac\xEDa la consola."
   defeatDialogues:
   - DESACTIVANDO FIREWALL...
   defeatAnimationProfile: {fileID: 0}
   victoryCode: print(waterNetwork)
+  dialogoClippy: Los firewall bloquean las redes que consideren maliciosas. Intenta
+    eliminarlo.
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 30be97e53803a1c42a1f82016f801153, type: 2}
   prefilledBlocksCode: 
