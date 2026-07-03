@@ -22,10 +22,14 @@ MonoBehaviour:
   - Disculpa amigo, no entiendo que quieres decir
   defeatAnimationProfile: {fileID: 0}
   victoryCode: print(miauMiau)
+  dialogoClippy: 
   combatOnlyBlocks:
   - {fileID: 11400000, guid: a9f99c2debc50284da59a2e10efcd79a, type: 2}
+  prefilledBlocksCode: 
   unlockBlocksOnDefeat:
   - {fileID: 11400000, guid: 01a29e2c9bc9a3d43a80723d556ecf71, type: 2}
   - {fileID: 11400000, guid: d58dcf183707e9d4694e205d8c5c029f, type: 2}
   - {fileID: 11400000, guid: 5562e9da7c12fc74987a6766b548fc62, type: 2}
   - {fileID: 11400000, guid: e149020ce1b74b243accc7f6148c3ca1, type: 2}
+  - {fileID: 11400000, guid: 3d7bbf4656f86a44887b2bfc0a33aa7b, type: 2}
+  miniGameVariant: {fileID: 0}

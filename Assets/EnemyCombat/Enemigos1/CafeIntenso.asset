@@ -35,5 +35,5 @@ MonoBehaviour:
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 0a60cafddb8049845951551da21c10e3, type: 2}
   prefilledBlocksCode: 
-  unlockBlocksOnDefeat:
-  - {fileID: 11400000, guid: 3d7bbf4656f86a44887b2bfc0a33aa7b, type: 2}
+  unlockBlocksOnDefeat: []
+  miniGameVariant: {fileID: 0}
