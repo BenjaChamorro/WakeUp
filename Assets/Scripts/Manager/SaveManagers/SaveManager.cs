@@ -262,6 +262,7 @@ public class SaveManager : MonoBehaviour
         saveData.cameraData.maxX = maxX;
         saveData.cameraData.minY = minY;
         saveData.cameraData.maxY = maxY;
+        saveData.hasSavedCameraBounds = true;
         SaveGame();
     }
 
@@ -269,6 +270,11 @@ public class SaveManager : MonoBehaviour
     {
         FollowCamera fc = FindObjectOfType<FollowCamera>();
         if (fc == null || saveData == null || saveData.cameraData == null)
+        {
+            return;
+        }
+
+        if (!saveData.hasSavedCameraBounds)
         {
             return;
         }
@@ -283,7 +289,7 @@ public class SaveManager : MonoBehaviour
 
     public bool GetCameraBounds(out float minX, out float maxX, out float minY, out float maxY)
     {
-        if (saveData == null || saveData.cameraData == null)
+        if (saveData == null || saveData.cameraData == null || !saveData.hasSavedCameraBounds)
         {
             minX = maxX = minY = maxY = 0;
             return false;

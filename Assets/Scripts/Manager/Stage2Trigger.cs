@@ -1,17 +1,17 @@
 using UnityEngine;
 
-public class StageTrigger : MonoBehaviour
+public class Stage2Trigger : MonoBehaviour
 {
     public enum TargetStage
     {
-        Stage11,
-        Stage12,
-        Stage13,
-        Stage14
+        Stage21,
+        Stage22,
+        Stage23,
+        Stage24
     }
 
     [Header("References")]
-    [SerializeField] private GameManagerStage1 gameManager;
+    [SerializeField] private GameManagerStage2 gameManager;
     [SerializeField] private FollowCamera followCamera;
 
     [Header("Filter")]
@@ -19,7 +19,7 @@ public class StageTrigger : MonoBehaviour
     [SerializeField] private string requiredTag = "Player";
 
     [Header("Behavior")]
-    [SerializeField] private TargetStage targetStage = TargetStage.Stage12;
+    [SerializeField] private TargetStage targetStage = TargetStage.Stage22;
 
     [Header("Teleport")]
     [SerializeField] private bool useCustomTpPoint;
@@ -36,7 +36,7 @@ public class StageTrigger : MonoBehaviour
     {
         if (gameManager == null)
         {
-            gameManager = FindAnyObjectByType<GameManagerStage1>();
+            gameManager = FindAnyObjectByType<GameManagerStage2>();
         }
 
         if (followCamera == null && Camera.main != null)
@@ -64,7 +64,7 @@ public class StageTrigger : MonoBehaviour
 
         if (gameManager == null)
         {
-            Debug.LogWarning("No se encontro GameManagerStage1 para cambiar de stage.");
+            Debug.LogWarning("No se encontro GameManagerStage2 para cambiar de stage.");
             return;
         }
 
@@ -108,20 +108,20 @@ public class StageTrigger : MonoBehaviour
     {
         switch (targetStage)
         {
-            case TargetStage.Stage11:
-                gameManager.ActivateStage11(useCustomTpPoint ? tpPoint : null);
+            case TargetStage.Stage21:
+                gameManager.ActivateStage21(useCustomTpPoint ? tpPoint : null);
                 break;
-            case TargetStage.Stage12:
-                gameManager.ActivateStage12(useCustomTpPoint ? tpPoint : null);
+            case TargetStage.Stage22:
+                gameManager.ActivateStage22(useCustomTpPoint ? tpPoint : null);
                 break;
-            case TargetStage.Stage13:
-                gameManager.ActivateStage13(useCustomTpPoint ? tpPoint : null);
+            case TargetStage.Stage23:
+                gameManager.ActivateStage23(useCustomTpPoint ? tpPoint : null);
                 break;
-            case TargetStage.Stage14:
-                gameManager.ActivateStage14(useCustomTpPoint ? tpPoint : null);
+            case TargetStage.Stage24:
+                gameManager.ActivateStage24(useCustomTpPoint ? tpPoint : null);
                 break;
             default:
-                Debug.LogWarning($"ActivateTargetStage no soporta {targetStage} aún. Añade el método en GameManagerStage1.");
+                Debug.LogWarning($"ActivateTargetStage no soporta {targetStage} aún. Añade el método en GameManagerStage2.");
                 break;
         }
     }
@@ -130,11 +130,11 @@ public class StageTrigger : MonoBehaviour
     {
         return stage switch
         {
-            TargetStage.Stage11 => "Stage1.1",
-            TargetStage.Stage12 => "Stage1.2",
-            TargetStage.Stage13 => "Stage1.3",
-            TargetStage.Stage14 => "Stage1.4",
-            _ => "Stage1.1"
+            TargetStage.Stage21 => "Stage2.1",
+            TargetStage.Stage22 => "Stage2.2",
+            TargetStage.Stage23 => "Stage2.3",
+            TargetStage.Stage24 => "Stage2.4",
+            _ => "Stage2.1"
         };
     }
 
