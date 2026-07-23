@@ -95,13 +95,6 @@ public class Stage1Trigger : MonoBehaviour
                 Debug.LogWarning("No se encontro FollowCamera para actualizar limites de camara.");
             }
         }
-
-        // Intentar guardar el estado actual (posición, cámara, stage).
-        // Si hay eventos pendientes, SaveManager.AutoSaveCurrentState() será bloqueado
-        if (SaveManager.Instance != null)
-        {
-            SaveManager.Instance.CommitCurrentState();
-        }
     }
 
     private void ActivateTargetStage()

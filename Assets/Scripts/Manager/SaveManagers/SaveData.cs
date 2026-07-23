@@ -21,10 +21,28 @@ public class SaveData
         public float maxY;
     }
 
+    [System.Serializable]
+    public class ScenePlayerData
+    {
+        public string sceneName = string.Empty;
+        public bool hasSavedPosition = false;
+        public PlayerData playerData = new PlayerData();
+    }
+
+    [System.Serializable]
+    public class SceneCameraData
+    {
+        public string sceneName = string.Empty;
+        public bool hasSavedCameraBounds = false;
+        public CameraData cameraData = new CameraData();
+    }
+
 
     public PlayerData playerData = new PlayerData();
     public CameraData cameraData = new CameraData();
     public bool hasSavedCameraBounds = false;
+    public List<ScenePlayerData> scenePlayerData = new List<ScenePlayerData>();
+    public List<SceneCameraData> sceneCameraData = new List<SceneCameraData>();
     public List<string> completedEventIds = new List<string>();
     public List<string> shownAdviceDialogIds = new List<string>();
     public List<string> unlockedBlockIds = new List<string>();
@@ -40,6 +58,8 @@ public class SaveData
     {
         playerData = new PlayerData();
         cameraData = new CameraData();
+        scenePlayerData = new List<ScenePlayerData>();
+        sceneCameraData = new List<SceneCameraData>();
         completedEventIds = new List<string>();
         shownAdviceDialogIds = new List<string>();
         unlockedBlockIds = new List<string> { SaveManager.DefaultUnlockedBlockId };

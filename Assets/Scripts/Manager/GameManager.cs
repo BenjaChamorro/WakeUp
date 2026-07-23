@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         Vector3 p = player.transform.position;
         if (SaveManager.Instance != null)
         {
-            SaveManager.Instance.SavePlayerPosition(p);
+            SaveManager.Instance.SavePlayerPosition(SceneManager.GetActiveScene().name, p);
         }
     }
 
@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         if (player == null) return;
         if (SaveManager.Instance != null)
         {
-            Vector3? savedPos = SaveManager.Instance.GetPlayerPosition();
+            Vector3? savedPos = SaveManager.Instance.GetPlayerPosition(SceneManager.GetActiveScene().name);
             if (savedPos.HasValue)
             {
                 player.transform.position = savedPos.Value;
@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
 
         if (SaveManager.Instance != null)
         {
-            SaveManager.Instance.SaveCameraBounds(minX, maxX, minY, maxY);
+            SaveManager.Instance.SaveCameraBounds(SceneManager.GetActiveScene().name, minX, maxX, minY, maxY);
         }
     }
 
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (SaveManager.Instance.GetCameraBounds(out float minX, out float maxX, out float minY, out float maxY))
+        if (SaveManager.Instance.GetCameraBounds(SceneManager.GetActiveScene().name, out float minX, out float maxX, out float minY, out float maxY))
         {
             followCamera.SetCameraBounds(minX, maxX, minY, maxY);
         }
