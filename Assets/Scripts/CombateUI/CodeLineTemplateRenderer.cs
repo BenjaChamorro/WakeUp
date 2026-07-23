@@ -279,6 +279,9 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
             case "if":
                 BuildIfPrefillLine();
                 break;
+            case "while":
+                BuildWhilePrefillLine();
+                break;
             case "print":
                 BuildPrintPrefillLine();
                 break;
@@ -298,6 +301,16 @@ public class CodeLineTemplateRenderer : MonoBehaviour {
 
     private void BuildIfPrefillLine() {
         CreateStaticLabel("if (");
+        CreateInlineInput(InlineInputMinWidth, InlineInputMaxWidth, true, false);
+        CreateStaticLabel(" ");
+        CreateOperatorSlot();
+        CreateStaticLabel(" ");
+        CreateInlineInput(InlineInputMinWidth, InlineInputMaxWidth, false, false);
+        CreateStaticLabel("):");
+    }
+
+    private void BuildWhilePrefillLine() {
+        CreateStaticLabel("while (");
         CreateInlineInput(InlineInputMinWidth, InlineInputMaxWidth, true, false);
         CreateStaticLabel(" ");
         CreateOperatorSlot();

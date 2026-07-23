@@ -17,14 +17,18 @@ MonoBehaviour:
   enemySprite: {fileID: -5136876996145096654, guid: 8e7fe630ec26e2d4fb3c797e830026fd, type: 3}
   defeatSprite: {fileID: 0}
   introDialogues:
-  - "Me est\xE1s dej@ndo s1n 0pcioN3s...\n\nx = _\ny = _\necuacion1 = 2 * x - 3 *
-    y\necuacion2 = 3 * x - 2 * y\nif(ecuacion1 == -5):\n    if(ecuacion2 == 0):\n       
-    print(Correcto) "
+  - "Me est\xE1s dej@ndo s1n 0pcioN3s... "
   defeatDialogues:
   - 3ste Ser4 el F1N...
   defeatAnimationProfile: {fileID: 0}
-  victoryCode: variable1 = numero1
+  victoryCode: "x = 2\ny = 3\necuacion1 = 2x - 3y\necuacion2 = 3x - 2y\nif(ecuacion1
+    == -5):\n    print(\"primera validacion\")\nif(ecuacion2 == 0):\n    print(\"segunda
+    validacion\")"
   dialogoClippy: 
   combatOnlyBlocks: []
-  prefilledBlocksCode: 
+  prefilledBlocksCode: "equal* - input1*={x} input2={}\nequal* - input1*={y} input2={}\nequal*
+    - input1*={ecuacion1} input2*={2x - 3y}\nequal* - input1*={ecuacion2} input2*={3x
+    - 2y}\nif* - input1*={ecuacion1} input2*={-5} operator*={==}\n    print(\"primera
+    validacion\")\nif* - input1*={ecuacion2} input2*={0} operator*={==}\n    print(\"segunda
+    validacion\")"
   unlockBlocksOnDefeat: []
