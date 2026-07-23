@@ -187,6 +187,11 @@ public class EnemyCombatRuntime : MonoBehaviour {
         bool success = TryEvaluateVictoryCode(currentEnemy.victoryCode, playerCode, out reason);
         if (success)
         {
+            if (SaveManager.Instance != null && currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.enemyId))
+            {
+                SaveManager.Instance.MarkEnemyAsDefeated(currentEnemy.enemyId.Trim());
+            }
+
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.MarkCurrentEncounterSucceeded();

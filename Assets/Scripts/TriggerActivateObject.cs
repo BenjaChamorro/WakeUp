@@ -14,6 +14,12 @@ public class TriggerActivateObject : MonoBehaviour
     [SerializeField] private bool requireEventCompleted = false;
     [SerializeField] private bool requireEventIncomplete = false; // Evento no completado (independiente de si esta pendiente)
 
+    [Header("Enemy Filter")]
+    [SerializeField] private bool useEnemyFilter = false;
+    [SerializeField] private string requiredEnemyId = "";
+    [SerializeField] private bool requireEnemyDefeated = false;
+    [SerializeField] private bool requireEnemyNotDefeated = false; // Enemigo no derrotado
+
     private bool hasBeenActivated = false;
     private bool isPlayerInsideTrigger = false;
     private Collider2D triggerCollider;
@@ -139,6 +145,21 @@ public class TriggerActivateObject : MonoBehaviour
 
     private bool ShouldApplyByEventFilter()
     {
+        if (!ShouldApplyByEventState())
+        {
+            return false;
+        }
+
+        if (!ShouldApplyByEnemyState())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool ShouldApplyByEventState()
+    {
         if (!useEventFilter)
         {
             return true;
@@ -167,6 +188,38 @@ public class TriggerActivateObject : MonoBehaviour
         }
 
         return !completed;
+    }
+
+    private bool ShouldApplyByEnemyState()
+    {
+        if (!useEnemyFilter)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(requiredEnemyId) || SaveManager.Instance == null)
+        {
+            return false;
+        }
+
+        bool defeated = SaveManager.Instance.WasEnemyDefeated(requiredEnemyId);
+
+        if (requireEnemyDefeated && requireEnemyNotDefeated)
+        {
+            return false;
+        }
+
+        if (requireEnemyNotDefeated)
+        {
+            return !defeated;
+        }
+
+        if (requireEnemyDefeated)
+        {
+            return defeated;
+        }
+
+        return !defeated;
     }
 
     private bool IsPlayerCurrentlyInsideTrigger()

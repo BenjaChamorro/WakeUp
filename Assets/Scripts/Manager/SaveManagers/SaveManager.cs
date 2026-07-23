@@ -331,6 +331,36 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    public bool MarkEnemyAsDefeated(string enemyId)
+    {
+        if (string.IsNullOrWhiteSpace(enemyId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+
+        if (saveData.defeatedEnemyIds.Contains(enemyId))
+        {
+            return false;
+        }
+
+        saveData.defeatedEnemyIds.Add(enemyId);
+        SaveGame();
+        return true;
+    }
+
+    public bool WasEnemyDefeated(string enemyId)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(enemyId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+        return saveData.defeatedEnemyIds.Contains(enemyId);
+    }
+
     public IReadOnlyList<string> GetUnlockedBlockIds()
     {
         EnsureSaveDataDefaults();
@@ -482,6 +512,12 @@ public class SaveManager : MonoBehaviour
         if (saveData.unlockedBlockIds == null)
         {
             saveData.unlockedBlockIds = new List<string>();
+            changed = true;
+        }
+
+        if (saveData.defeatedEnemyIds == null)
+        {
+            saveData.defeatedEnemyIds = new List<string>();
             changed = true;
         }
 

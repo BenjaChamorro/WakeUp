@@ -28,6 +28,7 @@ public class SaveData
     public List<string> completedEventIds = new List<string>();
     public List<string> shownAdviceDialogIds = new List<string>();
     public List<string> unlockedBlockIds = new List<string>();
+    public List<string> defeatedEnemyIds = new List<string>();
 
     // Scene / session persistence
     public int savedSceneIndex = -1;
@@ -42,6 +43,7 @@ public class SaveData
         completedEventIds = new List<string>();
         shownAdviceDialogIds = new List<string>();
         unlockedBlockIds = new List<string> { SaveManager.DefaultUnlockedBlockId };
+        defeatedEnemyIds = new List<string>();
         hasSavedCameraBounds = false;
     }
 }

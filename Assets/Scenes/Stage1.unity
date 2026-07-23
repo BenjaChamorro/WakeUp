@@ -5630,6 +5630,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &104438396
 GameObject:
   m_ObjectHideFlags: 0
@@ -9399,6 +9403,10 @@ MonoBehaviour:
   requiredEventId: Acertijo
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!61 &181810479
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -34241,6 +34249,10 @@ MonoBehaviour:
   requiredEventId: CatsMove
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!61 &489790278
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -38693,39 +38705,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &558346844
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 558346845}
-  m_Layer: 0
-  m_Name: Events
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &558346845
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 558346844}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 733891952}
-  - {fileID: 1493510815}
-  m_Father: {fileID: 1381729986}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &558410293
 GameObject:
   m_ObjectHideFlags: 0
@@ -45620,51 +45599,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
---- !u!1 &733891951
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 733891952}
-  - component: {fileID: 733891953}
-  m_Layer: 0
-  m_Name: BattleCafe
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &733891952
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 733891951}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 558346845}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &733891953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 733891951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0cfe9bff2d548429b5d54ba32f5030, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EventPhaseState
-  eventId: BattleCafe
 --- !u!1 &743942737
 GameObject:
   m_ObjectHideFlags: 0
@@ -58725,10 +58659,14 @@ MonoBehaviour:
   activateOnce: 1
   stayActive: 1
   requiredTag: Player
-  useEventFilter: 1
-  requiredEventId: BattleChef
+  useEventFilter: 0
+  requiredEventId: 
   requireEventCompleted: 0
-  requireEventIncomplete: 1
+  requireEventIncomplete: 0
+  useEnemyFilter: 1
+  requiredEnemyId: ChefDesordenado
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 1
 --- !u!114 &1021012003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58745,10 +58683,14 @@ MonoBehaviour:
   activateOnce: 1
   stayActive: 1
   requiredTag: Player
-  useEventFilter: 1
-  requiredEventId: BattleCafe
+  useEventFilter: 0
+  requiredEventId: 
   requireEventCompleted: 0
-  requireEventIncomplete: 1
+  requireEventIncomplete: 0
+  useEnemyFilter: 1
+  requiredEnemyId: CafeIntenso
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 1
 --- !u!61 &1021012004
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -60614,6 +60556,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1049895198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66873,6 +66819,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &1215186304
 GameObject:
   m_ObjectHideFlags: 0
@@ -69074,7 +69024,6 @@ GameObject:
   - component: {fileID: 1255171665}
   - component: {fileID: 1255171661}
   - component: {fileID: 1255171664}
-  - component: {fileID: 1255171667}
   m_Layer: 0
   m_Name: Cafe_Intenso
   m_TagString: Untagged
@@ -69214,10 +69163,10 @@ MonoBehaviour:
   encounterId: 3
   succeed: 0
   triggerOnce: 1
-  useEventFilter: 1
-  requiredEventId: BattleCafe
+  useEventFilter: 0
+  requiredEventId: 
   requireEventCompleted: 0
-  requireEventIncomplete: 1
+  requireEventIncomplete: 0
 --- !u!70 &1255171665
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -69255,31 +69204,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.006375313, y: 0.5599866}
   m_Size: {x: 0.94142914, y: 1.1199884}
   m_Direction: 0
---- !u!114 &1255171667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255171659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d732a7482cdda44bbeca59c7881c27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TriggerScriptActivate
-  playerTag: Player
-  triggerOnlyOnce: 1
-  eventPhase: {fileID: 733891953}
-  isFirstTriggerInSequence: 1
-  isLastTriggerInSequence: 1
-  useEventFilter: 0
-  requiredEventId: 
-  requireEventCompleted: 0
-  npcMovement: {fileID: 0}
-  playerScriptsToBlockWhileNpcMoves: []
-  scriptsToEnable: []
-  scriptsToDisable: []
-  scriptsToEnablePostMovement: []
 --- !u!1 &1255574715
 GameObject:
   m_ObjectHideFlags: 0
@@ -69523,7 +69447,6 @@ GameObject:
   - component: {fileID: 1256420710}
   - component: {fileID: 1256420706}
   - component: {fileID: 1256420709}
-  - component: {fileID: 1256420712}
   m_Layer: 0
   m_Name: ChefDesordenado
   m_TagString: Untagged
@@ -69663,10 +69586,10 @@ MonoBehaviour:
   encounterId: 4
   succeed: 0
   triggerOnce: 1
-  useEventFilter: 1
-  requiredEventId: BattleChef
+  useEventFilter: 0
+  requiredEventId: 
   requireEventCompleted: 0
-  requireEventIncomplete: 1
+  requireEventIncomplete: 0
 --- !u!70 &1256420710
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -69704,31 +69627,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.01275301, y: 0.74144554}
   m_Size: {x: 1.64289, y: 1.6428909}
   m_Direction: 0
---- !u!114 &1256420712
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256420704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d732a7482cdda44bbeca59c7881c27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TriggerScriptActivate
-  playerTag: Player
-  triggerOnlyOnce: 1
-  eventPhase: {fileID: 1493510814}
-  isFirstTriggerInSequence: 1
-  isLastTriggerInSequence: 1
-  useEventFilter: 0
-  requiredEventId: 
-  requireEventCompleted: 0
-  npcMovement: {fileID: 0}
-  playerScriptsToBlockWhileNpcMoves: []
-  scriptsToEnable: []
-  scriptsToDisable: []
-  scriptsToEnablePostMovement: []
 --- !u!1 &1260620933
 GameObject:
   m_ObjectHideFlags: 0
@@ -74829,7 +74727,6 @@ Transform:
   - {fileID: 704029649}
   - {fileID: 1106304711}
   - {fileID: 868408994}
-  - {fileID: 558346845}
   - {fileID: 1140500659}
   - {fileID: 2016956068}
   - {fileID: 682247113}
@@ -76398,6 +76295,10 @@ MonoBehaviour:
   requiredEventId: Battle
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1418810609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76418,6 +76319,10 @@ MonoBehaviour:
   requiredEventId: Battle
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1418810610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76438,6 +76343,10 @@ MonoBehaviour:
   requiredEventId: Battle
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1418810611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76458,6 +76367,10 @@ MonoBehaviour:
   requiredEventId: Battle
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &1422286793
 GameObject:
   m_ObjectHideFlags: 0
@@ -77154,6 +77067,10 @@ MonoBehaviour:
   requiredEventId: CatsMove
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!61 &1436880938
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -77279,6 +77196,10 @@ MonoBehaviour:
   requiredEventId: CatsMove
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1436880942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77299,6 +77220,10 @@ MonoBehaviour:
   requiredEventId: CatsMove
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &1437051200
 GameObject:
   m_ObjectHideFlags: 0
@@ -77674,6 +77599,10 @@ MonoBehaviour:
   requiredEventId: Battle
   requireEventCompleted: 0
   requireEventIncomplete: 1
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &1442930740
 GameObject:
   m_ObjectHideFlags: 0
@@ -77845,6 +77774,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1443038111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77992,6 +77925,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1443038115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78872,6 +78809,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1456951233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78892,6 +78833,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1456951234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78912,6 +78857,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1456951235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78932,6 +78881,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &1458142260
 GameObject:
   m_ObjectHideFlags: 0
@@ -80671,51 +80624,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
---- !u!1 &1493510813
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1493510815}
-  - component: {fileID: 1493510814}
-  m_Layer: 0
-  m_Name: BattleChef
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1493510814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1493510813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec0cfe9bff2d548429b5d54ba32f5030, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EventPhaseState
-  eventId: BattleChef
---- !u!4 &1493510815
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1493510813}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 558346845}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1494610079
 GameObject:
   m_ObjectHideFlags: 0
@@ -100657,15 +100565,18 @@ MonoBehaviour:
   deactivateOnce: 1
   stayInactive: 1
   requiredTag: Player
-  useEventFilter: 1
-  requiredEvents:
-  - eventId: BattleCafe
-    requireCompleted: 1
-    requireIncomplete: 0
-  - eventId: BattleChef
-    requireCompleted: 1
-    requireIncomplete: 0
+  useEventFilter: 0
+  requiredEvents: []
   checkMode: 0
+  useEnemyFilter: 1
+  requiredEnemies:
+  - enemyId: CafeIntenso
+    requireDefeated: 1
+    requireNotDefeated: 0
+  - enemyId: ChefDesordenado
+    requireDefeated: 1
+    requireNotDefeated: 0
+  enemyCheckMode: 0
 --- !u!1 &1705108580
 GameObject:
   m_ObjectHideFlags: 0
@@ -109966,6 +109877,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!212 &1729456852
 SpriteRenderer:
   serializedVersion: 2
@@ -110218,6 +110133,10 @@ MonoBehaviour:
   requiredEventId: BattleAux
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1734475911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110238,6 +110157,10 @@ MonoBehaviour:
   requiredEventId: BattleAux
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1734475912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110258,6 +110181,10 @@ MonoBehaviour:
   requiredEventId: BattleAux
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1734475913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110278,6 +110205,10 @@ MonoBehaviour:
   requiredEventId: BattleAux
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &1734880706
 GameObject:
   m_ObjectHideFlags: 0
@@ -110962,6 +110893,10 @@ MonoBehaviour:
   requiredEventId: BattleAux
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1755813607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116355,6 +116290,10 @@ MonoBehaviour:
   requiredEventId: ClippyEvent
   requireEventCompleted: 0
   requireEventIncomplete: 1
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!61 &1812632302
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -117020,6 +116959,10 @@ MonoBehaviour:
   requiredEventId: ClippyJoin
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!212 &1824280376
 SpriteRenderer:
   serializedVersion: 2
@@ -117099,6 +117042,10 @@ MonoBehaviour:
   requiredEventId: ClippyJoin
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1824280378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117119,6 +117066,10 @@ MonoBehaviour:
   requiredEventId: ClippyJoin
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!1 &1827313420
 GameObject:
   m_ObjectHideFlags: 0
@@ -118689,6 +118640,10 @@ MonoBehaviour:
   requiredEventId: Battle
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1846966039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121100,6 +121055,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1897209046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123454,6 +123413,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1951862440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124015,6 +123978,10 @@ MonoBehaviour:
   requiredEventId: 
   requireEventCompleted: 0
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &1962742671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128870,6 +128837,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &2073648523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128890,6 +128861,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!114 &2073648524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128910,6 +128885,10 @@ MonoBehaviour:
   requiredEventId: BattleAux1
   requireEventCompleted: 1
   requireEventIncomplete: 0
+  useEnemyFilter: 0
+  requiredEnemyId: 
+  requireEnemyDefeated: 0
+  requireEnemyNotDefeated: 0
 --- !u!212 &2073648525
 SpriteRenderer:
   serializedVersion: 2

@@ -19,6 +19,17 @@ public class TriggerListActivate : MonoBehaviour
     }
     [SerializeField] private EventCheckMode checkMode = EventCheckMode.All;
 
+    [Header("Enemy Filter")]
+    [SerializeField] private bool useEnemyFilter = false;
+    [SerializeField] private List<EnemyRequirement> requiredEnemies = new();
+    [SerializeField] private EnemyCheckMode enemyCheckMode = EnemyCheckMode.All;
+
+    public enum EnemyCheckMode
+    {
+        All,
+        Any
+    }
+
     private bool hasBeenActivated = false;
     private bool isPlayerInsideTrigger = false;
     private Collider2D triggerCollider;
@@ -31,6 +42,16 @@ public class TriggerListActivate : MonoBehaviour
         [Header("Condition")]
         public bool requireCompleted;
         public bool requireIncomplete;
+    }
+
+    [System.Serializable]
+    public class EnemyRequirement
+    {
+        public string enemyId;
+
+        [Header("Condition")]
+        public bool requireDefeated;
+        public bool requireNotDefeated;
     }
 
     private void Awake()
@@ -154,6 +175,17 @@ public class TriggerListActivate : MonoBehaviour
 
     private bool ShouldApplyByEventFilter()
     {
+        if (!ShouldApplyByEventState())
+            return false;
+
+        if (!ShouldApplyByEnemyState())
+            return false;
+
+        return true;
+    }
+
+    private bool ShouldApplyByEventState()
+    {
         if (!useEventFilter)
             return true;
 
@@ -178,6 +210,39 @@ public class TriggerListActivate : MonoBehaviour
             foreach (var requirement in requiredEvents)
             {
                 if (EvaluateRequirement(requirement))
+                    return true;
+            }
+
+            return false;
+        }
+    }
+
+    private bool ShouldApplyByEnemyState()
+    {
+        if (!useEnemyFilter)
+            return true;
+
+        if (SaveManager.Instance == null)
+            return false;
+
+        if (requiredEnemies == null || requiredEnemies.Count == 0)
+            return false;
+
+        if (enemyCheckMode == EnemyCheckMode.All)
+        {
+            foreach (var requirement in requiredEnemies)
+            {
+                if (!EvaluateEnemyRequirement(requirement))
+                    return false;
+            }
+
+            return true;
+        }
+        else
+        {
+            foreach (var requirement in requiredEnemies)
+            {
+                if (EvaluateEnemyRequirement(requirement))
                     return true;
             }
 
@@ -260,5 +325,25 @@ public class TriggerListActivate : MonoBehaviour
 
         // Si no se marca ninguna opción, por defecto exige que NO esté completado
         return !completed;
+    }
+
+    private bool EvaluateEnemyRequirement(EnemyRequirement requirement)
+    {
+        if (string.IsNullOrWhiteSpace(requirement.enemyId))
+            return false;
+
+        bool defeated = SaveManager.Instance.WasEnemyDefeated(requirement.enemyId);
+
+        if (requirement.requireDefeated && requirement.requireNotDefeated)
+            return false;
+
+        if (requirement.requireDefeated)
+            return defeated;
+
+        if (requirement.requireNotDefeated)
+            return !defeated;
+
+        // Si no se marca ninguna opción, por defecto exige que NO esté derrotado
+        return !defeated;
     }
 }
