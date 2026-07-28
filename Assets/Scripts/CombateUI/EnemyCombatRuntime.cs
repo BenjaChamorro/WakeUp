@@ -24,7 +24,12 @@ public class EnemyCombatRuntime : MonoBehaviour {
     [SerializeField] private PlayerCodeInventory playerInventory;
     [SerializeField] private CodePaletteBuilder paletteBuilder;
 
+    [Header("Prueba")]
+    [SerializeField] private bool ejecucionDePrueba = false;
+
     private CodeBlockData enemyIdRuntimeBlock;
+
+    public bool IsTestExecutionMode => ejecucionDePrueba;
 
     void Awake() {
         AutoAssignReferences();
@@ -32,7 +37,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
 
     void Start() {
         // Cargar enemigo desde GameManager
-        if (GameManager.Instance != null && GameManager.Instance.CurrentEnemyAsset != null)
+        if (!ejecucionDePrueba && GameManager.Instance != null && GameManager.Instance.CurrentEnemyAsset != null)
         {
             currentEnemy = GameManager.Instance.CurrentEnemyAsset as EnemyCombatData;
             // if (currentEnemy != null)
@@ -187,16 +192,19 @@ public class EnemyCombatRuntime : MonoBehaviour {
         bool success = TryEvaluateVictoryCode(currentEnemy.victoryCode, playerCode, out reason);
         if (success)
         {
-            if (SaveManager.Instance != null && currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.enemyId))
+            if (!ejecucionDePrueba && SaveManager.Instance != null && currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.enemyId))
             {
                 SaveManager.Instance.MarkEnemyAsDefeated(currentEnemy.enemyId.Trim());
             }
 
-            if (GameManager.Instance != null)
+            if (!ejecucionDePrueba && GameManager.Instance != null)
             {
                 GameManager.Instance.MarkCurrentEncounterSucceeded();
             }
-            GrantEnemyRewards();
+            if (!ejecucionDePrueba)
+            {
+                GrantEnemyRewards();
+            }
             HandleVictory();
         }
         return success;
@@ -215,7 +223,7 @@ public class EnemyCombatRuntime : MonoBehaviour {
         ShowEnemyDefeatedMessage();
         yield return new WaitForSeconds(2f);
 
-        if (GameManager.Instance != null)
+        if (!ejecucionDePrueba && GameManager.Instance != null)
         {
             GameManager.Instance.ExitCombatAndReturn();
         }

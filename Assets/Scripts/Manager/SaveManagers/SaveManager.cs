@@ -74,6 +74,11 @@ public class SaveManager : MonoBehaviour
             bool suppressPreferredSceneLoad = SuppressPreferredSceneLoadOnNextBoot;
             SuppressPreferredSceneLoadOnNextBoot = false;
 
+            if (!suppressPreferredSceneLoad && IsCombatTestExecutionSceneLoaded())
+            {
+                suppressPreferredSceneLoad = true;
+            }
+
             if (!suppressPreferredSceneLoad && TryLoadPreferredSceneOnStartup())
             {
                 return;
@@ -571,6 +576,21 @@ public class SaveManager : MonoBehaviour
         Debug.Log("[SaveManager] Cargando escena preferida: " + saveData.preferredSceneName);
         UnityEngine.SceneManagement.SceneManager.LoadScene(saveData.preferredSceneName);
         return true;
+    }
+
+    private bool IsCombatTestExecutionSceneLoaded()
+    {
+        EnemyCombatRuntime[] combatRuntimes = FindObjectsOfType<EnemyCombatRuntime>(true);
+        for (int i = 0; i < combatRuntimes.Length; i++)
+        {
+            EnemyCombatRuntime runtime = combatRuntimes[i];
+            if (runtime != null && runtime.IsTestExecutionMode)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private bool EnsureSaveDataDefaults()
