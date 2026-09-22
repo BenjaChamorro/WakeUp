@@ -1644,13 +1644,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 949a0846b242c0d4bafe345dcd924ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatRuntime
-  currentEnemy: {fileID: 11400000, guid: 5ff85781cd868964498f2fc5e8f5129b, type: 2}
+  currentEnemy: {fileID: 11400000, guid: 84dc364775f73c0459a3053f2c472275, type: 2}
   enemySpriteRenderer: {fileID: 1380827841}
   dialogueText: {fileID: 0}
   enemyNameText: {fileID: 0}
   playerInventory: {fileID: 784106769}
   paletteBuilder: {fileID: 1555683698}
-  ejecucionDePrueba: 0
+  ejecucionDePrueba: 1
 --- !u!4 &1012707773
 Transform:
   m_ObjectHideFlags: 0
