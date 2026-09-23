@@ -86,7 +86,10 @@ public class PcActivate : MonoBehaviour
             SetOnParameter(true);
             MostrarMecanismo(true);
             MostrarPressE(true);
-            activationSound.Play();
+            if (activationSound != null)
+            {
+                activationSound.Play();
+            }
             ApplyCachedInputToAnimator();
         }
     }

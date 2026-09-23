@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
-public class TriggerActivateObject : MonoBehaviour
+public class TriggerDisableComponents : MonoBehaviour
 {
-    [SerializeField] private GameObject targetObject;
-    [SerializeField] private bool activateOnce = false;
-    [SerializeField] private bool stayActive = false;
+    [SerializeField] private Behaviour[] targetComponents;
+    [SerializeField] private bool deactivateOnce = false;
+    [SerializeField] private bool stayInactive = false;
     [SerializeField] private string requiredTag = "Player";
 
     [Header("Event Filter")]
@@ -14,13 +14,7 @@ public class TriggerActivateObject : MonoBehaviour
     [SerializeField] private bool requireEventCompleted = false;
     [SerializeField] private bool requireEventIncomplete = false; // Evento no completado (independiente de si esta pendiente)
 
-    [Header("Enemy Filter")]
-    [SerializeField] private bool useEnemyFilter = false;
-    [SerializeField] private string requiredEnemyId = "";
-    [SerializeField] private bool requireEnemyDefeated = false;
-    [SerializeField] private bool requireEnemyNotDefeated = false; // Enemigo no derrotado
-
-    private bool hasBeenActivated = false;
+    private bool hasBeenDeactivated = false;
     private bool isPlayerInsideTrigger = false;
     private Collider2D triggerCollider;
 
@@ -112,9 +106,9 @@ public class TriggerActivateObject : MonoBehaviour
             return;
         }
 
-        if (wasInside && !stayActive)
+        if (wasInside && !stayInactive)
         {
-            SetTargetActive(false);
+            SetComponentsEnabled(true);
         }
     }
 
@@ -130,35 +124,20 @@ public class TriggerActivateObject : MonoBehaviour
             return;
         }
 
-        if (activateOnce && hasBeenActivated)
+        if (deactivateOnce && hasBeenDeactivated)
         {
             return;
         }
 
-        SetTargetActive(true);
+        SetComponentsEnabled(false);
 
-        if (activateOnce)
+        if (deactivateOnce)
         {
-            hasBeenActivated = true;
+            hasBeenDeactivated = true;
         }
     }
 
     private bool ShouldApplyByEventFilter()
-    {
-        if (!ShouldApplyByEventState())
-        {
-            return false;
-        }
-
-        if (!ShouldApplyByEnemyState())
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private bool ShouldApplyByEventState()
     {
         if (!useEventFilter)
         {
@@ -188,38 +167,6 @@ public class TriggerActivateObject : MonoBehaviour
         }
 
         return !completed;
-    }
-
-    private bool ShouldApplyByEnemyState()
-    {
-        if (!useEnemyFilter)
-        {
-            return true;
-        }
-
-        if (string.IsNullOrWhiteSpace(requiredEnemyId) || SaveManager.Instance == null)
-        {
-            return false;
-        }
-
-        bool defeated = SaveManager.Instance.WasEnemyDefeated(requiredEnemyId);
-
-        if (requireEnemyDefeated && requireEnemyNotDefeated)
-        {
-            return false;
-        }
-
-        if (requireEnemyNotDefeated)
-        {
-            return !defeated;
-        }
-
-        if (requireEnemyDefeated)
-        {
-            return defeated;
-        }
-
-        return !defeated;
     }
 
     private bool IsPlayerCurrentlyInsideTrigger()
@@ -253,12 +200,17 @@ public class TriggerActivateObject : MonoBehaviour
 
         isPlayerInsideTrigger = false;
 
-        if (stayActive)
+        if (stayInactive)
         {
             return;
         }
 
-        SetTargetActive(false);
+        if (ShouldApplyByEventFilter())
+        {
+            return;
+        }
+
+        SetComponentsEnabled(true);
     }
 
     private bool MatchesRequiredTag(GameObject otherObject)
@@ -266,12 +218,19 @@ public class TriggerActivateObject : MonoBehaviour
         return otherObject.CompareTag(requiredTag);
     }
 
-    private void SetTargetActive(bool activeState)
+    private void SetComponentsEnabled(bool enabled)
     {
-        if (targetObject != null)
+        if (targetComponents == null)
         {
-            targetObject.SetActive(activeState);
+            return;
+        }
+
+        foreach (Behaviour component in targetComponents)
+        {
+            if (component != null)
+            {
+                component.enabled = enabled;
+            }
         }
     }
-
 }

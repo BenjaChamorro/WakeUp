@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 
@@ -72,6 +73,11 @@ public class SaveManager : MonoBehaviour
 
             bool suppressPreferredSceneLoad = SuppressPreferredSceneLoadOnNextBoot;
             SuppressPreferredSceneLoadOnNextBoot = false;
+
+            if (!suppressPreferredSceneLoad && IsCombatTestExecutionSceneLoaded())
+            {
+                suppressPreferredSceneLoad = true;
+            }
 
             if (!suppressPreferredSceneLoad && TryLoadPreferredSceneOnStartup())
             {
@@ -229,61 +235,119 @@ public class SaveManager : MonoBehaviour
     // ========== PLAYER DATA ==========
     public void SavePlayerPosition(Vector3 position)
     {
-        saveData.playerData.posX = position.x;
-        saveData.playerData.posY = position.y;
-        saveData.playerData.posZ = position.z;
+        SavePlayerPosition(SceneManager.GetActiveScene().name, position);
+    }
+
+    public void SavePlayerPosition(string sceneName, Vector3 position)
+    {
+        if (saveData == null)
+        {
+            saveData = new SaveData();
+        }
+
+        SaveData.ScenePlayerData scenePlayerData = GetOrCreateScenePlayerData(sceneName);
+        scenePlayerData.playerData.posX = position.x;
+        scenePlayerData.playerData.posY = position.y;
+        scenePlayerData.playerData.posZ = position.z;
+        scenePlayerData.hasSavedPosition = true;
         SaveGame();
     }
 
     public void LoadPlayerPosition()
     {
+        LoadPlayerPosition(SceneManager.GetActiveScene().name);
+    }
+
+    public void LoadPlayerPosition(string sceneName)
+    {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null || saveData == null || saveData.playerData == null)
+        if (player == null)
         {
             return;
         }
 
-        player.transform.position = new Vector3(saveData.playerData.posX, saveData.playerData.posY, saveData.playerData.posZ);
+        Vector3? savedPosition = GetPlayerPosition(sceneName);
+        if (!savedPosition.HasValue)
+        {
+            return;
+        }
+
+        player.transform.position = savedPosition.Value;
     }
 
     public Vector3? GetPlayerPosition()
     {
-        if (saveData == null || saveData.playerData == null)
+        return GetPlayerPosition(SceneManager.GetActiveScene().name);
+    }
+
+    public Vector3? GetPlayerPosition(string sceneName)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(sceneName))
         {
             return null;
         }
-        return new Vector3(saveData.playerData.posX, saveData.playerData.posY, saveData.playerData.posZ);
+
+        SaveData.ScenePlayerData scenePlayerData = FindScenePlayerData(sceneName);
+        if (scenePlayerData == null || !scenePlayerData.hasSavedPosition || scenePlayerData.playerData == null)
+        {
+            return null;
+        }
+
+        return new Vector3(scenePlayerData.playerData.posX, scenePlayerData.playerData.posY, scenePlayerData.playerData.posZ);
     }
 
     // ========== CAMERA DATA ==========
     public void SaveCameraBounds(float minX, float maxX, float minY, float maxY)
     {
+        SaveCameraBounds(SceneManager.GetActiveScene().name, minX, maxX, minY, maxY);
+    }
+
+    public void SaveCameraBounds(string sceneName, float minX, float maxX, float minY, float maxY)
+    {
+        if (saveData == null)
+        {
+            saveData = new SaveData();
+        }
+
+        SaveData.SceneCameraData sceneCameraData = GetOrCreateSceneCameraData(sceneName);
+        sceneCameraData.cameraData.minX = minX;
+        sceneCameraData.cameraData.maxX = maxX;
+        sceneCameraData.cameraData.minY = minY;
+        sceneCameraData.cameraData.maxY = maxY;
+        sceneCameraData.hasSavedCameraBounds = true;
+
         saveData.cameraData.minX = minX;
         saveData.cameraData.maxX = maxX;
         saveData.cameraData.minY = minY;
         saveData.cameraData.maxY = maxY;
+        saveData.hasSavedCameraBounds = true;
         SaveGame();
     }
 
     public void LoadCameraBounds()
     {
+        LoadCameraBounds(SceneManager.GetActiveScene().name);
+    }
+
+    public void LoadCameraBounds(string sceneName)
+    {
         FollowCamera fc = FindObjectOfType<FollowCamera>();
-        if (fc == null || saveData == null || saveData.cameraData == null)
+        if (fc == null || saveData == null)
         {
             return;
         }
 
-        fc.SetCameraBounds(
-            saveData.cameraData.minX,
-            saveData.cameraData.maxX,
-            saveData.cameraData.minY,
-            saveData.cameraData.maxY
-        );
+        if (!TryGetCameraBounds(sceneName, out float minX, out float maxX, out float minY, out float maxY))
+        {
+            return;
+        }
+
+        fc.SetCameraBounds(minX, maxX, minY, maxY);
     }
 
     public bool GetCameraBounds(out float minX, out float maxX, out float minY, out float maxY)
     {
-        if (saveData == null || saveData.cameraData == null)
+        if (saveData == null || saveData.cameraData == null || !saveData.hasSavedCameraBounds)
         {
             minX = maxX = minY = maxY = 0;
             return false;
@@ -294,6 +358,39 @@ public class SaveManager : MonoBehaviour
         minY = saveData.cameraData.minY;
         maxY = saveData.cameraData.maxY;
         return true;
+    }
+
+    public bool GetCameraBounds(string sceneName, out float minX, out float maxX, out float minY, out float maxY)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(sceneName))
+        {
+            minX = maxX = minY = maxY = 0;
+            return false;
+        }
+
+        SaveData.SceneCameraData sceneCameraData = FindSceneCameraData(sceneName);
+        if (sceneCameraData == null || !sceneCameraData.hasSavedCameraBounds || sceneCameraData.cameraData == null)
+        {
+            minX = maxX = minY = maxY = 0;
+            return false;
+        }
+
+        minX = sceneCameraData.cameraData.minX;
+        maxX = sceneCameraData.cameraData.maxX;
+        minY = sceneCameraData.cameraData.minY;
+        maxY = sceneCameraData.cameraData.maxY;
+        return true;
+    }
+
+    private bool TryGetCameraBounds(string sceneName, out float minX, out float maxX, out float minY, out float maxY)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(sceneName))
+        {
+            minX = maxX = minY = maxY = 0;
+            return false;
+        }
+
+        return GetCameraBounds(sceneName, out minX, out maxX, out minY, out maxY);
     }
 
     // ========== TRIGGERS DATA ==========
@@ -323,6 +420,36 @@ public class SaveManager : MonoBehaviour
             saveData.completedEventIds.Add(eventId);
             SaveGame();
         }
+    }
+
+    public bool MarkEnemyAsDefeated(string enemyId)
+    {
+        if (string.IsNullOrWhiteSpace(enemyId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+
+        if (saveData.defeatedEnemyIds.Contains(enemyId))
+        {
+            return false;
+        }
+
+        saveData.defeatedEnemyIds.Add(enemyId);
+        SaveGame();
+        return true;
+    }
+
+    public bool WasEnemyDefeated(string enemyId)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(enemyId))
+        {
+            return false;
+        }
+
+        EnsureSaveDataDefaults();
+        return saveData.defeatedEnemyIds.Contains(enemyId);
     }
 
     public IReadOnlyList<string> GetUnlockedBlockIds()
@@ -451,6 +578,21 @@ public class SaveManager : MonoBehaviour
         return true;
     }
 
+    private bool IsCombatTestExecutionSceneLoaded()
+    {
+        EnemyCombatRuntime[] combatRuntimes = FindObjectsOfType<EnemyCombatRuntime>(true);
+        for (int i = 0; i < combatRuntimes.Length; i++)
+        {
+            EnemyCombatRuntime runtime = combatRuntimes[i];
+            if (runtime != null && runtime.IsTestExecutionMode)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private bool EnsureSaveDataDefaults()
     {
         bool changed = false;
@@ -476,6 +618,24 @@ public class SaveManager : MonoBehaviour
         if (saveData.unlockedBlockIds == null)
         {
             saveData.unlockedBlockIds = new List<string>();
+            changed = true;
+        }
+
+        if (saveData.defeatedEnemyIds == null)
+        {
+            saveData.defeatedEnemyIds = new List<string>();
+            changed = true;
+        }
+
+        if (saveData.scenePlayerData == null)
+        {
+            saveData.scenePlayerData = new List<SaveData.ScenePlayerData>();
+            changed = true;
+        }
+
+        if (saveData.sceneCameraData == null)
+        {
+            saveData.sceneCameraData = new List<SaveData.SceneCameraData>();
             changed = true;
         }
 
@@ -534,5 +694,109 @@ public class SaveManager : MonoBehaviour
 
         SaveGame();
         return true;
+    }
+
+    private SaveData.ScenePlayerData FindScenePlayerData(string sceneName)
+    {
+        if (saveData == null || saveData.scenePlayerData == null || string.IsNullOrWhiteSpace(sceneName))
+        {
+            return null;
+        }
+
+        for (int i = 0; i < saveData.scenePlayerData.Count; i++)
+        {
+            SaveData.ScenePlayerData entry = saveData.scenePlayerData[i];
+            if (entry != null && entry.sceneName == sceneName)
+            {
+                return entry;
+            }
+        }
+
+        return null;
+    }
+
+    private SaveData.ScenePlayerData GetOrCreateScenePlayerData(string sceneName)
+    {
+        if (saveData == null)
+        {
+            saveData = new SaveData();
+        }
+
+        if (saveData.scenePlayerData == null)
+        {
+            saveData.scenePlayerData = new List<SaveData.ScenePlayerData>();
+        }
+
+        string normalizedSceneName = string.IsNullOrWhiteSpace(sceneName)
+            ? SceneManager.GetActiveScene().name
+            : sceneName;
+
+        SaveData.ScenePlayerData existing = FindScenePlayerData(normalizedSceneName);
+        if (existing != null)
+        {
+            return existing;
+        }
+
+        SaveData.ScenePlayerData created = new SaveData.ScenePlayerData
+        {
+            sceneName = normalizedSceneName,
+            hasSavedPosition = false,
+            playerData = new SaveData.PlayerData()
+        };
+
+        saveData.scenePlayerData.Add(created);
+        return created;
+    }
+
+    private SaveData.SceneCameraData FindSceneCameraData(string sceneName)
+    {
+        if (saveData == null || saveData.sceneCameraData == null || string.IsNullOrWhiteSpace(sceneName))
+        {
+            return null;
+        }
+
+        for (int i = 0; i < saveData.sceneCameraData.Count; i++)
+        {
+            SaveData.SceneCameraData entry = saveData.sceneCameraData[i];
+            if (entry != null && entry.sceneName == sceneName)
+            {
+                return entry;
+            }
+        }
+
+        return null;
+    }
+
+    private SaveData.SceneCameraData GetOrCreateSceneCameraData(string sceneName)
+    {
+        if (saveData == null)
+        {
+            saveData = new SaveData();
+        }
+
+        if (saveData.sceneCameraData == null)
+        {
+            saveData.sceneCameraData = new List<SaveData.SceneCameraData>();
+        }
+
+        string normalizedSceneName = string.IsNullOrWhiteSpace(sceneName)
+            ? SceneManager.GetActiveScene().name
+            : sceneName;
+
+        SaveData.SceneCameraData existing = FindSceneCameraData(normalizedSceneName);
+        if (existing != null)
+        {
+            return existing;
+        }
+
+        SaveData.SceneCameraData created = new SaveData.SceneCameraData
+        {
+            sceneName = normalizedSceneName,
+            hasSavedCameraBounds = false,
+            cameraData = new SaveData.CameraData()
+        };
+
+        saveData.sceneCameraData.Add(created);
+        return created;
     }
 }

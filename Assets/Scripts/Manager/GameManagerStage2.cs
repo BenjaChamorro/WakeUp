@@ -38,6 +38,7 @@ public class GameManagerStage2 : MonoBehaviour
     private bool restorePlayerPositionAfterCombat;
     private bool suppressSceneStateRestore;
     private bool isInitializingScene = true;
+    private const int RestoreSceneStateTimeoutFrames = 120;
 
     void Start()
     {
@@ -58,9 +59,36 @@ public class GameManagerStage2 : MonoBehaviour
 
         if (!restorePlayerPositionAfterCombat && !suppressSceneStateRestore)
         {
-            RestoreSavedSceneState();
+            StartCoroutine(RestoreSavedSceneStateWhenReady());
+            return;
         }
 
+        isInitializingScene = false;
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.CommitCurrentState();
+        }
+    }
+
+    private IEnumerator RestoreSavedSceneStateWhenReady()
+    {
+        int elapsedFrames = 0;
+        while (elapsedFrames < RestoreSceneStateTimeoutFrames)
+        {
+            bool hasPlayer = ResolvePlayerTransform();
+            bool hasCamera = ResolveFollowCamera();
+
+            if (hasPlayer && hasCamera)
+            {
+                break;
+            }
+
+            elapsedFrames++;
+            yield return null;
+        }
+
+        RestoreSavedSceneState();
         isInitializingScene = false;
 
         if (SaveManager.Instance != null)
@@ -266,7 +294,7 @@ public class GameManagerStage2 : MonoBehaviour
     {
         if (followCamera == null)
         {
-            followCamera = FindObjectOfType<FollowCamera>();
+            ResolveFollowCamera();
         }
 
         if (followCamera != null)
@@ -313,14 +341,7 @@ public class GameManagerStage2 : MonoBehaviour
             return;
         }
 
-        if (playerTransform == null)
-        {
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-            if (playerObject != null)
-            {
-                playerTransform = playerObject.transform;
-            }
-        }
+        ResolvePlayerTransform();
 
         if (playerTransform == null || spawnPoint == null)
         {
@@ -358,14 +379,7 @@ public class GameManagerStage2 : MonoBehaviour
 
     private void MovePlayerToSavedPosition(Transform fallbackSpawnPoint)
     {
-        if (playerTransform == null)
-        {
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-            if (playerObject != null)
-            {
-                playerTransform = playerObject.transform;
-            }
-        }
+        ResolvePlayerTransform();
 
         if (playerTransform == null)
         {
@@ -392,39 +406,56 @@ public class GameManagerStage2 : MonoBehaviour
             return;
         }
 
-        LoadSavedPlayerPosition();
+        bool restoredPlayerPosition = TryRestoreSavedPlayerPosition();
+        bool restoredCameraBounds = TryRestoreSavedCameraBounds();
 
-        if (SaveManager.Instance.GetCameraBounds(out float minX, out float maxX, out float minY, out float maxY))
+        if (!restoredPlayerPosition || !restoredCameraBounds)
         {
-            if (followCamera == null)
-            {
-                followCamera = FindObjectOfType<FollowCamera>();
-            }
-
-            if (followCamera != null)
-            {
-                followCamera.SetCameraBounds(minX, maxX, minY, maxY);
-            }
+            Debug.LogWarning("[GameManagerStage2] No se pudieron restaurar todos los datos de escena a tiempo.");
         }
+    }
+
+    private bool TryRestoreSavedPlayerPosition()
+    {
+        if (!ResolvePlayerTransform() || SaveManager.Instance == null)
+        {
+            return false;
+        }
+
+        Vector3? savedPosition = SaveManager.Instance.GetPlayerPosition(SceneManager.GetActiveScene().name);
+        if (!savedPosition.HasValue)
+        {
+            return false;
+        }
+
+        playerTransform.position = savedPosition.Value;
+        return true;
+    }
+
+    private bool TryRestoreSavedCameraBounds()
+    {
+        if (!SaveManager.Instance.GetCameraBounds(SceneManager.GetActiveScene().name, out float minX, out float maxX, out float minY, out float maxY))
+        {
+            return false;
+        }
+
+        if (followCamera == null)
+        {
+            return false;
+        }
+
+        followCamera.SetCameraBounds(minX, maxX, minY, maxY);
+        return true;
     }
 
     private void LoadSavedPlayerPosition()
     {
-        if (playerTransform == null)
-        {
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-            if (playerObject != null)
-            {
-                playerTransform = playerObject.transform;
-            }
-        }
-
-        if (playerTransform == null || SaveManager.Instance == null)
+        if (!ResolvePlayerTransform() || SaveManager.Instance == null)
         {
             return;
         }
 
-        Vector3? savedPosition = SaveManager.Instance.GetPlayerPosition();
+        Vector3? savedPosition = SaveManager.Instance.GetPlayerPosition(SceneManager.GetActiveScene().name);
         if (!savedPosition.HasValue)
         {
             return;
@@ -435,24 +466,47 @@ public class GameManagerStage2 : MonoBehaviour
 
     private void BindCameraToPlayer()
     {
-        if (followCamera == null)
+        if (!ResolveFollowCamera())
         {
             return;
         }
 
-        if (playerTransform == null)
-        {
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-            if (playerObject != null)
-            {
-                playerTransform = playerObject.transform;
-            }
-        }
-
-        if (playerTransform != null)
+        if (ResolvePlayerTransform() && playerTransform != null)
         {
             followCamera.SetTarget(playerTransform);
         }
+    }
+
+    private bool ResolvePlayerTransform()
+    {
+        if (playerTransform != null)
+        {
+            return true;
+        }
+
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            playerTransform = playerObject.transform;
+        }
+
+        return playerTransform != null;
+    }
+
+    private bool ResolveFollowCamera()
+    {
+        if (followCamera != null)
+        {
+            return true;
+        }
+
+        followCamera = FindObjectOfType<FollowCamera>();
+        if (followCamera == null && Camera.main != null)
+        {
+            followCamera = Camera.main.GetComponent<FollowCamera>();
+        }
+
+        return followCamera != null;
     }
 
     private void LoadSceneByName(string sceneName)

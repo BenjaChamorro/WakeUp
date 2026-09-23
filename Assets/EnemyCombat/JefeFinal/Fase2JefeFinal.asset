@@ -17,13 +17,13 @@ MonoBehaviour:
   enemySprite: {fileID: 5472020914492739750, guid: 8e7fe630ec26e2d4fb3c797e830026fd, type: 3}
   defeatSprite: {fileID: 0}
   introDialogues:
-  - "A ver si puedes con esta dificultad!!\n\ni = 0\nwhile(i > 1):\n    print(dentroDelCiclo)\n   
-    i = i + 1"
+  - A ver si puedes con esta dificultad!!
   defeatDialogues:
   - ESTO NO ES NADA!!!
   defeatAnimationProfile: {fileID: 0}
-  victoryCode: "variable1 = numero1\nwhile (variable1 > numero2):\n    print(dentroDelCiclo)\n   
-    variable1 = { variable1 + 1 | 1 + variable1 }\n# {LINEA3 | LINEA4}\n# numero1
-    > numero2"
+  victoryCode: "while(verificador == 0):\n    print(\"ejecutando...\")"
+  dialogoClippy: 
   combatOnlyBlocks: []
+  prefilledBlocksCode: "while* - input1*=verificador input2*={0} operator={!=}\n   
+    print(\"ejecutando...\")"
   unlockBlocksOnDefeat: []

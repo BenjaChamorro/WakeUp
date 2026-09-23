@@ -1873,6 +1873,7 @@ MonoBehaviour:
   enemyNameText: {fileID: 0}
   playerInventory: {fileID: 784106769}
   paletteBuilder: {fileID: 1555683698}
+  ejecucionDePrueba: 1
 --- !u!4 &1012707773
 Transform:
   m_ObjectHideFlags: 0

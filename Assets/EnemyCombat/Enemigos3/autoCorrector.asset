@@ -23,8 +23,8 @@ MonoBehaviour:
   defeatDialogues:
   - Muchas gracias HUMANO, has sido de gran ayuda.
   defeatAnimationProfile: {fileID: 11400000, guid: b616456704e0c504587584a3beabfae5, type: 2}
-  victoryCode: "while ({ errores != 0 | 0 != errores }):\n    errores = errores -
-    1"
+  victoryCode: "while ({{ errores != 0 | 0 != errores } | {errores >=1 | 1 <= errores}}):\n   
+    errores = errores - 1"
   dialogoClippy: "Los ciclos while([condici\xF3n]): son un conjunto de instrucciones
     que se ejecutaran repetidamente; siempre y cuando se cumpla y se siga cumpliendo
     al condici\xF3n interna.;\nEjemplo de uso:\nwhile(numero1>numero2):\n    print(\"numero1

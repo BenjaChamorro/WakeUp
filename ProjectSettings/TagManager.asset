@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Cats
+  - Clippy
   - MiniGamePlayer
   - Floor
   - Platform

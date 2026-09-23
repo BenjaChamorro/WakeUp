@@ -2,11 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class TriggerListDeactivate : MonoBehaviour
+public class TriggerListActivate : MonoBehaviour
 {
     [SerializeField] private GameObject targetObject;
-    [SerializeField] private bool deactivateOnce = false;
-    [SerializeField] private bool stayInactive = false;
+    [SerializeField] private bool activateOnce = false;
+    [SerializeField] private bool stayActive = false;
     [SerializeField] private string requiredTag = "Player";
 
     [Header("Event Filter")]
@@ -30,7 +30,7 @@ public class TriggerListDeactivate : MonoBehaviour
         Any
     }
 
-    private bool hasBeenDeactivated = false;
+    private bool hasBeenActivated = false;
     private bool isPlayerInsideTrigger = false;
     private Collider2D triggerCollider;
 
@@ -142,9 +142,9 @@ public class TriggerListDeactivate : MonoBehaviour
             return;
         }
 
-        if (wasInside && !stayInactive)
+        if (wasInside && !stayActive)
         {
-            SetTargetActive(true);
+            SetTargetActive(false);
         }
     }
 
@@ -160,16 +160,16 @@ public class TriggerListDeactivate : MonoBehaviour
             return;
         }
 
-        if (deactivateOnce && hasBeenDeactivated)
+        if (activateOnce && hasBeenActivated)
         {
             return;
         }
 
-        SetTargetActive(false);
+        SetTargetActive(true);
 
-        if (deactivateOnce)
+        if (activateOnce)
         {
-            hasBeenDeactivated = true;
+            hasBeenActivated = true;
         }
     }
 
@@ -281,7 +281,7 @@ public class TriggerListDeactivate : MonoBehaviour
 
         isPlayerInsideTrigger = false;
 
-        if (stayInactive)
+        if (stayActive)
         {
             return;
         }
@@ -291,7 +291,7 @@ public class TriggerListDeactivate : MonoBehaviour
             return;
         }
 
-        SetTargetActive(true);
+        SetTargetActive(false);
     }
 
     private bool MatchesRequiredTag(GameObject otherObject)

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b0d395614d3f443b462b4f07d76f06, type: 3}
   m_Name: Fase4JefeFinal
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatData
-  enemyId: Fase4JefeFinal
-  enemyDisplayName: JefeFinal
+  enemyId: Clippy
+  enemyDisplayName: Clippy
   enemySprite: {fileID: 6412059162738997464, guid: 8e7fe630ec26e2d4fb3c797e830026fd, type: 3}
   defeatSprite: {fileID: -3294024962764572377, guid: 8e7fe630ec26e2d4fb3c797e830026fd, type: 3}
   introDialogues:
@@ -21,11 +21,12 @@ MonoBehaviour:
   defeatDialogues:
   - NooOoO#@!OOoO!@#OoOoo@#|$%
   defeatAnimationProfile: {fileID: 11400000, guid: b616456704e0c504587584a3beabfae5, type: 2}
-  victoryCode: "while(true):\n    JefeFinal"
+  victoryCode: 'while(true):'
   dialogoClippy: "Para los programadores, una de las peores practicas es usar un
     while (true);\nEste tipo de ciclos son infinitos, jam\xE1s se terminar\xE1n de
     ejecutar."
   combatOnlyBlocks:
   - {fileID: 11400000, guid: 26ce8c402863e8c428217ba7cf653094, type: 2}
+  - {fileID: 11400000, guid: c8bd1781b710fbc4da761996cef808f9, type: 2}
   prefilledBlocksCode: 
   unlockBlocksOnDefeat: []
