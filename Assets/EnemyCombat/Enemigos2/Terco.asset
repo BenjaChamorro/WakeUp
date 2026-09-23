@@ -27,3 +27,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7561052a10c2e384ba2421655835ce3b, type: 2}
   prefilledBlocksCode: 
   unlockBlocksOnDefeat: []
+  miniGameVariant: {fileID: 11400000, guid: 3124ad458783c844285bd63744ea1472, type: 2}

@@ -57,6 +57,14 @@ public class MiniGameTimer : MonoBehaviour {
         isRunning = true;
     }
 
+    // Vuelve a 'survivalTime' y arranca la cuenta. Start() solo corre la primera vez que se activa
+    // el minijuego, así que MiniGameRuntime usa esto para reiniciarlo en cada apertura.
+    public void Restart() {
+        timeRemaining = survivalTime;
+        UpdateDisplay();
+        StartTimer();
+    }
+
     public void StopTimer() {
         isRunning = false;
     }

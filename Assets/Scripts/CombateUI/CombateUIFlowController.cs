@@ -25,6 +25,7 @@ public class CombateUIFlowController : MonoBehaviour {
     [SerializeField] private Transform lineasConsola;
 
     private bool victorySequenceStarted;
+    private MiniGameRuntime miniGameRuntime;
 
     void Awake() {
         AutoAssignReferences();
@@ -47,6 +48,11 @@ public class CombateUIFlowController : MonoBehaviour {
         if (botonEjecutar != null) {
             botonEjecutar.onClick.AddListener(OnEjecutar);
         }
+
+        miniGameRuntime = minigame != null ? minigame.GetComponentInChildren<MiniGameRuntime>(true) : null;
+        if (miniGameRuntime != null) {
+            miniGameRuntime.onMiniGameFinished.AddListener(OnMiniGameFinished);
+        }
     }
 
     void OnDestroy() {
@@ -65,11 +71,16 @@ public class CombateUIFlowController : MonoBehaviour {
         if (botonEjecutar != null) {
             botonEjecutar.onClick.RemoveListener(OnEjecutar);
         }
+
+        if (miniGameRuntime != null) {
+            miniGameRuntime.onMiniGameFinished.RemoveListener(OnMiniGameFinished);
+        }
     }
 
     public void SetInitialState() {
         if (combateUI != null) combateUI.SetActive(true);
         if (combateUIConsola != null) combateUIConsola.SetActive(false);
+        if (minigame != null) minigame.SetActive(false);
     }
 
     public void OpenScriptConsole() {
@@ -139,10 +150,35 @@ public class CombateUIFlowController : MonoBehaviour {
             StartCoroutine(HandleVictorySequence(enemyRuntime));
         } else {
             Debug.Log("[CodeRunner] Aún no cumple la condición de victoria: " + victoryReason);
+
+            // Sin minijuego no se oculta nada: si no, la consola y el fondo quedan apagados sin nada que mostrar.
+            if (minigame == null) {
+                Debug.LogWarning("[CodeRunner] No se encontró el minijuego (asigna 'Minigame' en CombateUIFlowController); se queda en la consola.");
+                return;
+            }
+
+            // Un enemigo sin minijuego propio no abre el de otro enemigo (sprites y proyectiles no corresponderían).
+            if (miniGameRuntime != null && miniGameRuntime.ResolveMiniGame() == null) {
+                Debug.LogWarning("[CodeRunner] El enemigo actual no tiene minijuego (miniGameVariant en su EnemyCombatData); se queda en la consola.");
+                return;
+            }
+
             combateUIConsola.SetActive(false);
             fondoCombate.SetActive(false);
             minigame.SetActive(true);
         }
+    }
+
+    // Al terminar el minijuego (gane o pierda) se vuelve a la consola para que el jugador corrija su código.
+    // Al reactivarlo en el próximo error, MiniGameRuntime lo reinicia desde cero.
+    public void OnMiniGameFinished(bool won) {
+        Debug.Log(won
+            ? "[CodeRunner] Minijuego superado, se vuelve a la consola."
+            : "[CodeRunner] Minijuego perdido, se vuelve a la consola.");
+
+        if (minigame != null) minigame.SetActive(false);
+        if (fondoCombate != null) fondoCombate.SetActive(true);
+        if (combateUIConsola != null) combateUIConsola.SetActive(true);
     }
 
     IEnumerator HandleVictorySequence(EnemyCombatRuntime enemyRuntime) {
@@ -293,6 +329,13 @@ public class CombateUIFlowController : MonoBehaviour {
         if (combateUIConsola == null) {
             GameObject go = GameObject.Find("CombateUI-Consola");
             if (go != null) combateUIConsola = go;
+        }
+
+        if (minigame == null) {
+            // El minijuego parte desactivado, así que GameObject.Find no lo ve: se ubica por su
+            // MiniGameRuntime y se toma la raíz del prefab (el objeto "Minigame" de la escena).
+            MiniGameRuntime runtime = FindObjectOfType<MiniGameRuntime>(true);
+            if (runtime != null) minigame = runtime.transform.root.gameObject;
         }
 
         if (botonScript == null) botonScript = FindButtonByName("BotonScript");

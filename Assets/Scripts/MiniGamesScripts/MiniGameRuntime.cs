@@ -1,12 +1,15 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 // Lee la variante de minijuego activa y la aplica a la escena: configura el ProjectileSpawner
 // (tipo de proyectil, sprite y patrón de spawn) y reconstruye la disposición de plataformas.
-// Espeja el patrón de EnemyCombatRuntime: la variante llega desde el combate, pero también puede
-// asignarse a mano en el inspector para probar la MiniGameScene de forma aislada.
+// La variante sale del enemigo del combate (EnemyCombatData.miniGameVariant); la del inspector
+// es solo un respaldo para probar escenas sueltas.
+// Además maneja cada partida: la reinicia desde cero cada vez que se activa el minijuego y avisa
+// por 'onMiniGameFinished' cuando termina (ganada o perdida).
 public class MiniGameRuntime : MonoBehaviour {
     [Header("Datos del minijuego")]
-    [Tooltip("Variante usada si NO se entra desde un combate (para probar la escena suelta).")]
+    [Tooltip("Respaldo para pruebas: se usa en la MiniGameScene suelta o al probar Code-Console con un enemigo sin minijuego. En un combate real (entrando desde un stage) nunca se usa.")]
     [SerializeField] private MiniGameData currentMiniGame;
 
     [Header("Referencias de escena")]
@@ -19,24 +22,123 @@ public class MiniGameRuntime : MonoBehaviour {
     [SerializeField] private bool preserveFloor = true;
     [SerializeField] private MiniGameTimer miniGameTimer;
     [SerializeField] private CoinSpawner coinSpawner;
+    [SerializeField] private PlayerHealth playerHealth;
+
+    [Header("Eventos")]
+    [Tooltip("Se invoca al terminar la partida: true = ganó (sobrevivió o recogió todas las monedas), false = perdió (murió o se acabó el tiempo antes de recoger las monedas).")]
+    public UnityEvent<bool> onMiniGameFinished;
+
+    private EnemyCombatRuntime combatRuntime;
+    private EnemyCombatData activeEnemy;
+    private MiniGameData activeMiniGame;
+    private Vector3 playerStartPosition;
+    private bool sessionPending;
+    private bool sessionActive;
 
     void Awake() {
         AutoAssignReferences();
-    }
 
-    void Start() {
-        // Si venimos de un combate, la variante del minijuego viaja dentro del EnemyCombatData activo.
-        if (GameManager.Instance != null
-            && GameManager.Instance.CurrentEnemyAsset is EnemyCombatData enemy
-            && enemy.miniGameVariant != null) {
-            currentMiniGame = enemy.miniGameVariant;
+        if (playerHealth != null) {
+            playerStartPosition = playerHealth.transform.localPosition;
+            playerHealth.onDied.AddListener(HandlePlayerDied);
         }
 
+        if (miniGameTimer != null) {
+            miniGameTimer.onTimeUp.AddListener(HandleTimeUp);
+        }
+
+        if (coinSpawner != null) {
+            coinSpawner.onAllCoinsCollected.AddListener(HandleAllCoinsCollected);
+        }
+    }
+
+    void OnDestroy() {
+        if (playerHealth != null) {
+            playerHealth.onDied.RemoveListener(HandlePlayerDied);
+        }
+
+        if (miniGameTimer != null) {
+            miniGameTimer.onTimeUp.RemoveListener(HandleTimeUp);
+        }
+
+        if (coinSpawner != null) {
+            coinSpawner.onAllCoinsCollected.RemoveListener(HandleAllCoinsCollected);
+        }
+    }
+
+    void OnEnable() {
+        // Start() solo corre la primera vez que se activa el objeto; OnEnable corre en cada apertura.
+        // La partida se arranca en el siguiente Update y no aquí: así no se cambia el SetActive de
+        // los hijos (timer, spawner de monedas) mientras Unity todavía está activando el prefab, y
+        // en la primera apertura los demás componentes ya corrieron su Start().
+        sessionPending = true;
+    }
+
+    void OnDisable() {
+        sessionPending = false;
+        sessionActive = false;
+        StopGameplay();
+        ClearSpawnedObjects();
+    }
+
+    void Update() {
+        if (sessionPending) {
+            sessionPending = false;
+            BeginSession();
+        }
+    }
+
+    // Deja el minijuego como nuevo y lo arranca: limpia los restos de la partida anterior,
+    // devuelve al jugador a su posición inicial con la vida llena y vuelve a aplicar la variante.
+    private void BeginSession() {
+        activeEnemy = ResolveCurrentEnemy();
+        activeMiniGame = ResolveMiniGame();
+
+        if (activeEnemy != null && activeEnemy.miniGameVariant == null && activeMiniGame != null) {
+            Debug.LogWarning($"MiniGameRuntime: '{activeEnemy.enemyDisplayName}' no tiene minijuego (miniGameVariant); se usa el de respaldo del inspector ({activeMiniGame.name}).");
+        }
+
+        ClearSpawnedObjects();
+        ResetPlayer();
         ApplyMiniGameData();
+
+        if (activeMiniGame == null) {
+            RestartWithSceneDefaults();
+        }
+
+        sessionActive = true;
+    }
+
+    // Minijuego que corresponde al enemigo del combate. 'currentMiniGame' (inspector) es solo un respaldo
+    // para pruebas: en un combate real, un enemigo sin minijuego propio devuelve null en vez de mostrar
+    // el de otro enemigo. CombateUIFlowController lo consulta antes de abrir el minijuego.
+    public MiniGameData ResolveMiniGame() {
+        EnemyCombatData enemy = ResolveCurrentEnemy();
+        if (enemy != null && enemy.miniGameVariant != null) {
+            return enemy.miniGameVariant;
+        }
+
+        return IsRealCombat() ? null : currentMiniGame;
+    }
+
+    // El enemigo se toma del combate (EnemyCombatRuntime) y no del GameManager por separado: así el
+    // minijuego coincide con lo que se ve en pantalla, también al probar Code-Console suelta (donde se
+    // usa el enemigo del inspector de CombatManager). En la MiniGameScene suelta no hay combate.
+    private EnemyCombatData ResolveCurrentEnemy() {
+        if (combatRuntime == null) {
+            combatRuntime = FindObjectOfType<EnemyCombatRuntime>(true);
+        }
+
+        return combatRuntime != null ? combatRuntime.CurrentEnemy : null;
+    }
+
+    // Se entró al combate desde un stage, no es una prueba de la escena suelta.
+    private static bool IsRealCombat() {
+        return GameManager.Instance != null && GameManager.Instance.CurrentEnemyAsset != null;
     }
 
     public void ApplyMiniGameData() {
-        if (currentMiniGame == null) {
+        if (activeMiniGame == null) {
             Debug.LogWarning("MiniGameRuntime: no hay MiniGameData asignado; se usa la configuración por defecto de la escena.");
             return;
         }
@@ -45,23 +147,105 @@ public class MiniGameRuntime : MonoBehaviour {
         ApplyEnemyVisual();
 
         if (projectileSpawner != null) {
-            projectileSpawner.Configure(currentMiniGame);
+            projectileSpawner.Configure(activeMiniGame);
         } else {
             Debug.LogWarning("MiniGameRuntime: no se encontró ProjectileSpawner en la escena.");
         }
 
         if (miniGameTimer != null) {
-            miniGameTimer.SetTimerActive(currentMiniGame.useSurvivalTimer);
-            if (currentMiniGame.useSurvivalTimer) {
-                miniGameTimer.Configure(currentMiniGame.survivalTime);
+            miniGameTimer.SetTimerActive(activeMiniGame.useSurvivalTimer);
+            if (activeMiniGame.useSurvivalTimer) {
+                miniGameTimer.Configure(activeMiniGame.survivalTime);
+                miniGameTimer.StartTimer();
             }
         }
 
         if (coinSpawner != null) {
-            coinSpawner.SetSpawnerActive(currentMiniGame.useCoins);
-            if (currentMiniGame.useCoins) {
-                coinSpawner.Configure(currentMiniGame);
+            coinSpawner.SetSpawnerActive(activeMiniGame.useCoins);
+            if (activeMiniGame.useCoins) {
+                coinSpawner.Configure(activeMiniGame);
             }
+        }
+    }
+
+    // Sin variante asignada: se reinicia lo que haya en la escena con los valores de su inspector.
+    private void RestartWithSceneDefaults() {
+        if (projectileSpawner != null) {
+            projectileSpawner.BeginSpawning();
+        }
+
+        if (coinSpawner != null && coinSpawner.gameObject.activeInHierarchy) {
+            coinSpawner.SpawnCoins();
+        }
+
+        if (miniGameTimer != null && miniGameTimer.gameObject.activeInHierarchy) {
+            miniGameTimer.Restart();
+        }
+    }
+
+    private void ResetPlayer() {
+        if (playerHealth == null) {
+            Debug.LogWarning("MiniGameRuntime: no se encontró PlayerHealth en la escena; el jugador no se reinicia entre partidas.");
+            return;
+        }
+
+        playerHealth.ResetHealth();
+
+        Transform player = playerHealth.transform;
+        player.localPosition = playerStartPosition;
+
+        Rigidbody2D body = player.GetComponent<Rigidbody2D>();
+        if (body != null) {
+            body.linearVelocity = Vector2.zero;
+            body.angularVelocity = 0f;
+        }
+
+        // Mismo motivo que en BuildPlatforms: sin este flush la física no ve la posición recién asignada.
+        Physics2D.SyncTransforms();
+    }
+
+    private void HandleTimeUp() {
+        // Con monedas, el tiempo es el límite para recogerlas: si se acaba antes, se pierde.
+        // Sin monedas, basta con sobrevivir hasta el final.
+        bool coinsPending = coinSpawner != null && coinSpawner.gameObject.activeInHierarchy;
+        EndSession(!coinsPending);
+    }
+
+    private void HandleAllCoinsCollected() {
+        EndSession(true);
+    }
+
+    private void HandlePlayerDied() {
+        EndSession(false);
+    }
+
+    private void EndSession(bool won) {
+        if (!sessionActive) {
+            return;
+        }
+
+        sessionActive = false;
+        StopGameplay();
+        onMiniGameFinished.Invoke(won);
+    }
+
+    private void StopGameplay() {
+        if (projectileSpawner != null) {
+            projectileSpawner.StopSpawning();
+        }
+
+        if (miniGameTimer != null) {
+            miniGameTimer.StopTimer();
+        }
+    }
+
+    private void ClearSpawnedObjects() {
+        if (projectileSpawner != null) {
+            projectileSpawner.ClearProjectiles();
+        }
+
+        if (coinSpawner != null) {
+            coinSpawner.ClearCoins();
         }
     }
 
@@ -71,19 +255,23 @@ public class MiniGameRuntime : MonoBehaviour {
             return;
         }
 
-        if (currentMiniGame.enemySprite != null) {
-            enemySpriteRenderer.sprite = currentMiniGame.enemySprite;
+        // Si la variante no trae sprite propio se usa el del enemigo del combate, para que nunca aparezca el de otro.
+        Sprite enemySprite = activeMiniGame.enemySprite != null
+            ? activeMiniGame.enemySprite
+            : activeEnemy != null ? activeEnemy.enemySprite : null;
+        if (enemySprite != null) {
+            enemySpriteRenderer.sprite = enemySprite;
         }
 
         // (0,0) = conservar la escala del prefab; cualquier otro valor la sobreescribe.
-        if (currentMiniGame.enemyScale.x > 0f && currentMiniGame.enemyScale.y > 0f) {
-            Vector3 scale = currentMiniGame.enemyScale;
+        if (activeMiniGame.enemyScale.x > 0f && activeMiniGame.enemyScale.y > 0f) {
+            Vector3 scale = activeMiniGame.enemyScale;
             enemySpriteRenderer.transform.localScale = new Vector3(scale.x, scale.y, enemySpriteRenderer.transform.localScale.z);
         }
     }
 
     private void BuildPlatforms() {
-        if (platformsParent == null || currentMiniGame.platforms == null || currentMiniGame.platforms.Count == 0) {
+        if (platformsParent == null || activeMiniGame.platforms == null || activeMiniGame.platforms.Count == 0) {
             return;
         }
 
@@ -125,8 +313,8 @@ public class MiniGameRuntime : MonoBehaviour {
             Destroy(child);
         }
 
-        for (int i = 0; i < currentMiniGame.platforms.Count; i++) {
-            PlatformPlacement placement = currentMiniGame.platforms[i];
+        for (int i = 0; i < activeMiniGame.platforms.Count; i++) {
+            PlatformPlacement placement = activeMiniGame.platforms[i];
             if (placement == null) {
                 continue;
             }
@@ -185,6 +373,10 @@ public class MiniGameRuntime : MonoBehaviour {
 
         if (coinSpawner == null) {
             coinSpawner = FindObjectOfType<CoinSpawner>(true);
+        }
+
+        if (playerHealth == null) {
+            playerHealth = FindObjectOfType<PlayerHealth>(true);
         }
     }
 }

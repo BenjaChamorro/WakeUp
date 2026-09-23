@@ -26,6 +26,10 @@ public class EnemyCombatRuntime : MonoBehaviour {
 
     private CodeBlockData enemyIdRuntimeBlock;
 
+    // Enemigo del combate en curso. MiniGameRuntime lo lee de aquí para que el minijuego siempre
+    // corresponda al enemigo que se ve en pantalla.
+    public EnemyCombatData CurrentEnemy => currentEnemy;
+
     void Awake() {
         AutoAssignReferences();
     }

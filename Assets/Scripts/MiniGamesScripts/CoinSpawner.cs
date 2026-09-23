@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,6 +24,10 @@ public class CoinSpawner : MonoBehaviour {
 
     private int collected;
     private int totalSpawned;
+
+    // Las monedas se instancian en la raíz de la escena, así que se guardan aquí para poder
+    // limpiar las que no se recogieron al cerrar o reiniciar el minijuego.
+    private readonly List<GameObject> spawnedCoins = new List<GameObject>();
 
     void Start() {
         // Espera un frame: da tiempo a que MiniGameRuntime nos configure antes de arrancar
@@ -55,6 +60,7 @@ public class CoinSpawner : MonoBehaviour {
     }
 
     public void SpawnCoins() {
+        ClearCoins();
         collected = 0;
         totalSpawned = coinsToCollect;
         UpdateDisplay();
@@ -66,12 +72,23 @@ public class CoinSpawner : MonoBehaviour {
         for (int i = 0; i < coinsToCollect; i++) {
             Vector3 spawnPos = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), 0f);
             GameObject instance = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
+            spawnedCoins.Add(instance);
 
             Coin coin = instance.GetComponent<Coin>();
             if (coin != null) {
                 coin.Configure(this, coinSprite, coinScale);
             }
         }
+    }
+
+    // Destruye las monedas que sigan sin recoger.
+    public void ClearCoins() {
+        for (int i = 0; i < spawnedCoins.Count; i++) {
+            if (spawnedCoins[i] != null) {
+                Destroy(spawnedCoins[i]);
+            }
+        }
+        spawnedCoins.Clear();
     }
 
     // Activa/desactiva por completo el spawner (oculta el contador y no genera monedas).

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileSpawner : MonoBehaviour
@@ -29,6 +30,10 @@ public class ProjectileSpawner : MonoBehaviour
     private int nextColumn;
     private Coroutine spawnRoutine;
     private bool configured;
+
+    // Los proyectiles se instancian en la raíz de la escena (no cuelgan del minijuego), así que se
+    // guardan aquí para poder limpiarlos al cerrar o reiniciar el minijuego.
+    private readonly List<GameObject> spawnedProjectiles = new List<GameObject>();
 
     void Start()
     {
@@ -87,6 +92,17 @@ public class ProjectileSpawner : MonoBehaviour
             StopCoroutine(spawnRoutine);
             spawnRoutine = null;
         }
+    }
+
+    // Destruye los proyectiles que sigan en pantalla.
+    public void ClearProjectiles()
+    {
+        for (int i = 0; i < spawnedProjectiles.Count; i++)
+        {
+            if (spawnedProjectiles[i] != null)
+                Destroy(spawnedProjectiles[i]);
+        }
+        spawnedProjectiles.Clear();
     }
 
     private IEnumerator SpawnLoop()
@@ -161,6 +177,9 @@ public class ProjectileSpawner : MonoBehaviour
         }
 
         GameObject instance = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+        // Quita de la lista los que ya se destruyeron solos (salieron de pantalla o chocaron).
+        spawnedProjectiles.RemoveAll(p => p == null);
+        spawnedProjectiles.Add(instance);
 
         Projectile projectile = instance.GetComponent<Projectile>();
         if (projectile != null)
