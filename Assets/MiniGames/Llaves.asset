@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f024972c6503c664dac52f9bdb3dd0b8, type: 3}
-  m_Name: Investigador
+  m_Name: Llaves
   m_EditorClassIdentifier: Assembly-CSharp::MiniGameData
-  miniGameId: 67_coins
-  miniGameDisplayName: 67_coins
-  enemySprite: {fileID: -1061616580122066588, guid: 1a137251d70a5be45926de969c70d1d6, type: 3}
+  miniGameId: llaves
+  miniGameDisplayName: Llaves
+  enemySprite: {fileID: -4483163079261841770, guid: 519f94be64029c942b39d2187694969f, type: 3}
   enemyScale: {x: 0, y: 0}
-  projectileSprite: {fileID: -4026442252806143955, guid: d481fac3da455b249923d80e307db8ff, type: 3}
-  projectileScale: {x: 14, y: 14}
+  projectileSprite: {fileID: -7024989147079347816, guid: af069d720d8bfe64aa67bfb46b56e362, type: 3}
+  projectileScale: {x: 15, y: 15}
   projectileFallSpeed: 2
   projectileRotationSpeed: 0
   projectileDamage: 10
@@ -25,18 +25,21 @@ MonoBehaviour:
   spawnMinY: -3
   spawnMaxY: 3
   horizontalSpawnEdgeX: 8
+  horizontalUseGravity: 0
+  horizontalGravityScale: 1
+  horizontalGravityChance: 1
   spawnPattern: 0
-  spawnInterval: 0.6
+  spawnInterval: 1.1
   spawnMinX: -8
   spawnMaxX: 8
   overrideSpawnHeight: 1
   spawnHeight: 3.8
   columnCount: 4
   projectilesPerWave: 3
-  useSurvivalTimer: 1
+  useSurvivalTimer: 0
   survivalTime: 10
-  useCoins: 0
-  coinSprite: {fileID: -2831504356780261225, guid: 88b940a425f0a9f41bb702c949c8e98a, type: 3}
+  useCoins: 1
+  coinSprite: {fileID: 7997616709878008532, guid: a96dc7da2885da243a002b8e649d1e30, type: 3}
   coinScale: {x: 4, y: 4}
   coinsToCollect: 7
   coinSpawnMinX: -7
@@ -45,31 +48,31 @@ MonoBehaviour:
   coinSpawnMaxY: 3.5
   platforms:
   - platformName: platform
-    localPosition: {x: -5, y: -2}
+    localPosition: {x: -6, y: -2}
     size: {x: 4, y: 0.4}
     borderThickness: 0.1
     localScale: {x: 0, y: 0, z: 0}
     tag: Platform
   - platformName: platform2
-    localPosition: {x: 5, y: -2}
-    size: {x: 4, y: 0.4}
+    localPosition: {x: 0, y: 2}
+    size: {x: 11, y: 0.4}
     borderThickness: 0.1
     localScale: {x: 0, y: 0, z: 0}
     tag: Platform
   - platformName: platform3
-    localPosition: {x: 0, y: 0}
-    size: {x: 4, y: 0.4}
+    localPosition: {x: -7, y: 0}
+    size: {x: 2, y: 0.4}
     borderThickness: 0.1
     localScale: {x: 0, y: 0, z: 0}
     tag: Platform
   - platformName: platform4
-    localPosition: {x: 5, y: 2}
-    size: {x: 4, y: 0.4}
+    localPosition: {x: 7, y: 0}
+    size: {x: 2, y: 0.4}
     borderThickness: 0.1
     localScale: {x: 0, y: 0, z: 0}
     tag: Platform
   - platformName: platform5
-    localPosition: {x: -5, y: 2}
+    localPosition: {x: 6, y: -2}
     size: {x: 4, y: 0.4}
     borderThickness: 0.1
     localScale: {x: 0, y: 0, z: 0}

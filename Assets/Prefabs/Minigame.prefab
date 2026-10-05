@@ -427,6 +427,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   healthBar: {fileID: 1833047757744389709}
+  onDied:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1175911862936288423
 GameObject:
   m_ObjectHideFlags: 0
@@ -2480,7 +2483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d6b8a7a48e13d4e960bb94c6e4ff95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MiniGameRuntime
-  currentMiniGame: {fileID: 11400000, guid: 3124ad458783c844285bd63744ea1472, type: 2}
+  currentMiniGame: {fileID: 11400000, guid: 12f1432c46510834c9fd2143c2d094b7, type: 2}
   projectileSpawner: {fileID: 0}
   enemySpriteRenderer: {fileID: 0}
   platformsParent: {fileID: 0}
@@ -2488,6 +2491,13 @@ MonoBehaviour:
   preserveFloor: 1
   miniGameTimer: {fileID: 4407513890820914727}
   coinSpawner: {fileID: 1361055054507425228}
+  playerHealth: {fileID: 0}
+  hudCanvas: {fileID: 0}
+  hudSortingOrder: 50
+  enemySortingOrder: 100
+  onMiniGameFinished:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8444140983391010104
 GameObject:
   m_ObjectHideFlags: 0

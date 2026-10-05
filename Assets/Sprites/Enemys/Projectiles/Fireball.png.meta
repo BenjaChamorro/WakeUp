@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 68b074dd48b32214d9c11ed4cb82108b
+guid: 348cba3a8de7ed94c94e07dc50a139c2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4411075074076147886
-    second: Proyectil 67_0
+      213: -6607481912129624618
+    second: Fireball_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Proyectil 67_0
+      name: Fireball_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 5
-        width: 31
-        height: 24
+        x: 5
+        y: 0
+        width: 22
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ea083e3b869473d30800000000000000
-      internalID: 4411075074076147886
+      spriteID: 6d5e1b775328d44a0800000000000000
+      internalID: -6607481912129624618
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Proyectil 67_0: 4411075074076147886
+      Fireball_0: -6607481912129624618
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

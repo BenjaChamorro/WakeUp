@@ -23,6 +23,14 @@ public class MiniGameRuntime : MonoBehaviour {
     [SerializeField] private MiniGameTimer miniGameTimer;
     [SerializeField] private CoinSpawner coinSpawner;
     [SerializeField] private PlayerHealth playerHealth;
+    [Tooltip("Canvas del HUD del minijuego (marco, vida, tiempo). Si está vacío, se busca bajo el mismo objeto padre.")]
+    [SerializeField] private Canvas hudCanvas;
+
+    [Header("Orden de dibujado")]
+    [Tooltip("Sorting Order del HUD: por encima del jugador (10), proyectiles, monedas y plataformas (0).")]
+    [SerializeField] private int hudSortingOrder = 50;
+    [Tooltip("Sorting Order del enemigo: el más alto del minijuego, para que siempre se vea por encima de todo, HUD incluido.")]
+    [SerializeField] private int enemySortingOrder = 100;
 
     [Header("Eventos")]
     [Tooltip("Se invoca al terminar la partida: true = ganó (sobrevivió o recogió todas las monedas), false = perdió (murió o se acabó el tiempo antes de recoger las monedas).")]
@@ -100,6 +108,7 @@ public class MiniGameRuntime : MonoBehaviour {
 
         ClearSpawnedObjects();
         ResetPlayer();
+        ApplyDrawOrder();
         ApplyMiniGameData();
 
         if (activeMiniGame == null) {
@@ -249,6 +258,32 @@ public class MiniGameRuntime : MonoBehaviour {
         }
     }
 
+    // El enemigo debe verse siempre por encima de todo, incluido el HUD. Un Canvas sin cámara se dibuja como
+    // overlay, encima de cualquier sprite, así que se le asigna la cámara principal: en 'Screen Space - Camera'
+    // se ordena junto a los sprites por Sorting Layer/Order (igual que los demás canvas de Code-Console).
+    // Se hace al iniciar cada partida y no en Awake, porque ahí Camera.main aún puede no estar disponible.
+    private void ApplyDrawOrder() {
+        if (hudCanvas != null) {
+            if (hudCanvas.worldCamera == null) {
+                hudCanvas.worldCamera = Camera.main;
+            }
+
+            if (hudCanvas.worldCamera != null) {
+                hudCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                hudCanvas.sortingOrder = hudSortingOrder;
+            } else {
+                Debug.LogWarning("MiniGameRuntime: no hay cámara principal (tag MainCamera); el HUD seguirá dibujándose encima del enemigo.");
+            }
+        }
+
+        if (enemySpriteRenderer != null) {
+            if (hudCanvas != null) {
+                enemySpriteRenderer.sortingLayerID = hudCanvas.sortingLayerID;
+            }
+            enemySpriteRenderer.sortingOrder = enemySortingOrder;
+        }
+    }
+
     private void ApplyEnemyVisual() {
         if (enemySpriteRenderer == null) {
             Debug.LogWarning("MiniGameRuntime: no se encontró el SpriteRenderer del enemigo en la escena.");
@@ -377,6 +412,12 @@ public class MiniGameRuntime : MonoBehaviour {
 
         if (playerHealth == null) {
             playerHealth = FindObjectOfType<PlayerHealth>(true);
+        }
+
+        // El Canvas del HUD es hermano de este objeto dentro del prefab Minigame; no se busca en toda la
+        // escena para no tomar por error un canvas del combate.
+        if (hudCanvas == null && transform.parent != null) {
+            hudCanvas = transform.parent.GetComponentInChildren<Canvas>(true);
         }
     }
 }

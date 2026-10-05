@@ -36,6 +36,7 @@ public class GameManagerStage2 : MonoBehaviour
 
     private bool isLoading;
     private bool restorePlayerPositionAfterCombat;
+    private bool respawnAtStageSpawn;
     private bool suppressSceneStateRestore;
     private bool isInitializingScene = true;
     private const int RestoreSceneStateTimeoutFrames = 120;
@@ -48,6 +49,14 @@ public class GameManagerStage2 : MonoBehaviour
         if (SaveManager.Instance != null)
         {
             restorePlayerPositionAfterCombat = SaveManager.Instance.ConsumeReturnFromCombatFlag();
+        }
+
+        // Si se perdio el minijuego, el jugador reaparece en el spawn del sub-stage activo
+        // en vez de volver al lugar donde empezo el combate.
+        if (GameManager.Instance != null && GameManager.Instance.ConsumeRespawnAtStageSpawn())
+        {
+            respawnAtStageSpawn = true;
+            restorePlayerPositionAfterCombat = false;
         }
 
         if (!TryRestoreSavedStage())
@@ -64,6 +73,7 @@ public class GameManagerStage2 : MonoBehaviour
         }
 
         isInitializingScene = false;
+        respawnAtStageSpawn = false;
 
         if (SaveManager.Instance != null)
         {
@@ -90,6 +100,7 @@ public class GameManagerStage2 : MonoBehaviour
 
         RestoreSavedSceneState();
         isInitializingScene = false;
+        respawnAtStageSpawn = false;
 
         if (SaveManager.Instance != null)
         {
@@ -341,6 +352,11 @@ public class GameManagerStage2 : MonoBehaviour
             return;
         }
 
+        TeleportPlayerTo(spawnPoint);
+    }
+
+    private void TeleportPlayerTo(Transform spawnPoint)
+    {
         ResolvePlayerTransform();
 
         if (playerTransform == null || spawnPoint == null)
@@ -367,6 +383,13 @@ public class GameManagerStage2 : MonoBehaviour
 
     private void MovePlayerToStagePosition(Transform spawnPoint)
     {
+        // Tras perder un minijuego siempre se reaparece en el spawn, aunque 'resetPlayerPositionOnStageChange' este apagado.
+        if (respawnAtStageSpawn)
+        {
+            TeleportPlayerTo(spawnPoint);
+            return;
+        }
+
         if (restorePlayerPositionAfterCombat)
         {
             MovePlayerToSavedPosition(spawnPoint);
@@ -406,7 +429,9 @@ public class GameManagerStage2 : MonoBehaviour
             return;
         }
 
-        bool restoredPlayerPosition = TryRestoreSavedPlayerPosition();
+        // Si el jugador reaparecio en el spawn no se le pisa con la posicion guardada al entrar al combate;
+        // los limites de camara si se restauran porque el spawn es del mismo sub-stage.
+        bool restoredPlayerPosition = respawnAtStageSpawn || TryRestoreSavedPlayerPosition();
         bool restoredCameraBounds = TryRestoreSavedCameraBounds();
 
         if (!restoredPlayerPosition || !restoredCameraBounds)

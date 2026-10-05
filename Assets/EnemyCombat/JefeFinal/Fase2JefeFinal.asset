@@ -27,3 +27,4 @@ MonoBehaviour:
   prefilledBlocksCode: "while* - input1*=verificador input2*={0} operator={!=}\n   
     print(\"ejecutando...\")"
   unlockBlocksOnDefeat: []
+  miniGameVariant: {fileID: 11400000, guid: 03ae06a007aec594a9d247c7a6d999e0, type: 2}

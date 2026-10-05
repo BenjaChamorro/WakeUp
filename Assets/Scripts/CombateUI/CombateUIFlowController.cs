@@ -169,16 +169,32 @@ public class CombateUIFlowController : MonoBehaviour {
         }
     }
 
-    // Al terminar el minijuego (gane o pierda) se vuelve a la consola para que el jugador corrija su código.
-    // Al reactivarlo en el próximo error, MiniGameRuntime lo reinicia desde cero.
+    // Al ganar el minijuego se vuelve a la consola para que el jugador corrija su código (al reactivarlo en el
+    // próximo error, MiniGameRuntime lo reinicia desde cero). Al perderlo (sin vida, o se acabó el tiempo antes
+    // de juntar las monedas) se sale del combate y el jugador reaparece en el spawn del sub-stage en que estaba.
     public void OnMiniGameFinished(bool won) {
+        if (!won && CanLeaveCombat()) {
+            Debug.Log("[CodeRunner] Minijuego perdido, se vuelve al spawn del stage.");
+            GameManager.Instance.ExitCombatToStageSpawn();
+            return;
+        }
+
         Debug.Log(won
             ? "[CodeRunner] Minijuego superado, se vuelve a la consola."
-            : "[CodeRunner] Minijuego perdido, se vuelve a la consola.");
+            : "[CodeRunner] Minijuego perdido sin stage al que volver (prueba), se vuelve a la consola.");
 
         if (minigame != null) minigame.SetActive(false);
         if (fondoCombate != null) fondoCombate.SetActive(true);
         if (combateUIConsola != null) combateUIConsola.SetActive(true);
+    }
+
+    // Solo se sale del combate si se entró desde un stage: al probar Code-Console suelta o con la
+    // ejecución de prueba activa no hay stage al que volver.
+    bool CanLeaveCombat() {
+        if (GameManager.Instance == null || !GameManager.Instance.OnCombat) return false;
+
+        EnemyCombatRuntime enemyRuntime = FindObjectOfType<EnemyCombatRuntime>(true);
+        return enemyRuntime == null || !enemyRuntime.IsTestExecutionMode;
     }
 
     IEnumerator HandleVictorySequence(EnemyCombatRuntime enemyRuntime) {

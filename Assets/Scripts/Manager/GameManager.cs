@@ -15,6 +15,10 @@ public class GameManager : MonoBehaviour
     public Object CurrentEnemyAsset { get; private set; }
     public string CurrentEncounterKey { get; private set; }
 
+    // Se activa al perder un minijuego: al volver al stage, GameManagerStage1/2 dejan al jugador en el
+    // punto de spawn del sub-stage activo en vez de donde empezó el combate.
+    private bool respawnAtStageSpawnPending;
+
     void Awake()
     {
         if (Instance == null)
@@ -69,6 +73,7 @@ public class GameManager : MonoBehaviour
         {
             SaveManager.Instance.SetReturnFromCombatFlag(true);
         }
+        respawnAtStageSpawnPending = false;
         OnCombat = true;
         CurrentEnemyAsset = enemyAsset;
         CurrentEncounterKey = encounterKey;
@@ -99,10 +104,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Llamar al perder el combate (minijuego perdido): vuelve al stage guardado, pero con el jugador
+    // en el punto de spawn del sub-stage en el que estaba.
+    public void ExitCombatToStageSpawn()
+    {
+        respawnAtStageSpawnPending = true;
+        ExitCombatAndReturn();
+    }
+
+    // Lo consume GameManagerStage1/2 en su Start para decidir dónde poner al jugador.
+    public bool ConsumeRespawnAtStageSpawn()
+    {
+        bool respawn = respawnAtStageSpawnPending;
+        respawnAtStageSpawnPending = false;
+        return respawn;
+    }
+
     private void OnSceneLoadedRestore(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoadedRestore;
-        RestorePlayerPosition();
+        if (!respawnAtStageSpawnPending)
+        {
+            RestorePlayerPosition();
+        }
         RestoreCameraBounds();
     }
 

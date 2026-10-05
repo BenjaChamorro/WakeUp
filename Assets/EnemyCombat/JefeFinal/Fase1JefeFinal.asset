@@ -28,3 +28,4 @@ MonoBehaviour:
   prefilledBlocksCode: "equal* - input1*=verificador input2*={0}\rif* - input1*=verificador
     input2*={3} operator={>}\n    print* - input1*={\"Ejecutando...\"}"
   unlockBlocksOnDefeat: []
+  miniGameVariant: {fileID: 11400000, guid: 03ae06a007aec594a9d247c7a6d999e0, type: 2}

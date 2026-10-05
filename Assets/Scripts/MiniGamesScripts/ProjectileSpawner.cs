@@ -26,6 +26,9 @@ public class ProjectileSpawner : MonoBehaviour
     private float minY = -3f;
     private float maxY = 2f;
     private float horizontalSpawnEdgeX = 9f;
+    private bool horizontalUseGravity = false;
+    private float horizontalGravityScale = 1f;
+    private float horizontalGravityChance = 1f;
 
     private int nextColumn;
     private Coroutine spawnRoutine;
@@ -73,6 +76,9 @@ public class ProjectileSpawner : MonoBehaviour
         minY = data.spawnMinY;
         maxY = data.spawnMaxY;
         horizontalSpawnEdgeX = data.horizontalSpawnEdgeX;
+        horizontalUseGravity = data.horizontalUseGravity;
+        horizontalGravityScale = data.horizontalGravityScale;
+        horizontalGravityChance = data.horizontalGravityChance;
 
         configured = true;
         BeginSpawning();
@@ -181,8 +187,15 @@ public class ProjectileSpawner : MonoBehaviour
         spawnedProjectiles.RemoveAll(p => p == null);
         spawnedProjectiles.Add(instance);
 
+        // Solo los proyectiles horizontales pueden caer por gravedad; se sortea uno a uno según la probabilidad.
+        float horizontalGravity = 0f;
+        if (movementDirection != MiniGameData.MovementDirection.Down
+            && horizontalUseGravity
+            && (horizontalGravityChance >= 1f || Random.value < horizontalGravityChance)) // Random.value incluye el 1.
+            horizontalGravity = horizontalGravityScale;
+
         Projectile projectile = instance.GetComponent<Projectile>();
         if (projectile != null)
-            projectile.Configure(projectileSprite, projectileScale, projectileFallSpeed, projectileRotationSpeed, projectileDamage, moveDirection);
+            projectile.Configure(projectileSprite, projectileScale, projectileFallSpeed, projectileRotationSpeed, projectileDamage, moveDirection, horizontalGravity);
     }
 }

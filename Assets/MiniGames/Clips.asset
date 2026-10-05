@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f024972c6503c664dac52f9bdb3dd0b8, type: 3}
+  m_Name: Clips
+  m_EditorClassIdentifier: Assembly-CSharp::MiniGameData
+  miniGameId: clips
+  miniGameDisplayName: Clips
+  enemySprite: {fileID: -5136876996145096654, guid: 8e7fe630ec26e2d4fb3c797e830026fd, type: 3}
+  enemyScale: {x: 0, y: 0}
+  projectileSprite: {fileID: -2108176868050839555, guid: 63f0543b348a60e48a78f50f02034c4c, type: 3}
+  projectileScale: {x: 5, y: 5}
+  projectileFallSpeed: 1
+  projectileRotationSpeed: 0
+  projectileDamage: 10
+  movementDirection: 0
+  spawnMinY: -3
+  spawnMaxY: 3
+  horizontalSpawnEdgeX: 8
+  horizontalUseGravity: 0
+  horizontalGravityScale: 1
+  horizontalGravityChance: 1
+  spawnPattern: 2
+  spawnInterval: 1.5
+  spawnMinX: -8
+  spawnMaxX: 8
+  overrideSpawnHeight: 1
+  spawnHeight: 3.8
+  columnCount: 4
+  projectilesPerWave: 14
+  useSurvivalTimer: 1
+  survivalTime: 15
+  useCoins: 0
+  coinSprite: {fileID: -2831504356780261225, guid: 88b940a425f0a9f41bb702c949c8e98a, type: 3}
+  coinScale: {x: 4, y: 4}
+  coinsToCollect: 7
+  coinSpawnMinX: -7
+  coinSpawnMaxX: 7
+  coinSpawnMinY: -2
+  coinSpawnMaxY: 3.5
+  platforms:
+  - platformName: platform
+    localPosition: {x: 0, y: -3}
+    size: {x: 3, y: 2}
+    borderThickness: 0.1
+    localScale: {x: 0, y: 0, z: 0}
+    tag: Platform

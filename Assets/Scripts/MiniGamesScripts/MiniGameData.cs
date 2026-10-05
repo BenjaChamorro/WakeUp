@@ -42,6 +42,12 @@ public class MiniGameData : ScriptableObject {
     public float spawnMaxY = 2f;
     [Tooltip("Solo si el movimiento es RightToLeft/LeftToRight: posición X (en valor absoluto) del borde de pantalla donde aparecen los proyectiles.")]
     public float horizontalSpawnEdgeX = 9f;
+    [Tooltip("Solo si el movimiento es RightToLeft/LeftToRight: si está activo, los proyectiles horizontales también son afectados por la gravedad y caen describiendo un arco.")]
+    public bool horizontalUseGravity = false;
+    [Tooltip("Solo si 'Horizontal Use Gravity' está activo: escala de gravedad del Rigidbody2D. 1 = gravedad normal; valores menores caen más lento.")]
+    public float horizontalGravityScale = 1f;
+    [Tooltip("Solo si 'Horizontal Use Gravity' está activo: probabilidad (0-1) de que cada proyectil sea afectado por la gravedad. 1 = todos caen; 0.5 = aproximadamente la mitad.")]
+    [Range(0f, 1f)] public float horizontalGravityChance = 1f;
 
     [Header("Spawn")]
     public SpawnPattern spawnPattern = SpawnPattern.RandomRain;
