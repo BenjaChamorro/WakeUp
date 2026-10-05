@@ -14516,9 +14516,9 @@ MonoBehaviour:
   stage24SceneName: Stage2.4
   playerTransform: {fileID: 2081612024}
   stage21SpawnPoint: {fileID: 564139644}
-  stage22SpawnPoint: {fileID: 640356414}
-  stage23SpawnPoint: {fileID: 351061331}
-  stage24SpawnPoint: {fileID: 1625027128}
+  stage22SpawnPoint: {fileID: 34454835}
+  stage23SpawnPoint: {fileID: 686702219}
+  stage24SpawnPoint: {fileID: 1976733945}
   resetPlayerPositionOnStageChange: 1
   followCamera: {fileID: 1250083968}
   enableDebugKeys: 1

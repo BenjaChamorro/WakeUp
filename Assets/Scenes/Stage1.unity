@@ -131622,7 +131622,7 @@ PrefabInstance:
     - target: {fileID: 7459483270667701841, guid: 327c88108b83eb84a89b52b60e1f9650, type: 3}
       propertyPath: stage12SpawnPoint
       value: 
-      objectReference: {fileID: 152259803}
+      objectReference: {fileID: 217634872}
     - target: {fileID: 7459483270667701841, guid: 327c88108b83eb84a89b52b60e1f9650, type: 3}
       propertyPath: stage13SpawnPoint
       value: 
