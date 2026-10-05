@@ -36,5 +36,6 @@ MonoBehaviour:
     input2*={3}\r\nif* - input1*=nivelAcceso input2*={5} operator={<}\n    print*
     - input1*={\"Acceso Denegado\"}\r\nif* - input1*=energia input2*={10} operator={<}\r\n   
     print* - input1*={\"No hay energ\xEDa suficiente para abrir la puerta\"}\n"
-  unlockBlocksOnDefeat: []
+  unlockBlocksOnDefeat:
+  - {fileID: 11400000, guid: 757054e10f176a64caa728ddb232d3f9, type: 2}
   miniGameVariant: {fileID: 11400000, guid: d6941a0f2407eb849abbc669fd13de91, type: 2}
