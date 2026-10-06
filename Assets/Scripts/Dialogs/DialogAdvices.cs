@@ -86,6 +86,7 @@ public class DialogAdvices : MonoBehaviour
     private bool animatorHasWaitingParameter;
 
     public bool IsWaiting => isWaiting;
+    public bool IsShowing => isShowing || isWaitingToShow;
 
     private void Awake()
     {
