@@ -229,7 +229,14 @@ public class EnemyCombatRuntime : MonoBehaviour {
 
         if (!ejecucionDePrueba && GameManager.Instance != null)
         {
-            GameManager.Instance.ExitCombatAndReturn();
+            if (currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.sceneOnDefeat))
+            {
+                GameManager.Instance.ExitCombatToScene(currentEnemy.sceneOnDefeat.Trim());
+            }
+            else
+            {
+                GameManager.Instance.ExitCombatAndReturn();
+            }
         }
     }
 

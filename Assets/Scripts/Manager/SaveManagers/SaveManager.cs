@@ -9,6 +9,15 @@ public class SaveManager : MonoBehaviour
     public static bool SuppressPreferredSceneLoadOnNextBoot { get; set; }
     public static bool SuppressSceneStateRestoreOnNextSceneLoad { get; set; }
     public const string DefaultUnlockedBlockId = "print";
+    public const int MaxSlots = 3;
+
+    private const string LastSlotPrefsKey = "WakeUp.LastSaveSlot";
+    private const string LegacySaveFileName = "save.json";
+
+    // Partida elegida en el menu. 0 = ninguna (escena abierta suelta en el editor): se usa la ultima jugada.
+    public static int SelectedSlot { get; set; }
+
+    public int CurrentSlot { get; private set; }
 
     private SaveData saveData;
     private string savePath;
@@ -39,6 +48,29 @@ public class SaveManager : MonoBehaviour
 
     private void InitializeSavePath()
     {
+        MigrateLegacySave();
+
+        int slot = SelectedSlot > 0 ? SelectedSlot : GetLastPlayedSlot();
+        if (slot <= 0)
+        {
+            slot = 1;
+        }
+
+        SetCurrentSlot(slot);
+    }
+
+    private void SetCurrentSlot(int slot)
+    {
+        CurrentSlot = slot;
+        SelectedSlot = slot;
+        savePath = GetSlotPath(slot);
+        PlayerPrefs.SetInt(LastSlotPrefsKey, slot);
+        PlayerPrefs.Save();
+    }
+
+    // ========== SAVE SLOTS ==========
+    public static string GetSaveDirectory()
+    {
         string saveDir = Path.Combine(Application.dataPath, "saves");
         try
         {
@@ -50,27 +82,208 @@ public class SaveManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogWarning("[SaveManager] No se pudo crear la carpeta 'Assets/saves': " + e.Message + ". Usando persistentDataPath en su lugar.");
-            savePath = Path.Combine(Application.persistentDataPath, "save.json");
-            savePath = savePath.Replace("\\", "/");
+            saveDir = Application.persistentDataPath;
+        }
+
+        return saveDir.Replace("\\", "/");
+    }
+
+    public static string GetSlotPath(int slot)
+    {
+        return GetSaveDirectory() + "/save" + slot + ".json";
+    }
+
+    public static bool SlotExists(int slot)
+    {
+        return slot >= 1 && slot <= MaxSlots && File.Exists(GetSlotPath(slot));
+    }
+
+    public static bool AnySlotExists()
+    {
+        for (int slot = 1; slot <= MaxSlots; slot++)
+        {
+            if (SlotExists(slot))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Primer slot sin archivo (save1, luego save2, luego save3). 0 = los tres estan ocupados.
+    public static int GetFirstFreeSlot()
+    {
+        for (int slot = 1; slot <= MaxSlots; slot++)
+        {
+            if (!SlotExists(slot))
+            {
+                return slot;
+            }
+        }
+
+        return 0;
+    }
+
+    // Ultima partida jugada. Si esa ya no existe, la que se guardo mas recientemente. 0 = no hay partidas.
+    public static int GetLastPlayedSlot()
+    {
+        int lastSlot = PlayerPrefs.GetInt(LastSlotPrefsKey, 0);
+        if (SlotExists(lastSlot))
+        {
+            return lastSlot;
+        }
+
+        int newestSlot = 0;
+        System.DateTime newestTime = System.DateTime.MinValue;
+        for (int slot = 1; slot <= MaxSlots; slot++)
+        {
+            if (!SlotExists(slot))
+            {
+                continue;
+            }
+
+            System.DateTime writeTime = File.GetLastWriteTimeUtc(GetSlotPath(slot));
+            if (newestSlot == 0 || writeTime > newestTime)
+            {
+                newestSlot = slot;
+                newestTime = writeTime;
+            }
+        }
+
+        return newestSlot;
+    }
+
+    // Lee una partida sin cargarla (para mostrarla en el menu). null = no existe o esta corrupta.
+    public static SaveData PeekSlot(int slot)
+    {
+        if (!SlotExists(slot))
+        {
+            return null;
+        }
+
+        try
+        {
+            return JsonUtility.FromJson<SaveData>(File.ReadAllText(GetSlotPath(slot)));
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[SaveManager] No se pudo leer la partida " + slot + ": " + e.Message);
+            return null;
+        }
+    }
+
+    // Deja 'slot' como la partida activa. Si el SaveManager ya existe (se vuelve al menu en la misma
+    // sesion) cambia de archivo ahi mismo; si no, lo tomara al crearse en la primera escena de juego.
+    public static void SelectSlot(int slot)
+    {
+        SelectedSlot = slot;
+        SuppressPreferredSceneLoadOnNextBoot = false;
+        SuppressSceneStateRestoreOnNextSceneLoad = false;
+
+        if (Instance != null)
+        {
+            Instance.SwitchToSlot(slot);
+        }
+    }
+
+    public static void DeleteSlot(int slot)
+    {
+        if (slot < 1 || slot > MaxSlots)
+        {
             return;
         }
 
-        savePath = Path.Combine(saveDir, "save.json");
-        savePath = savePath.Replace("\\", "/");
+        if (Instance != null && Instance.CurrentSlot == slot)
+        {
+            Instance.DetachSlot();
+        }
+
+        if (SelectedSlot == slot)
+        {
+            SelectedSlot = 0;
+        }
+
+        if (PlayerPrefs.GetInt(LastSlotPrefsKey, 0) == slot)
+        {
+            PlayerPrefs.DeleteKey(LastSlotPrefsKey);
+            PlayerPrefs.Save();
+        }
+
+        string path = GetSlotPath(slot);
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+
+        // En el editor la carpeta esta dentro de Assets, asi que Unity le crea un .meta al archivo.
+        if (File.Exists(path + ".meta"))
+        {
+            File.Delete(path + ".meta");
+        }
+
+        Debug.Log("[SaveManager] Partida " + slot + " borrada");
+    }
+
+    private void SwitchToSlot(int slot)
+    {
+        pendingEventIds.Clear();
+        SetCurrentSlot(slot);
+
+        if (!ReadSaveFile())
+        {
+            saveData = new SaveData();
+            SaveGame();
+        }
+    }
+
+    // La partida activa fue borrada: se suelta el archivo para no volver a escribirlo.
+    private void DetachSlot()
+    {
+        pendingEventIds.Clear();
+        saveData = new SaveData();
+        savePath = null;
+        CurrentSlot = 0;
+    }
+
+    // Antes habia un unico 'save.json': pasa a ser la partida 1 si todavia no hay partidas nuevas.
+    private static void MigrateLegacySave()
+    {
+        string legacyPath = GetSaveDirectory() + "/" + LegacySaveFileName;
+        if (!File.Exists(legacyPath) || AnySlotExists())
+        {
+            return;
+        }
+
+        File.Move(legacyPath, GetSlotPath(1));
+        if (File.Exists(legacyPath + ".meta"))
+        {
+            File.Delete(legacyPath + ".meta");
+        }
+    }
+
+    private bool ReadSaveFile()
+    {
+        if (string.IsNullOrEmpty(savePath) || !File.Exists(savePath))
+        {
+            return false;
+        }
+
+        string json = File.ReadAllText(savePath);
+        saveData = JsonUtility.FromJson<SaveData>(json);
+        bool changed = EnsureSaveDataDefaults();
+        if (changed)
+        {
+            SaveGame();
+        }
+
+        return true;
     }
 
     public void LoadGame()
     {
-        if (File.Exists(savePath))
+        if (ReadSaveFile())
         {
-            string json = File.ReadAllText(savePath);
-            saveData = JsonUtility.FromJson<SaveData>(json);
-            bool changed = EnsureSaveDataDefaults();
-            if (changed)
-            {
-                SaveGame();
-            }
-
             bool suppressPreferredSceneLoad = SuppressPreferredSceneLoadOnNextBoot;
             SuppressPreferredSceneLoadOnNextBoot = false;
 
@@ -102,6 +315,11 @@ public class SaveManager : MonoBehaviour
 
         EnsureSaveDataDefaults();
 
+        if (string.IsNullOrEmpty(savePath))
+        {
+            return;
+        }
+
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(savePath, json);
         Debug.Log("[SaveManager] Juego guardado en: " + savePath);
@@ -111,7 +329,7 @@ public class SaveManager : MonoBehaviour
     {
         saveData = new SaveData();
         pendingEventIds.Clear();
-        if (File.Exists(savePath))
+        if (!string.IsNullOrEmpty(savePath) && File.Exists(savePath))
         {
             File.Delete(savePath);
         }

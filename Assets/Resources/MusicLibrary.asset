@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: MusicLibrary
   m_EditorClassIdentifier: Assembly-CSharp::MusicLibrary
   stageMusic:
+  - sceneName: Menu
+    clip: {fileID: 8300000, guid: 4101c4dbff2caa04196133003d0fce1f, type: 3}
   - sceneName: Stage1
     clip: {fileID: 8300000, guid: 70f02d341ae09a34ab10be308b52e7a6, type: 3}
   - sceneName: Stage2

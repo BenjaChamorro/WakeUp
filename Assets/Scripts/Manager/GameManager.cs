@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("Combat")]
-    [SerializeField] private int combatSceneIndex = 1;
+    [SerializeField] private string combatSceneName = "Code-Console";
 
     
     private readonly HashSet<string> succeededEncounters = new HashSet<string>();
@@ -57,14 +57,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public int CombatSceneIndex => combatSceneIndex;
+    public string CombatSceneName => combatSceneName;
 
     // Llamar para entrar en combate usando la escena de combate configurada en el inspector.
     public void EnterCombat(Object enemyAsset = null, string encounterKey = null)
     {
-        if (SceneManager.GetActiveScene().buildIndex == combatSceneIndex)
+        if (SceneManager.GetActiveScene().name == combatSceneName)
         {
-            Debug.LogWarning($"[GameManager] La escena de combate configurada ({combatSceneIndex}) coincide con la escena actual. Revisa el inspector.");
+            Debug.LogWarning($"[GameManager] La escena de combate configurada ({combatSceneName}) coincide con la escena actual. Revisa el inspector.");
             return;
         }
 
@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
             SaveManager.Instance.ClearAdviceDialogShown(CurrentEncounterKey);
         }
 
-        SceneManager.LoadScene(combatSceneIndex);
+        SceneManager.LoadScene(combatSceneName);
     }
 
     // Llamar para salir del combate y volver al stage guardado
@@ -110,6 +110,32 @@ public class GameManager : MonoBehaviour
     {
         respawnAtStageSpawnPending = true;
         ExitCombatAndReturn();
+    }
+
+    // Llamar al ganar un combate que no vuelve al stage (p. ej. el jefe final carga la escena de final).
+    public void ExitCombatToScene(string sceneName)
+    {
+        OnCombat = false;
+        CurrentEnemyAsset = null;
+        CurrentEncounterKey = null;
+        respawnAtStageSpawnPending = false;
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.TryConsumeSavedSceneIndex(out _);
+        }
+
+        SceneManager.LoadScene(sceneName);
+    }
+
+    // Este objeto sobrevive entre escenas: al elegir otra partida en el menu hay que olvidar lo de la anterior.
+    public void ResetSession()
+    {
+        succeededEncounters.Clear();
+        OnCombat = false;
+        CurrentEnemyAsset = null;
+        CurrentEncounterKey = null;
+        respawnAtStageSpawnPending = false;
     }
 
     // Lo consume GameManagerStage1/2 en su Start para decidir dónde poner al jugador.

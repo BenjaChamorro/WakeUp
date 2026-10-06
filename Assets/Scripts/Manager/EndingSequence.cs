@@ -1,8 +1,10 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-// Secuencia de la escena final: dialogo de Clippy -> Clippy gira y desaparece -> creditos -> imagenes finales.
+// Secuencia de la escena final: dialogo de Clippy -> Clippy gira y desaparece -> creditos -> imagen final -> boton para volver al menu.
 public class EndingSequence : MonoBehaviour
 {
     private const string ClippyDialogueId = "EndingClippy";
@@ -31,6 +33,12 @@ public class EndingSequence : MonoBehaviour
     [SerializeField] private float secondsBeforeFinalImage = 10f;
     [SerializeField] private GameObject finalImage;
 
+    [Header("Volver al menu")]
+    [Tooltip("Espera entre que aparece la imagen final y el boton para volver al menu.")]
+    [SerializeField] private float secondsBeforeMenuButton = 5f;
+    [SerializeField] private Button menuButton;
+    [SerializeField] private string menuSceneName = "Menu";
+
     private bool clippyDialogueFinished;
 
     private void Awake()
@@ -43,6 +51,12 @@ public class EndingSequence : MonoBehaviour
         if (finalImage != null)
         {
             finalImage.SetActive(false);
+        }
+
+        if (menuButton != null)
+        {
+            menuButton.gameObject.SetActive(false);
+            menuButton.onClick.AddListener(ReturnToMenu);
         }
     }
 
@@ -60,6 +74,18 @@ public class EndingSequence : MonoBehaviour
         {
             finalImage.SetActive(true);
         }
+
+        yield return new WaitForSeconds(secondsBeforeMenuButton);
+
+        if (menuButton != null)
+        {
+            menuButton.gameObject.SetActive(true);
+        }
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene(menuSceneName);
     }
 
     private IEnumerator PlayClippyDialogue()
