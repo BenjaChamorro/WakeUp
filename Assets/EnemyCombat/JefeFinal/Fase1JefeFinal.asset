@@ -29,3 +29,4 @@ MonoBehaviour:
     input2*={3} operator={>}\n    print* - input1*={\"Ejecutando...\"}"
   unlockBlocksOnDefeat: []
   miniGameVariant: {fileID: 11400000, guid: 03ae06a007aec594a9d247c7a6d999e0, type: 2}
+  combatMusic: {fileID: 8300000, guid: cf2409b6989fcce43a2390ceb02523ea, type: 3}
