@@ -41,4 +41,8 @@ public class EnemyCombatData : ScriptableObject {
     [Header("Musica")]
     [Tooltip("Música de este combate (y de su minijuego). Vacío = música de combate por defecto de MusicLibrary.")]
     public AudioClip combatMusic;
+
+    [Header("Al derrotar")]
+    [Tooltip("Escena que se carga al derrotar a este enemigo en vez de volver al stage (p. ej. 'Ending'). Vacío = vuelve al stage.")]
+    public string sceneOnDefeat = string.Empty;
 }

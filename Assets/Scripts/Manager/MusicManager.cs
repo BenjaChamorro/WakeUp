@@ -82,6 +82,17 @@ public class MusicManager : MonoBehaviour
         Play(library.GetStageMusic(scene.name), true);
     }
 
+    // Para momentos que no dependen de la escena (p. ej. los créditos). Dura hasta el próximo cambio de escena.
+    public void PlayTrack(AudioClip clip)
+    {
+        if (library == null)
+        {
+            return;
+        }
+
+        Play(clip, false);
+    }
+
     private AudioClip ResolveCombatMusic()
     {
         EnemyCombatData enemy = GameManager.Instance != null ? GameManager.Instance.CurrentEnemyAsset as EnemyCombatData : null;
