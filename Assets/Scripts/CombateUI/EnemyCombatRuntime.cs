@@ -119,6 +119,23 @@ public class EnemyCombatRuntime : MonoBehaviour {
         return dialogAdvices.ShowCombatDialogueNow();
     }
 
+    public bool HasClippyDialogue() {
+        return currentEnemy != null && !string.IsNullOrWhiteSpace(currentEnemy.dialogoClippy);
+    }
+
+    public bool ReplayClippyDialogue() {
+        if (!HasClippyDialogue()) {
+            return false;
+        }
+
+        DialogAdvices dialogAdvices = FindObjectOfType<DialogAdvices>(true);
+        if (dialogAdvices == null) {
+            return false;
+        }
+
+        return dialogAdvices.ReplayCombatDialogue();
+    }
+
     public void GrantEnemyRewards() {
         if (currentEnemy == null || playerInventory == null) return;
 
@@ -365,6 +382,11 @@ public class EnemyCombatRuntime : MonoBehaviour {
     }
 
     private void ApplyClippyDialogue() {
+        ClippyGuideButton[] guideButtons = FindObjectsOfType<ClippyGuideButton>(true);
+        for (int i = 0; i < guideButtons.Length; i++) {
+            guideButtons[i].SetAvailable(HasClippyDialogue());
+        }
+
         DialogAdvices dialogAdvices = FindObjectOfType<DialogAdvices>(true);
         if (dialogAdvices == null) {
             return;
