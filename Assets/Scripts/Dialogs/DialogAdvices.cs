@@ -47,6 +47,16 @@ public class DialogAdvices : MonoBehaviour
     [SerializeField] private Color textColor = Color.black;
     [SerializeField] private float textSize = 40f;
 
+    [Header("Continue Hint")]
+    [Tooltip("Texto parpadeante bajo el dialogo mientras espera la tecla. No se muestra en los dialogos de combate.")]
+    [SerializeField] private bool showContinueHint = true;
+    [SerializeField] private string continueHintText = "Presione enter";
+    [SerializeField] private Color continueHintColor = Color.gray;
+    [SerializeField] private float continueHintFontSize = 28f;
+    [Tooltip("Distancia entre el borde inferior del contenedor de texto y el aviso.")]
+    [SerializeField] private float continueHintOffsetY = 20f;
+    [SerializeField] private float continueHintBlinkSeconds = 0.6f;
+
     [Header("Timing")]
     [SerializeField] private bool useTypewriter = true;
     [SerializeField] private float charactersPerSecond = 40f;
@@ -69,6 +79,7 @@ public class DialogAdvices : MonoBehaviour
     private Image panelImage;
     private TextMeshProUGUI adviceText;
     private RectTransform textContainerRect;
+    private TextMeshProUGUI continueHint;
 
     private SpriteRenderer adviceSpriteRendererSource;
     private Animator showAnimation;
@@ -106,6 +117,8 @@ public class DialogAdvices : MonoBehaviour
         {
             UpdateActiveDialogue();
         }
+
+        UpdateContinueHint();
     }
 
     public void ActivateDialogue()
@@ -415,7 +428,35 @@ public class DialogAdvices : MonoBehaviour
         adviceText.overflowMode = TextOverflowModes.Overflow;
         adviceText.raycastTarget = false;
 
+        GameObject hintObject = new GameObject("ContinueHint", typeof(RectTransform), typeof(TextMeshProUGUI));
+        hintObject.transform.SetParent(textContainerObject.transform, false);
+
+        continueHint = hintObject.GetComponent<TextMeshProUGUI>();
+        continueHint.raycastTarget = false;
+        continueHint.alignment = TextAlignmentOptions.Center;
+        hintObject.SetActive(false);
+
         return true;
+    }
+
+    // El aviso solo acompaña a los dialogos normales: los de combate (runtimeConfigured) no lo llevan.
+    private void UpdateContinueHint()
+    {
+        if (continueHint == null)
+        {
+            return;
+        }
+
+        bool visible = showContinueHint && !runtimeConfigured && isShowing && isWaiting && buttonRequired;
+        if (continueHint.gameObject.activeSelf != visible)
+        {
+            continueHint.gameObject.SetActive(visible);
+        }
+
+        if (visible)
+        {
+            continueHint.alpha = Mathf.PingPong(Time.unscaledTime / Mathf.Max(0.05f, continueHintBlinkSeconds), 1f);
+        }
     }
 
     private void ApplyLayout()
@@ -488,6 +529,25 @@ public class DialogAdvices : MonoBehaviour
             adviceText.alignment = TextAlignmentOptions.TopLeft;
             adviceText.enableWordWrapping = true;
             adviceText.overflowMode = TextOverflowModes.Overflow;
+        }
+
+        if (continueHint != null)
+        {
+            if (adviceFont != null)
+            {
+                continueHint.font = adviceFont;
+            }
+
+            continueHint.text = continueHintText;
+            continueHint.color = continueHintColor;
+            continueHint.fontSize = continueHintFontSize;
+
+            RectTransform hintRect = continueHint.rectTransform;
+            hintRect.anchorMin = new Vector2(0f, 0f);
+            hintRect.anchorMax = new Vector2(1f, 0f);
+            hintRect.pivot = new Vector2(0.5f, 1f);
+            hintRect.anchoredPosition = new Vector2(0f, -continueHintOffsetY);
+            hintRect.sizeDelta = new Vector2(0f, continueHintFontSize * 1.5f);
         }
     }
 
