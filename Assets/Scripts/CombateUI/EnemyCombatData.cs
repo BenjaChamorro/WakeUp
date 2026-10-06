@@ -37,4 +37,8 @@ public class EnemyCombatData : ScriptableObject {
     [Header("Minijuego")]
     [Tooltip("Variante de minijuego que se carga durante este combate. La aplica MiniGameRuntime.")]
     public MiniGameData miniGameVariant;
+
+    [Header("Musica")]
+    [Tooltip("Música de este combate (y de su minijuego). Vacío = música de combate por defecto de MusicLibrary.")]
+    public AudioClip combatMusic;
 }

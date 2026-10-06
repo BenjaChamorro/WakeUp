@@ -29,3 +29,4 @@ MonoBehaviour:
   prefilledBlocksCode: 
   unlockBlocksOnDefeat: []
   miniGameVariant: {fileID: 11400000, guid: 8f682285ebaf50146987d7a8a86cf9bb, type: 2}
+  combatMusic: {fileID: 8300000, guid: ae1a947e3eed52a469e224d3e1d63ea9, type: 3}
