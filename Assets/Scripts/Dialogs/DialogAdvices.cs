@@ -159,6 +159,26 @@ public class DialogAdvices : MonoBehaviour
         return true;
     }
 
+    // Vuelve a mostrar el dialogo del combate aunque ya se haya visto (boton "Guia").
+    public bool ReplayCombatDialogue()
+    {
+        if (isShowing || isWaitingToShow || lines == null || lines.Length == 0)
+        {
+            return false;
+        }
+
+        if (!BuildAdviceUI())
+        {
+            return false;
+        }
+
+        runtimeConfigured = true;
+        buttonRequired = true;
+
+        ShowDialogue();
+        return true;
+    }
+
     private void UpdatePendingDialogue()
     {
         waitTime -= Time.deltaTime;
